@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-cinzel: 'Cinzel', Georgia, serif;
+  --font-lora: 'Lora', Georgia, serif;
+}
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900 antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-cinzel);
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-purple-600 text-white px-6 py-3 rounded-lg text-sm font-medium
+           hover:bg-brand-purple-800 transition-colors duration-200 cursor-pointer border-0;
+  }
+
+  .btn-outline {
+    @apply bg-transparent text-brand-purple-600 border border-brand-purple-600 px-6 py-3 rounded-lg
+           text-sm font-medium hover:bg-brand-purple-50 transition-colors duration-200 cursor-pointer;
+  }
+
+  .section-label {
+    @apply text-xs tracking-widest uppercase font-medium mb-1;
+  }
+
+  .pillar-card {
+    @apply bg-white border border-gray-100 rounded-b-xl p-6
+           hover:shadow-md transition-shadow duration-200;
+  }
+}
