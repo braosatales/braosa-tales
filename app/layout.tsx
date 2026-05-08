@@ -1,37 +1,32 @@
 import type { Metadata } from 'next'
-import { Cinzel, Lora } from 'next/font/google'
+import { Cinzel, IM_Fell_English } from 'next/font/google'
 import './globals.css'
 
 const cinzel = Cinzel({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['400', '700', '900'],
   variable: '--font-cinzel',
   display: 'swap',
 })
 
-const lora = Lora({
+const imFell = IM_Fell_English({
   subsets: ['latin'],
-  weight: ['400', '500'],
+  weight: ['400'],
   style: ['normal', 'italic'],
-  variable: '--font-lora',
+  variable: '--font-fell',
   display: 'swap',
 })
 
 export const metadata: Metadata = {
   title: 'Braosa Tales — Forge the world. Tell the story. Run the game.',
   description:
-    'TTRPG tools, original stories, and live campaigns — all under one roof. Build campaigns, buy the books, and sit at the table.',
+    'TTRPG tools, original stories, and live campaigns — all under one roof.',
   openGraph: {
     title: 'Braosa Tales',
     description: 'Forge the world. Tell the story. Run the game.',
     url: 'https://braosatales.com',
     siteName: 'Braosa Tales',
     type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Braosa Tales',
-    description: 'Forge the world. Tell the story. Run the game.',
   },
 }
 
@@ -41,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${cinzel.variable} ${lora.variable}`}>
+    <html lang="en" className={`${cinzel.variable} ${imFell.variable}`}>
       <body>{children}</body>
     </html>
   )

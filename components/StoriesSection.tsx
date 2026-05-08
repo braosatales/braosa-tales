@@ -1,44 +1,47 @@
 import Link from 'next/link'
 
-const cards = [
-  { icon: '🖋️', title: 'Original worlds', desc: 'Built at the table, years in the making' },
-  { icon: '📖', title: 'Written fiction', desc: 'Short stories, lore books, campaign journals' },
-  { icon: '🪙', title: 'Buy the books', desc: 'Digital & physical, direct from the author' },
-  { icon: '🌍', title: 'Free lore', desc: 'Open wiki for any player at your table' },
-]
-
 export default function StoriesSection() {
   return (
-    <section className="px-8 py-16 flex flex-col md:flex-row gap-12 items-start">
-      <div className="flex-1">
-        <p className="section-label text-brand-amber-400">The Stories</p>
-        <h2 className="font-cinzel font-bold text-3xl text-gray-900 mt-1 mb-4 leading-snug">
-          Worlds built by hand.<br />Stories told by one.
-        </h2>
-        <p className="text-sm text-gray-500 leading-loose mb-3">
-          These aren&apos;t generated worlds — they&apos;re ones built at actual tables over years.
-          The lore here predates every tool on this site. The tools came later, to manage what already existed.
-        </p>
-        <p className="text-sm text-gray-500 leading-loose mb-6">
-          Read the fiction. Buy the books. Explore the lore — some of it free, some locked behind
-          the campaign you haven&apos;t played yet.
-        </p>
-        <Link href="/stories" className="text-sm font-medium text-brand-amber-400 hover:underline">
-          Browse the library →
-        </Link>
-      </div>
+    <section className="px-8 py-20 border-t border-brand-border">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-16 items-start">
 
-      <div className="flex-1 grid grid-cols-2 gap-3">
-        {cards.map((c) => (
-          <div
-            key={c.title}
-            className="bg-brand-parchment border border-brand-amber-50 rounded-xl p-4"
-          >
-            <span className="text-lg" aria-hidden="true">{c.icon}</span>
-            <p className="font-medium text-xs text-gray-900 mt-2 mb-1">{c.title}</p>
-            <p className="text-xs text-gray-500 leading-snug">{c.desc}</p>
+        <div className="flex-1">
+          <p className="section-label">The Stories</p>
+          <h2 className="font-cinzel font-black text-brand-parchment text-4xl mb-4 leading-tight">
+            Worlds built by hand.<br />Stories told by one.
+          </h2>
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-px w-12 bg-brand-gold-400/30" />
+            <span className="text-brand-gold-400/50 text-xs">✦</span>
           </div>
-        ))}
+          <p className="font-fell text-brand-muted leading-loose mb-4">
+            These aren&apos;t generated worlds — they&apos;re ones built at actual tables over years.
+            The lore here predates every tool on this site. The tools came later, to manage what already existed.
+          </p>
+          <p className="font-fell text-brand-muted leading-loose mb-8">
+            Read the fiction. Buy the books. Explore the lore — some of it free, some locked
+            behind the campaign you haven&apos;t played yet.
+          </p>
+          <Link href="/stories" className="font-cinzel text-xs tracking-widest uppercase text-brand-gold-300 hover:text-brand-gold-300/70 transition-colors">
+            Browse the library →
+          </Link>
+        </div>
+
+        <div className="flex-1 grid grid-cols-2 gap-4">
+          {[
+            { symbol: '🖋', title: 'Original worlds', desc: 'Built at the table, years in the making' },
+            { symbol: '📖', title: 'Written fiction', desc: 'Short stories, lore books, campaign journals' },
+            { symbol: '⚜', title: 'Buy the books', desc: 'Digital & physical, direct from the author' },
+            { symbol: '🌍', title: 'Free lore', desc: 'Open wiki for players at your table' },
+          ].map((c) => (
+            <div key={c.title} className="dark-card">
+              <span className="text-xl">{c.symbol}</span>
+              <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mt-3 mb-1">{c.title}</p>
+              <p className="font-fell text-brand-muted text-xs leading-relaxed">{c.desc}</p>
+            </div>
+          ))}
+        </div>
+
       </div>
     </section>
   )

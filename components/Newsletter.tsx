@@ -2,18 +2,23 @@
 
 export default function Newsletter() {
   return (
-    <section className="px-8 py-14 text-center border-t border-gray-100">
-      <h2 className="font-cinzel font-bold text-2xl text-gray-900 mb-2">Stay in the loop.</h2>
-      <p className="text-sm text-gray-500 mb-6">New tools, new stories, new sessions. No noise.</p>
-      <div className="flex flex-col sm:flex-row gap-2 justify-center max-w-sm mx-auto">
-        <input
-          type="email"
-          placeholder="your@email.com"
-          className="flex-1 border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-brand-purple-400"
-        />
-        <button type="button" className="btn-primary whitespace-nowrap py-2.5">
-          Subscribe
-        </button>
+    <section className="px-8 py-20 border-t border-brand-border text-center">
+      <div className="max-w-md mx-auto">
+        <p className="section-label">Stay in the loop</p>
+        <h2 className="font-cinzel font-bold text-brand-parchment text-2xl mb-2">Join the Chronicle</h2>
+        <p className="font-fell italic text-brand-muted mb-8 leading-relaxed">
+          New tools, new stories, new sessions. No noise.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input
+            type="email"
+            placeholder="your@email.com"
+            className="flex-1 bg-brand-card border border-brand-border rounded-sm px-4 py-3 text-sm text-brand-parchment placeholder-brand-muted focus:outline-none focus:border-brand-purple-600 font-fell"
+          />
+          <button type="button" className="btn-primary whitespace-nowrap">
+            Subscribe
+          </button>
+        </div>
       </div>
     </section>
   )

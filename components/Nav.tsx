@@ -15,22 +15,20 @@ export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <nav className="flex items-center justify-between px-8 py-5 border-b border-gray-100">
+    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-brand-bg/80 backdrop-blur-sm border-b border-brand-border">
       <Link href="/" className="flex items-center gap-3">
-        {/* Swap src for your actual logo file in /public */}
-        {/* <Image src="/logo-purple.png" alt="Braosa Tales" width={36} height={36} /> */}
-        <span className="font-cinzel font-bold text-brand-purple-600 tracking-widest text-base">
+        <Image src="/logo-mark.png" alt="Braosa Tales" width={36} height={36} className="opacity-90" />
+        <span className="font-cinzel font-bold text-brand-parchment tracking-widest text-sm hidden sm:block">
           BRAOSA TALES
         </span>
       </Link>
 
-      {/* Desktop links */}
       <div className="hidden md:flex items-center gap-8">
         {links.map((l) => (
           <Link
             key={l.href}
             href={l.href}
-            className="text-sm text-gray-500 hover:text-brand-purple-600 transition-colors"
+            className="font-cinzel text-xs tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors"
           >
             {l.label}
           </Link>
@@ -38,17 +36,16 @@ export default function Nav() {
       </div>
 
       <div className="hidden md:flex items-center gap-3">
-        <Link href="/login" className="text-sm text-gray-500 hover:text-brand-purple-600 transition-colors">
+        <Link href="/login" className="font-cinzel text-xs tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors">
           Sign in
         </Link>
-        <Link href="/signup" className="btn-primary text-sm py-2 px-4">
+        <Link href="/signup" className="btn-primary text-xs py-2 px-4">
           Get started
         </Link>
       </div>
 
-      {/* Mobile menu button */}
       <button
-        className="md:hidden text-gray-500"
+        className="md:hidden text-brand-muted"
         onClick={() => setMenuOpen(!menuOpen)}
         aria-label="Toggle menu"
       >
@@ -60,17 +57,16 @@ export default function Nav() {
         </svg>
       </button>
 
-      {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="absolute top-[68px] left-0 right-0 bg-white border-b border-gray-100 px-8 py-4 flex flex-col gap-4 z-50 md:hidden">
+        <div className="absolute top-[64px] left-0 right-0 bg-brand-bg border-b border-brand-border px-8 py-6 flex flex-col gap-5 z-50 md:hidden">
           {links.map((l) => (
-            <Link key={l.href} href={l.href} className="text-sm text-gray-600" onClick={() => setMenuOpen(false)}>
+            <Link key={l.href} href={l.href} className="font-cinzel text-xs tracking-widest uppercase text-brand-muted" onClick={() => setMenuOpen(false)}>
               {l.label}
             </Link>
           ))}
-          <hr className="border-gray-100" />
-          <Link href="/login" className="text-sm text-gray-600" onClick={() => setMenuOpen(false)}>Sign in</Link>
-          <Link href="/signup" className="btn-primary text-sm py-2 px-4 text-center" onClick={() => setMenuOpen(false)}>Get started</Link>
+          <hr className="border-brand-border" />
+          <Link href="/login" className="font-cinzel text-xs tracking-widest uppercase text-brand-muted" onClick={() => setMenuOpen(false)}>Sign in</Link>
+          <Link href="/signup" className="btn-primary text-xs py-2 px-4 text-center" onClick={() => setMenuOpen(false)}>Get started</Link>
         </div>
       )}
     </nav>

@@ -12,18 +12,18 @@ const links = [
 
 export default function Footer() {
   return (
-    <footer className="px-8 py-6 border-t border-gray-100 flex flex-wrap justify-between items-center gap-4">
-      <span className="font-cinzel font-bold text-brand-purple-600 tracking-widest text-sm">
+    <footer className="px-8 py-8 border-t border-brand-border flex flex-wrap justify-between items-center gap-4">
+      <span className="font-cinzel font-bold text-brand-parchment tracking-widest text-xs">
         BRAOSA TALES™
       </span>
-      <div className="flex flex-wrap gap-5">
+      <div className="flex flex-wrap gap-6">
         {links.map((l) => (
-          <Link key={l.href} href={l.href} className="text-xs text-gray-400 hover:text-gray-600 transition-colors">
+          <Link key={l.href} href={l.href} className="font-cinzel text-xs tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors">
             {l.label}
           </Link>
         ))}
       </div>
-      <p className="text-xs text-gray-400">© {new Date().getFullYear()} Braosa Tales</p>
+      <p className="font-fell italic text-xs text-brand-muted">© {new Date().getFullYear()} Braosa Tales</p>
     </footer>
   )
 }

@@ -10,30 +10,29 @@ const config: Config = {
     extend: {
       colors: {
         brand: {
+          bg: '#0A0712',
+          card: '#130F1E',
+          border: '#2A2040',
           purple: {
             50:  '#EEEDFE',
-            100: '#CECBF6',
             200: '#AFA9EC',
             400: '#7F77DD',
             600: '#534AB7',
             800: '#3C3489',
             900: '#26215C',
           },
-          amber: {
-            50:  '#FAEEDA',
-            100: '#FAC775',
-            400: '#BA7517',
+          gold: {
+            300: '#E8C97A',
+            400: '#C4960A',
+            500: '#9A7208',
           },
-          parchment: '#F5EDD8',
+          parchment: '#F0E4C4',
+          muted: '#8A7E9A',
         },
       },
       fontFamily: {
         cinzel: ['var(--font-cinzel)', 'Georgia', 'serif'],
-        body: ['var(--font-lora)', 'Georgia', 'serif'],
-      },
-      borderRadius: {
-        'xl': '12px',
-        '2xl': '16px',
+        fell: ['var(--font-fell)', 'Georgia', 'serif'],
       },
     },
   },

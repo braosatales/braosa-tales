@@ -4,36 +4,41 @@
 
 :root {
   --font-cinzel: 'Cinzel', Georgia, serif;
-  --font-lora: 'Lora', Georgia, serif;
+  --font-fell: 'IM Fell English', Georgia, serif;
 }
 
 @layer base {
   body {
-    @apply bg-white text-gray-900 antialiased;
-  }
-
-  h1, h2, h3 {
-    font-family: var(--font-cinzel);
+    background-color: #0A0712;
+    color: #F0E4C4;
+    font-family: var(--font-fell);
+    -webkit-font-smoothing: antialiased;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-brand-purple-600 text-white px-6 py-3 rounded-lg text-sm font-medium
-           hover:bg-brand-purple-800 transition-colors duration-200 cursor-pointer border-0;
+    @apply bg-brand-purple-600 text-brand-parchment px-6 py-3 rounded-sm text-sm
+           hover:bg-brand-purple-400 transition-colors duration-200 cursor-pointer border-0
+           tracking-widest uppercase font-cinzel;
   }
 
   .btn-outline {
-    @apply bg-transparent text-brand-purple-600 border border-brand-purple-600 px-6 py-3 rounded-lg
-           text-sm font-medium hover:bg-brand-purple-50 transition-colors duration-200 cursor-pointer;
+    @apply bg-transparent text-brand-gold-300 border border-brand-gold-400 px-6 py-3 rounded-sm
+           text-sm hover:bg-brand-gold-400/10 transition-colors duration-200 cursor-pointer
+           tracking-widest uppercase font-cinzel;
   }
 
   .section-label {
-    @apply text-xs tracking-widest uppercase font-medium mb-1;
+    @apply text-xs tracking-widest uppercase font-cinzel text-brand-gold-300 mb-2;
   }
 
-  .pillar-card {
-    @apply bg-white border border-gray-100 rounded-b-xl p-6
-           hover:shadow-md transition-shadow duration-200;
+  .dark-card {
+    @apply bg-brand-card border border-brand-border rounded-sm p-6
+           hover:border-brand-purple-600/50 transition-colors duration-200;
+  }
+
+  .ornament {
+    @apply text-brand-gold-400 mx-3 opacity-60;
   }
 }
