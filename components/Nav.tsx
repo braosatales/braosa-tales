@@ -7,6 +7,7 @@ import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 const links = [
   { href: '/atelier', label: 'Atelier' },
+  { href: '/pricing', label: 'Pricing' },
   { href: '/stories', label: 'Stories' },
   { href: '/about', label: 'About' },
   { href: '/games', label: 'Games' },
