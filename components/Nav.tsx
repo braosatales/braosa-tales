@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 
 const links = [
-  { href: '/tools', label: 'Tools' },
+  { href: '/atelier', label: 'Atelier' },
   { href: '/stories', label: 'Stories' },
   { href: '/games', label: 'Games' },
   { href: '/blog', label: 'Blog' },
