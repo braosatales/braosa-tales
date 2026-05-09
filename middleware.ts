@@ -9,6 +9,8 @@ export default authMiddleware({
     '/blog(.*)',
     '/login(.*)',
     '/signup(.*)',
+    '/sign-in(.*)',
+    '/sign-up(.*)',
     '/api/webhook(.*)',
   ],
 })

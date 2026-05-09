@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 const links = [
   { href: '/atelier', label: 'Atelier' },
@@ -39,12 +39,13 @@ export default function Nav() {
 
       <div className="hidden md:flex items-center gap-3">
         <SignedOut>
-          <SignInButton mode="redirect">
-            <button className="font-cinzel text-xs tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors">
-              Sign in
-            </button>
-          </SignInButton>
-          <Link href="/signup" className="btn-primary text-xs py-2 px-4">
+          <Link
+            href="/sign-in"
+            className="font-cinzel text-xs tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors"
+          >
+            Sign in
+          </Link>
+          <Link href="/sign-up" className="btn-primary text-xs py-2 px-4">
             Get started
           </Link>
         </SignedOut>
@@ -82,12 +83,14 @@ export default function Nav() {
           ))}
           <hr className="border-brand-border" />
           <SignedOut>
-            <SignInButton mode="redirect">
-              <button className="font-cinzel text-xs tracking-widest uppercase text-brand-muted text-left" onClick={() => setMenuOpen(false)}>
-                Sign in
-              </button>
-            </SignInButton>
-            <Link href="/signup" className="btn-primary text-xs py-2 px-4 text-center" onClick={() => setMenuOpen(false)}>Get started</Link>
+            <Link
+              href="/sign-in"
+              className="font-cinzel text-xs tracking-widest uppercase text-brand-muted text-left"
+              onClick={() => setMenuOpen(false)}
+            >
+              Sign in
+            </Link>
+            <Link href="/sign-up" className="btn-primary text-xs py-2 px-4 text-center" onClick={() => setMenuOpen(false)}>Get started</Link>
           </SignedOut>
           <SignedIn>
             <div className="flex items-center gap-3">
