@@ -3,9 +3,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState } from 'react'
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs'
 
 const links = [
-  { href: '/tools', label: 'Tools' },
+  { href: '/atelier', label: 'Atelier' },
   { href: '/stories', label: 'Stories' },
   { href: '/games', label: 'Games' },
   { href: '/blog', label: 'Blog' },
@@ -36,12 +37,26 @@ export default function Nav() {
       </div>
 
       <div className="hidden md:flex items-center gap-3">
-        <Link href="/login" className="font-cinzel text-xs tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors">
-          Sign in
-        </Link>
-        <Link href="/signup" className="btn-primary text-xs py-2 px-4">
-          Get started
-        </Link>
+        <SignedOut>
+          <SignInButton mode="redirect">
+            <button className="font-cinzel text-xs tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors">
+              Sign in
+            </button>
+          </SignInButton>
+          <Link href="/signup" className="btn-primary text-xs py-2 px-4">
+            Get started
+          </Link>
+        </SignedOut>
+        <SignedIn>
+          <UserButton
+            afterSignOutUrl="/"
+            appearance={{
+              elements: {
+                avatarBox: 'w-8 h-8',
+              },
+            }}
+          />
+        </SignedIn>
       </div>
 
       <button
@@ -65,8 +80,20 @@ export default function Nav() {
             </Link>
           ))}
           <hr className="border-brand-border" />
-          <Link href="/login" className="font-cinzel text-xs tracking-widest uppercase text-brand-muted" onClick={() => setMenuOpen(false)}>Sign in</Link>
-          <Link href="/signup" className="btn-primary text-xs py-2 px-4 text-center" onClick={() => setMenuOpen(false)}>Get started</Link>
+          <SignedOut>
+            <SignInButton mode="redirect">
+              <button className="font-cinzel text-xs tracking-widest uppercase text-brand-muted text-left" onClick={() => setMenuOpen(false)}>
+                Sign in
+              </button>
+            </SignInButton>
+            <Link href="/signup" className="btn-primary text-xs py-2 px-4 text-center" onClick={() => setMenuOpen(false)}>Get started</Link>
+          </SignedOut>
+          <SignedIn>
+            <div className="flex items-center gap-3">
+              <UserButton afterSignOutUrl="/" />
+              <span className="font-cinzel text-xs tracking-widest uppercase text-brand-muted">Account</span>
+            </div>
+          </SignedIn>
         </div>
       )}
     </nav>
