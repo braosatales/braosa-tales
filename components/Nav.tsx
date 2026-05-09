@@ -6,12 +6,13 @@ import { useState } from 'react'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 
 const links = [
-  { href: '/atelier', label: 'Atelier' },
-  { href: '/pricing', label: 'Pricing' },
+  { href: '/', label: 'Home' },
   { href: '/stories', label: 'Stories' },
   { href: '/about', label: 'About' },
   { href: '/games', label: 'Games' },
-  { href: '/blog', label: 'Blog' },
+  { href: '/about', label: 'About' },
+  { href: '/atelier', label: 'Atelier' },
+  { href: '/pricing', label: 'Pricing' },
 ]
 
 export default function Nav() {

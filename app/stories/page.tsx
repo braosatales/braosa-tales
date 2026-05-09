@@ -29,17 +29,15 @@ export default function StoriesPage() {
         </p>
       </section>
 
-      {/* Coming Soon — Featured Book */}
+      {/* Featured Release */}
       <section className="px-8 py-20 border-b border-brand-border">
         <div className="max-w-6xl mx-auto">
           <p className="section-label mb-6">Featured Release</p>
           <div className="flex flex-col md:flex-row gap-10 items-start">
-            {/* Placeholder book cover */}
             <div className="dark-card flex-shrink-0 w-full md:w-56 h-80 flex flex-col items-center justify-center gap-3">
               <span className="text-brand-gold-400/40 text-5xl">📖</span>
               <p className="font-cinzel text-xs tracking-widest uppercase text-brand-muted">Cover Reveal Soon</p>
             </div>
-            {/* Book info */}
             <div className="flex-1">
               <span className="inline-block font-cinzel text-xs tracking-widest uppercase text-brand-purple-200 border border-brand-purple-600/40 px-3 py-1 rounded-sm mb-4">
                 Coming Soon
@@ -67,7 +65,7 @@ export default function StoriesPage() {
         </div>
       </section>
 
-      {/* Free Lore — World Wiki */}
+      {/* World Wiki */}
       <section className="px-8 py-20 border-b border-brand-border">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row gap-16 items-start">
@@ -111,7 +109,7 @@ export default function StoriesPage() {
         </div>
       </section>
 
-      {/* Buy Section */}
+      {/* Shop Section */}
       <section className="px-8 py-20 border-b border-brand-border">
         <div className="max-w-6xl mx-auto">
           <p className="section-label mb-4">The Shop</p>
