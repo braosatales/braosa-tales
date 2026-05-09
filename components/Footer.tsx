@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 const links = [
-  { href: '/tools', label: 'Tools' },
+  { href: '/atelier', label: 'Atelier' },
   { href: '/stories', label: 'Stories' },
   { href: '/games', label: 'Games' },
   { href: '/blog', label: 'Blog' },

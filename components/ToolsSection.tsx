@@ -41,7 +41,7 @@ export default function ToolsSection() {
         </div>
 
         <div className="mt-12 text-center">
-          <Link href="/tools" className="btn-primary">
+          <Link href="/atelier" className="btn-primary">
             Try the tools free
           </Link>
         </div>

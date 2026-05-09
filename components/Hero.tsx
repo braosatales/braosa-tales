@@ -56,7 +56,7 @@ export default function Hero() {
         </div>
 
         <div className="flex flex-wrap gap-4 justify-center">
-          <Link href="/tools" className="btn-primary">
+          <Link href="/atelier" className="btn-primary">
             Explore the tools
           </Link>
           <Link href="/stories" className="btn-outline">
