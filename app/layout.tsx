@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   keywords: ['worldbuilding', 'DnD', 'tabletop RPG', 'name generator', 'fantasy tools', 'game master', 'TTRPG', 'lore builder'],
   authors: [{ name: 'Braosa Tales' }],
   creator: 'Braosa Tales',
- ce15ee6 (feat: full SEO metadata, sitemap, robots.txt)
+ 
   openGraph: {
     type: 'website',
     locale: 'en_US',
