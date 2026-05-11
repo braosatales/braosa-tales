@@ -54,11 +54,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  icons: {
-    icon: '/logo-mark.png',
-    shortcut: '/logo-mark.png',
-    apple: '/logo-mark.png',
-  },
 }
 
 export default function RootLayout({
