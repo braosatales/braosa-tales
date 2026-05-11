@@ -19,6 +19,7 @@ const imFell = IM_Fell_English({
 })
 
 export const metadata: Metadata = {
+HEAD
   title: 'Braosa Tales — Forge the world. Tell the story. Run the game.',
   description:
     'TTRPG tools, original stories, and live campaigns — all under one roof.',
@@ -27,12 +28,40 @@ export const metadata: Metadata = {
     shortcut: '/logo-mark.png',
     apple: '/logo-mark.png',
   },
+
+  metadataBase: new URL('https://braosatales.com'),
+  title: {
+    default: 'Braosa Tales — Forge the Worlds Others Only Dream Of',
+    template: '%s | Braosa Tales',
+  },
+  description: 'AI-powered worldbuilding tools for tabletop RPG players, game masters and storytellers. Name generators, lore builders, and more — built for those who build worlds.',
+  keywords: ['worldbuilding', 'DnD', 'tabletop RPG', 'name generator', 'fantasy tools', 'game master', 'TTRPG', 'lore builder'],
+  authors: [{ name: 'Braosa Tales' }],
+  creator: 'Braosa Tales',
+ ce15ee6 (feat: full SEO metadata, sitemap, robots.txt)
   openGraph: {
-    title: 'Braosa Tales',
-    description: 'Forge the world. Tell the story. Run the game.',
+    type: 'website',
+    locale: 'en_US',
     url: 'https://braosatales.com',
     siteName: 'Braosa Tales',
-    type: 'website',
+    title: 'Braosa Tales — Forge the Worlds Others Only Dream Of',
+    description: 'AI-powered worldbuilding tools for tabletop RPG players, game masters and storytellers.',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Braosa Tales' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Braosa Tales — Forge the Worlds Others Only Dream Of',
+    description: 'AI-powered worldbuilding tools for tabletop RPG players, game masters and storytellers.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: '/logo-mark.png',
+    shortcut: '/logo-mark.png',
+    apple: '/logo-mark.png',
   },
 }
 
