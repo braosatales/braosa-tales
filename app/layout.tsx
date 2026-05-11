@@ -19,9 +19,6 @@ const imFell = IM_Fell_English({
 })
 
 export const metadata: Metadata = {
-  title: 'Braosa Tales — Forge the world. Tell the story. Run the game.',
-  description:
-    'TTRPG tools, original stories, and live campaigns — all under one roof.',
   icons: {
     icon: '/logo-mark.png',
     shortcut: '/logo-mark.png',
@@ -30,10 +27,10 @@ export const metadata: Metadata = {
 
   metadataBase: new URL('https://braosatales.com'),
   title: {
-    default: 'Braosa Tales — Forge the Worlds Others Only Dream Of',
+    default: 'Braosa Tales — Forge the world. Tell the story. Run the game.',
     template: '%s | Braosa Tales',
   },
-  description: 'AI-powered worldbuilding tools for tabletop RPG players, game masters and storytellers. Name generators, lore builders, and more — built for those who build worlds.',
+  description: 'TTRPG tools, original stories, and live campaigns — all under one roof.',
   keywords: ['worldbuilding', 'DnD', 'tabletop RPG', 'name generator', 'fantasy tools', 'game master', 'TTRPG', 'lore builder'],
   authors: [{ name: 'Braosa Tales' }],
   creator: 'Braosa Tales',
