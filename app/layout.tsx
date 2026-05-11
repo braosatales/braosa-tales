@@ -19,7 +19,6 @@ const imFell = IM_Fell_English({
 })
 
 export const metadata: Metadata = {
-HEAD
   title: 'Braosa Tales — Forge the world. Tell the story. Run the game.',
   description:
     'TTRPG tools, original stories, and live campaigns — all under one roof.',
