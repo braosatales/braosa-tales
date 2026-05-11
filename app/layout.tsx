@@ -22,6 +22,11 @@ export const metadata: Metadata = {
   title: 'Braosa Tales — Forge the world. Tell the story. Run the game.',
   description:
     'TTRPG tools, original stories, and live campaigns — all under one roof.',
+  icons: {
+    icon: '/logo-mark.png',
+    shortcut: '/logo-mark.png',
+    apple: '/logo-mark.png',
+  },
   openGraph: {
     title: 'Braosa Tales',
     description: 'Forge the world. Tell the story. Run the game.',
