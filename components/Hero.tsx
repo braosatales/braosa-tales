@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import TypewriterHero from '@/components/ui/TypewriterHero'
 
 export default function Hero() {
   return (
@@ -22,15 +23,8 @@ export default function Hero() {
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center px-8 py-32">
 
-        {/* Logo stamp */}
         <div className="mb-8">
-          <Image
-            src="/logo-stamp.png"
-            alt="Braosa Tales"
-            width={160}
-            height={160}
-            className="opacity-90 mix-blend-luminosity"
-          />
+          <TypewriterHero />
         </div>
 
         {/* Ornamental divider */}
