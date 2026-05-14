@@ -21,14 +21,14 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center px-8 py-32">
+      <div className="relative z-10 flex flex-col items-center px-8 py-20">
 
-        <div className="mb-8">
+        <div className="mb-5">
           <TypewriterHero />
         </div>
 
         {/* Ornamental divider */}
-        <div className="flex items-center gap-4 mb-6">
+        <div className="flex items-center gap-3 mb-4">
           <div className="h-px w-16 bg-brand-gold-400/40" />
           <span className="text-brand-gold-400/60 text-xs tracking-widest">✦</span>
           <div className="h-px w-16 bg-brand-gold-400/40" />
@@ -43,13 +43,13 @@ export default function Hero() {
         </p>
 
         {/* Ornamental divider */}
-        <div className="flex items-center gap-4 mb-10">
+        <div className="flex items-center gap-3 mb-10">
           <div className="h-px w-12 bg-brand-gold-400/30" />
           <span className="text-brand-gold-400/40 text-xs tracking-widest uppercase font-cinzel">TTRPG Tools · Stories · Games</span>
           <div className="h-px w-12 bg-brand-gold-400/30" />
         </div>
 
-        <div className="flex flex-wrap gap-4 justify-center">
+        <div className="flex flex-wrap gap-3 justify-center">
           <Link href="/atelier" className="btn-primary">
             Explore the tools
           </Link>

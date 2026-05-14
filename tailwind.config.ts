@@ -15,7 +15,7 @@ const config: Config = {
           border: '#2A2040',
           purple: {
             50:  '#EEEDFE',
-            200: '#AFA9EC',
+            200: '#E0C8FF',
             400: '#7F77DD',
             600: '#534AB7',
             800: '#3C3489',
