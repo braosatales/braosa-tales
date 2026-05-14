@@ -8,11 +8,10 @@ import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
 const links = [
   { href: '/', label: 'Home' },
   { href: '/stories', label: 'Stories' },
-  { href: '/about', label: 'About' },
   { href: '/games', label: 'Games' },
-  { href: '/about', label: 'About' },
   { href: '/atelier', label: 'Atelier' },
   { href: '/pricing', label: 'Pricing' },
+  { href: '/about', label: 'About' },
 ]
 
 export default function Nav() {

@@ -28,7 +28,7 @@ const workshopTools: Tool[] = [
 ]
 
 const generatorTools: Tool[] = [
-  { name: 'The Signet', desc: 'Name generator for characters, places, and factions.', ready: true, href: '/atelier/signet' },
+  { name: 'The Signet', desc: 'Name generator for characters, places, and factions.' },
   { name: 'The Mallet', desc: 'Forge unique weapons, armour, and magical items.' },
   { name: 'The Chisel', desc: 'Build rich NPCs with personality, secrets, and hooks.' },
   { name: 'The Blueprint', desc: 'Generate detailed locations — towns, dungeons, ruins.' },
@@ -83,13 +83,13 @@ export default function AtelierPage() {
       <Nav />
 
       {/* Hero */}
-      <section className="px-8 pt-36 pb-16 border-b border-brand-border">
+      <section className="px-8 pt-22 pb-10 border-b border-brand-border">
         <div className="max-w-4xl mx-auto text-center">
           <p className="section-label">The Atelier</p>
           <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
             The Creative Hub
           </h1>
-          <div className="flex items-center justify-center gap-4 mb-6">
+          <div className="flex items-center justify-center gap-3 mb-4">
             <div className="h-px w-20 bg-brand-gold-400/30" />
             <span className="text-brand-gold-400/50 text-xs">✦</span>
             <div className="h-px w-20 bg-brand-gold-400/30" />

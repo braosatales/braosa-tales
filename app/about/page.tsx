@@ -8,12 +8,12 @@ export default function AboutPage() {
       <Nav />
 
       {/* Hero */}
-      <section className="px-8 pt-40 pb-24 text-center border-b border-brand-border">
+      <section className="px-8 pt-24 pb-14 text-center border-b border-brand-border">
         <p className="section-label">About</p>
         <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
           The Lorekeeper
         </h1>
-        <div className="flex items-center justify-center gap-4 mb-6">
+        <div className="flex items-center justify-center gap-3 mb-4">
           <div className="h-px w-16 bg-brand-gold-400/30" />
           <span className="text-brand-gold-400/50 text-xs">✦</span>
           <div className="h-px w-16 bg-brand-gold-400/30" />
