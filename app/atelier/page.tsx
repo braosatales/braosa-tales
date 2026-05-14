@@ -83,9 +83,8 @@ export default function AtelierPage() {
       <Nav />
 
       {/* Hero */}
-      <section className="px-8 pt-22 pb-10 border-b border-brand-border">
+      <section className="px-8 pt-24 pb-10 border-b border-brand-border">
         <div className="max-w-4xl mx-auto text-center">
-          <p className="section-label">The Atelier</p>
           <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
             The Creative Hub
           </h1>

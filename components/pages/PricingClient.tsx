@@ -171,7 +171,6 @@ export default function PricingClient() {
 
       {/* Hero */}
       <section className="px-8 pt-40 pb-24 text-center border-b border-brand-border">
-        <p className="section-label">Pricing</p>
         <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
           Choose Your Path
         </h1>
