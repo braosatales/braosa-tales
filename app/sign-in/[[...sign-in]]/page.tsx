@@ -42,7 +42,7 @@ export default function SignInPage() {
           <h1 className="font-cinzel font-bold text-brand-gold-300 text-3xl tracking-widest">
             Braosa Tales
           </h1>
-          <p className="font-fell italic text-brand-gold-400/70 mt-2 text-base">
+          <p className="font-fell text-brand-gold-400/70 mt-2 text-base">
             Your tale begins here
           </p>
         </div>

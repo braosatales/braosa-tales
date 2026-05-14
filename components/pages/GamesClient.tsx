@@ -18,7 +18,7 @@ export default function GamesClient() {
           <span className="text-brand-gold-400/50 text-xs">✦</span>
           <div className="h-px w-16 bg-brand-gold-400/30" />
         </div>
-        <p className="font-fell italic text-brand-gold-300 text-xl md:text-2xl max-w-lg mx-auto leading-relaxed opacity-90">
+        <p className="font-fell text-brand-gold-300 text-xl md:text-2xl max-w-lg mx-auto leading-relaxed opacity-90">
           Live campaigns in the Braosa Tales universe.
         </p>
       </section>
@@ -30,7 +30,7 @@ export default function GamesClient() {
           <h2 className="font-cinzel font-bold text-brand-parchment text-2xl mb-2">
             Claim your seat at the table
           </h2>
-          <p className="font-fell italic text-brand-muted mb-8 leading-relaxed">
+          <p className="font-fell text-brand-muted mb-8 leading-relaxed">
             Campaigns fill fast. Get early access before seats open to the public.
           </p>
           <div className="flex flex-col sm:flex-row gap-2">

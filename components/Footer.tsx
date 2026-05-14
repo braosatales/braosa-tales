@@ -23,7 +23,7 @@ export default function Footer() {
           </Link>
         ))}
       </div>
-      <p className="font-fell italic text-xs text-brand-muted">© {new Date().getFullYear()} Braosa Tales</p>
+      <p className="font-fell text-xs text-brand-muted">© {new Date().getFullYear()} Braosa Tales</p>
     </footer>
   )
 }

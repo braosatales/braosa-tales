@@ -171,7 +171,6 @@ export default function PricingPage() {
 
       {/* Hero */}
       <section className="px-8 pt-24 pb-14 text-center border-b border-brand-border">
-        <p className="section-label">Pricing</p>
         <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
           Choose Your Path
         </h1>
@@ -180,7 +179,7 @@ export default function PricingPage() {
           <span className="text-brand-gold-400/50 text-xs">✦</span>
           <div className="h-px w-16 bg-brand-gold-400/30" />
         </div>
-        <p className="font-fell italic text-brand-gold-300 text-xl md:text-2xl max-w-lg mx-auto leading-relaxed opacity-90">
+        <p className="font-fell text-brand-gold-300 text-xl md:text-2xl max-w-lg mx-auto leading-relaxed opacity-90">
           Begin free. Forge deeper when you&apos;re ready.
         </p>
       </section>
@@ -210,7 +209,7 @@ export default function PricingPage() {
                   <span className="font-cinzel text-brand-muted text-sm">{tier.period}</span>
                 )}
               </div>
-              <p className="font-fell italic text-brand-gold-300 text-sm mb-6 opacity-80">
+              <p className="font-fell text-brand-gold-300 text-sm mb-6 opacity-80">
                 {tier.flavour}
               </p>
               <ul className="flex flex-col gap-2 mb-8 flex-1">
@@ -247,12 +246,12 @@ export default function PricingPage() {
                   ))}
                 </div>
                 <p className="font-cinzel font-black text-brand-parchment text-lg mb-1">{ct.label}</p>
-                <p className="font-fell italic text-brand-gold-300 text-sm mb-3 opacity-80">{ct.subtitle}</p>
+                <p className="font-fell text-brand-gold-300 text-sm mb-3 opacity-80">{ct.subtitle}</p>
                 <p className="font-cinzel text-xs tracking-widest uppercase text-brand-muted">{ct.cost}</p>
               </div>
             ))}
           </div>
-          <p className="font-fell italic text-brand-gold-300 text-center text-lg opacity-80">
+          <p className="font-fell text-brand-gold-300 text-center text-lg opacity-80">
             Daily refresh credits reset every 24 hours and do not consume your monthly pool.
           </p>
         </div>
