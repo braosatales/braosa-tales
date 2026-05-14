@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48" shape-rendering="geometricPrecision">
+  <defs>
+      
+      <symbol id="frame" viewBox="0 0 512 512">
+        <rect width="512" height="512" fill="#12100D"></rect>
+        
+        <circle cx="256" cy="256" r="244" fill="none" stroke="#5C3A1C" stroke-width="1"></circle>
+        
+        <circle cx="256" cy="256" r="232" fill="none" stroke="#D4AE58" stroke-width="2.2"></circle>
+        
+        <circle cx="256" cy="256" r="220" fill="none" stroke="#B8893D" stroke-width="1" stroke-dasharray="1.5 4"></circle>
+        
+        <g fill="#D4AE58">
+          <rect x="254" y="6" width="4" height="14"></rect>
+          <rect x="254" y="492" width="4" height="14"></rect>
+          <rect x="6" y="254" width="14" height="4"></rect>
+          <rect x="492" y="254" width="14" height="4"></rect>
+        </g>
+        
+        <g fill="#B8893D">
+          <circle cx="92" cy="92" r="2.4"></circle>
+          <circle cx="420" cy="92" r="2.4"></circle>
+          <circle cx="92" cy="420" r="2.4"></circle>
+          <circle cx="420" cy="420" r="2.4"></circle>
+        </g>
+        
+        <g fill="#D4AE58">
+          <path d="M256 22 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" opacity="0"></path>
+        </g>
+      </symbol>
+
+      
+      <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#8B5A2B" stroke-width="1"></line>
+      </pattern>
+      <pattern id="hatchLight" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="5" stroke="#B8893D" stroke-width=".8" opacity=".55"></line>
+      </pattern>
+      <pattern id="stipple" patternUnits="userSpaceOnUse" width="6" height="6">
+        <circle cx="1" cy="1" r=".7" fill="#8B5A2B"></circle>
+      </pattern>
+    </defs>
+  <use href="#frame"></use>
+  <g>
+      
+      <rect x="148" y="116" width="216" height="280" rx="6" fill="#8B5A2B" stroke="#D4AE58" stroke-width="2.6"></rect>
+      
+      <rect x="148" y="180" width="216" height="12" fill="#5C3A1C"></rect>
+      <rect x="148" y="324" width="216" height="12" fill="#5C3A1C"></rect>
+      
+      <g fill="#D4AE58">
+        <path d="M148 116 h28 v6 h-22 v22 h-6 z"></path>
+        <path d="M364 116 h-28 v6 h22 v22 h6 z"></path>
+        <path d="M148 396 h28 v-6 h-22 v-22 h-6 z"></path>
+        <path d="M364 396 h-28 v-6 h22 v-22 h6 z"></path>
+      </g>
+      
+      <g transform="translate(256 256)">
+        <circle r="34" fill="none" stroke="#D4AE58" stroke-width="2"></circle>
+        <circle r="24" fill="none" stroke="#D4AE58" stroke-width="1" stroke-dasharray="2 3"></circle>
+        <path d="M0 -18 L6 -2 L22 0 L8 8 L12 24 L0 14 L-12 24 L-8 8 L-22 0 L-6 -2 Z" fill="#D4AE58"></path>
+      </g>
+      
+      <path d="M364 240 h36 v32 h-36" fill="#8B5A2B" stroke="#D4AE58" stroke-width="2.2"></path>
+      <rect x="394" y="244" width="10" height="24" fill="#D4AE58"></rect>
+      <circle cx="399" cy="256" r="3" fill="#5C3A1C"></circle>
+    </g>
+</svg>

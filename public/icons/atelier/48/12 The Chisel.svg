@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48" shape-rendering="geometricPrecision">
+  <defs>
+      
+      <symbol id="frame" viewBox="0 0 512 512">
+        <rect width="512" height="512" fill="#12100D"></rect>
+        
+        <circle cx="256" cy="256" r="244" fill="none" stroke="#5C3A1C" stroke-width="1"></circle>
+        
+        <circle cx="256" cy="256" r="232" fill="none" stroke="#D4AE58" stroke-width="2.2"></circle>
+        
+        <circle cx="256" cy="256" r="220" fill="none" stroke="#B8893D" stroke-width="1" stroke-dasharray="1.5 4"></circle>
+        
+        <g fill="#D4AE58">
+          <rect x="254" y="6" width="4" height="14"></rect>
+          <rect x="254" y="492" width="4" height="14"></rect>
+          <rect x="6" y="254" width="14" height="4"></rect>
+          <rect x="492" y="254" width="14" height="4"></rect>
+        </g>
+        
+        <g fill="#B8893D">
+          <circle cx="92" cy="92" r="2.4"></circle>
+          <circle cx="420" cy="92" r="2.4"></circle>
+          <circle cx="92" cy="420" r="2.4"></circle>
+          <circle cx="420" cy="420" r="2.4"></circle>
+        </g>
+        
+        <g fill="#D4AE58">
+          <path d="M256 22 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" opacity="0"></path>
+        </g>
+      </symbol>
+
+      
+      <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#8B5A2B" stroke-width="1"></line>
+      </pattern>
+      <pattern id="hatchLight" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="5" stroke="#B8893D" stroke-width=".8" opacity=".55"></line>
+      </pattern>
+      <pattern id="stipple" patternUnits="userSpaceOnUse" width="6" height="6">
+        <circle cx="1" cy="1" r=".7" fill="#8B5A2B"></circle>
+      </pattern>
+    </defs>
+  <use href="#frame"></use>
+  <g>
+      
+      <path d="M132 310 L380 296 L380 392 L132 392 Z" fill="#8B5A2B" stroke="#D4AE58" stroke-width="2.2"></path>
+      <line x1="132" y1="332" x2="380" y2="324" stroke="#D4AE58" stroke-width="1"></line>
+      <g stroke="#5C3A1C" stroke-width="1">
+        <line x1="158" y1="350" x2="170" y2="360"></line>
+        <line x1="220" y1="356" x2="232" y2="368"></line>
+        <line x1="290" y1="350" x2="304" y2="360"></line>
+      </g>
+      
+      <g fill="#D4AE58" stroke="#5C3A1C" stroke-width="1">
+        <polygon points="124,280 138,272 132,294"></polygon>
+        <polygon points="384,272 396,284 380,290"></polygon>
+        <polygon points="200,260 212,266 198,272"></polygon>
+      </g>
+      
+      <g transform="translate(256 220) rotate(-32)">
+        
+        <path d="M-14 -110 q14 -16 28 0 L18 60 L-18 60 Z" fill="#8B5A2B" stroke="#D4AE58" stroke-width="2.2"></path>
+        <line x1="-10" y1="-90" x2="-10" y2="50" stroke="#D4AE58" stroke-width="1"></line>
+        <line x1="10" y1="-90" x2="10" y2="50" stroke="#D4AE58" stroke-width="1"></line>
+        
+        <rect x="-22" y="60" width="44" height="14" fill="#B8893D" stroke="#5C3A1C" stroke-width="1.6"></rect>
+        
+        <rect x="-10" y="74" width="20" height="60" fill="#D4AE58" stroke="#5C3A1C" stroke-width="1.6"></rect>
+        
+        <polygon points="-10,134 10,134 0,150" fill="#D4AE58" stroke="#5C3A1C" stroke-width="1.6"></polygon>
+      </g>
+    </g>
+</svg>

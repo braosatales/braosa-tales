@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" shape-rendering="geometricPrecision">
+  <defs>
+      
+      <symbol id="frame" viewBox="0 0 512 512">
+        <rect width="512" height="512" fill="#12100D"></rect>
+        
+        <circle cx="256" cy="256" r="244" fill="none" stroke="#5C3A1C" stroke-width="1"></circle>
+        
+        <circle cx="256" cy="256" r="232" fill="none" stroke="#D4AE58" stroke-width="2.2"></circle>
+        
+        <circle cx="256" cy="256" r="220" fill="none" stroke="#B8893D" stroke-width="1" stroke-dasharray="1.5 4"></circle>
+        
+        <g fill="#D4AE58">
+          <rect x="254" y="6" width="4" height="14"></rect>
+          <rect x="254" y="492" width="4" height="14"></rect>
+          <rect x="6" y="254" width="14" height="4"></rect>
+          <rect x="492" y="254" width="14" height="4"></rect>
+        </g>
+        
+        <g fill="#B8893D">
+          <circle cx="92" cy="92" r="2.4"></circle>
+          <circle cx="420" cy="92" r="2.4"></circle>
+          <circle cx="92" cy="420" r="2.4"></circle>
+          <circle cx="420" cy="420" r="2.4"></circle>
+        </g>
+        
+        <g fill="#D4AE58">
+          <path d="M256 22 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" opacity="0"></path>
+        </g>
+      </symbol>
+
+      
+      <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#8B5A2B" stroke-width="1"></line>
+      </pattern>
+      <pattern id="hatchLight" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="5" stroke="#B8893D" stroke-width=".8" opacity=".55"></line>
+      </pattern>
+      <pattern id="stipple" patternUnits="userSpaceOnUse" width="6" height="6">
+        <circle cx="1" cy="1" r=".7" fill="#8B5A2B"></circle>
+      </pattern>
+    </defs>
+  <use href="#frame"></use>
+  <g>
+      
+      <path d="M152 332 q-12 22 8 36 q30 22 78 18 q60 4 96 -14 q40 -16 22 -42 q-26 -22 -78 -22 q-78 -2 -126 24z" fill="#8B5A2B" stroke="#D4AE58" stroke-width="2"></path>
+      <path d="M180 348 q34 14 76 12 q60 0 96 -12" fill="none" stroke="#B8893D" stroke-width="1"></path>
+      
+      <g transform="translate(256 198)">
+        
+        <ellipse cx="0" cy="40" rx="60" ry="18" fill="none" stroke="#D4AE58" stroke-width="3.4"></ellipse>
+        <ellipse cx="0" cy="40" rx="46" ry="10" fill="none" stroke="#B8893D" stroke-width="1.2"></ellipse>
+        
+        <ellipse cx="0" cy="0" rx="40" ry="44" fill="#D4AE58" stroke="#5C3A1C" stroke-width="2.2"></ellipse>
+        <ellipse cx="0" cy="0" rx="30" ry="34" fill="none" stroke="#5C3A1C" stroke-width="1.2"></ellipse>
+        
+        <path d="M-12 -16 L-12 16 M-12 0 L12 0 M12 -16 L12 16" stroke="#5C3A1C" stroke-width="3" fill="none" stroke-linecap="round"></path>
+      </g>
+      
+      <ellipse cx="256" cy="348" rx="22" ry="8" fill="none" stroke="#D4AE58" stroke-width="1.2" stroke-dasharray="2 2"></ellipse>
+    </g>
+</svg>

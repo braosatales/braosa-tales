@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 
@@ -17,31 +18,31 @@ type Tool = {
 }
 
 const workshopTools: Tool[] = [
-  { name: 'The Athenaeum', description: 'World wiki with GM and player visibility controls.', icon: '📚' },
-  { name: 'The Atlas', description: 'Interactive maps linked to locations and in-world lore.', icon: '🗺️' },
-  { name: 'The Chronicle', description: 'Session notes with GM-private and player-visible layers.', icon: '📜' },
-  { name: 'The Easel', description: 'Visual mood boards and scene reference galleries.', icon: '🎨' },
-  { name: 'The Journal', description: 'Private GM notes, never visible to players.', icon: '🖋️' },
-  { name: 'The Blade', description: 'Encounter builder with initiative and combat tracking.', icon: '⚔️' },
-  { name: 'The Hourglass', description: 'Campaign timeline for in-world events and history.', icon: '⌛' },
-  { name: 'The Armature', description: 'D&D 5e character sheets, live and player-editable.', icon: '🛡️' },
-  { name: 'The Tome', description: 'Central dashboard for managing all your campaigns.', icon: '⬡' },
+  { name: 'The Athenaeum', description: 'World wiki with GM and player visibility controls.', icon: '01 The Athenaeum.svg' },
+  { name: 'The Atlas', description: 'Interactive maps linked to locations and in-world lore.', icon: '02 The Atlas.svg' },
+  { name: 'The Chronicle', description: 'Session notes with GM-private and player-visible layers.', icon: '03 The Chronicle.svg' },
+  { name: 'The Easel', description: 'Visual mood boards and scene reference galleries.', icon: '04 The Easel.svg' },
+  { name: 'The Journal', description: 'Private GM notes, never visible to players.', icon: '05 The Journal.svg' },
+  { name: 'The Blade', description: 'Encounter builder with initiative and combat tracking.', icon: '06 The Blade.svg' },
+  { name: 'The Hourglass', description: 'Campaign timeline for in-world events and history.', icon: '07 The Hourglass.svg' },
+  { name: 'The Armature', description: 'D&D 5e character sheets, live and player-editable.', icon: '08 The Armature.svg' },
+  { name: 'The Tome', description: 'Central dashboard for managing all your campaigns.', icon: '09 The Tome.svg' },
 ]
 
 const generatorTools: Tool[] = [
-  { name: 'The Signet', description: 'Name generator for characters, places, and factions.', icon: '𓂀' },
-  { name: 'The Mallet', description: 'Forge unique weapons, armour, and magical items.', icon: '🔨' },
-  { name: 'The Chisel', description: 'Build rich NPCs with personality, secrets, and hooks.', icon: '🪄' },
-  { name: 'The Blueprint', description: 'Generate detailed locations — towns, dungeons, ruins.', icon: '🏛️' },
-  { name: 'The Compass', description: 'Craft quest hooks, objectives, and complications.', icon: '🧭' },
-  { name: 'The Bestiary', description: 'Create original creatures with lore and stat blocks.', icon: '🐉' },
-  { name: 'The Crucible', description: 'Build factions with goals, tensions, and hierarchies.', icon: '⚗️' },
-  { name: 'The Loupe', description: 'Generate tavern rumours, gossip, and local intrigue.', icon: '🔍' },
-  { name: 'The Letter', description: 'Write in-world handouts — letters, notices, inscriptions.', icon: '✉️' },
-  { name: 'The Loom', description: 'Weave story threads into cohesive narrative arcs.', icon: '🕸️' },
-  { name: 'The Cipher', description: 'Create invented languages, scripts, and ciphers.', icon: '🔐' },
-  { name: 'The Charter', description: 'Define the laws, customs, and taboos of your world.', icon: '⚖️' },
-  { name: 'The Dice Cup', description: 'Random tables for encounters, weather, events, and more.', icon: '🎲' },
+  { name: 'The Signet', description: 'Name generator for characters, places, and factions.', icon: '10 The Signet.svg' },
+  { name: 'The Mallet', description: 'Forge unique weapons, armour, and magical items.', icon: '11 The Mallet.svg' },
+  { name: 'The Chisel', description: 'Build rich NPCs with personality, secrets, and hooks.', icon: '12 The Chisel.svg' },
+  { name: 'The Blueprint', description: 'Generate detailed locations — towns, dungeons, ruins.', icon: '13 The Blueprint.svg' },
+  { name: 'The Compass', description: 'Craft quest hooks, objectives, and complications.', icon: '14 The Compass.svg' },
+  { name: 'The Bestiary', description: 'Create original creatures with lore and stat blocks.', icon: '15 The Bestiary.svg' },
+  { name: 'The Crucible', description: 'Build factions with goals, tensions, and hierarchies.', icon: '16 The Crucible.svg' },
+  { name: 'The Loupe', description: 'Generate tavern rumours, gossip, and local intrigue.', icon: '17 The Loupe.svg' },
+  { name: 'The Letter', description: 'Write in-world handouts — letters, notices, inscriptions.', icon: '18 The Letter.svg' },
+  { name: 'The Loom', description: 'Weave story threads into cohesive narrative arcs.', icon: '19 The Loom.svg' },
+  { name: 'The Cipher', description: 'Create invented languages, scripts, and ciphers.', icon: '20 The Cipher.svg' },
+  { name: 'The Charter', description: 'Define the laws, customs, and taboos of your world.', icon: '21 The Charter.svg' },
+  { name: 'The Dice Cup', description: 'Random tables for encounters, weather, events, and more.', icon: '22 The Dice Cup.svg' },
 ]
 
 function ToolCard({ tool }: { tool: Tool }) {
@@ -54,8 +55,8 @@ function ToolCard({ tool }: { tool: Tool }) {
         </span>
       )}
 
-      <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-md bg-brand-bg border border-brand-border text-2xl">
-        {tool.icon}
+      <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-md bg-brand-bg border border-brand-border">
+        <Image src={`/icons/atelier/48/${tool.icon}`} width={48} height={48} alt={tool.name} />
       </div>
 
       <div className="flex flex-col gap-1 min-w-0">
