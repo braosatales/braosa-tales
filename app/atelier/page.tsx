@@ -99,7 +99,7 @@ export default function AtelierPage() {
             <span className="text-brand-gold-400/50 text-xs">✦</span>
             <div className="h-px w-20 bg-brand-gold-400/30" />
           </div>
-          <p className="font-fell text-[#F0E8FF] text-xl max-w-lg mx-auto leading-relaxed">
+          <p className="font-fell text-[#D4AE58] text-xl max-w-lg mx-auto leading-relaxed">
             Every tool you need to forge worlds, run campaigns, and bring stories to life — gathered under one roof.
           </p>
         </div>
