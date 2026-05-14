@@ -15,7 +15,6 @@ export default function StoriesPage() {
 
       {/* Hero */}
       <section className="px-8 pt-24 pb-14 text-center border-b border-brand-border">
-        <p className="section-label">The Stories</p>
         <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
           The Library
         </h1>
