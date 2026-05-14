@@ -9,7 +9,7 @@ const links = [
   { href: '/', label: 'Home' },
   { href: '/stories', label: 'Stories' },
   { href: '/games', label: 'Games' },
-  { href: '/atelier', label: 'Atelier' },
+  { href: '/atelier', label: 'Tools' },
   { href: '/pricing', label: 'Pricing' },
   { href: '/about', label: 'About' },
 ]

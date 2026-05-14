@@ -15,7 +15,7 @@ const config: Config = {
           border: '#2A2040',
           purple: {
             50:  '#EEEDFE',
-            200: '#E0C8FF',
+            200: '#F0E8FF',
             400: '#7F77DD',
             600: '#534AB7',
             800: '#3C3489',
@@ -27,7 +27,7 @@ const config: Config = {
             500: '#9A7208',
           },
           parchment: '#F0E4C4',
-          muted: '#8A7E9A',
+          muted: '#C8B8D8',
         },
       },
       fontFamily: {
