@@ -38,7 +38,7 @@ export default function Hero() {
           Braosa Tales
         </h1>
 
-        <p className="font-fell italic text-brand-gold-300 text-xl md:text-2xl mb-10 max-w-lg leading-relaxed opacity-90">
+        <p className="font-fell text-brand-gold-300 text-xl md:text-2xl mb-10 max-w-lg leading-relaxed opacity-90">
           Forge the world. Tell the story. Run the game.
         </p>
 

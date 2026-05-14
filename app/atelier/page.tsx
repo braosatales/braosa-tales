@@ -62,7 +62,7 @@ function ToolCard({ tool }: { tool: Tool }) {
         <span className="font-cinzel text-base font-semibold text-brand-parchment leading-tight">
           {tool.name}
         </span>
-        <span className="font-fell italic text-sm text-[#F0E8FF] leading-snug line-clamp-2">
+        <span className="font-fell text-sm text-[#F0E8FF] leading-snug line-clamp-2">
           {tool.description}
         </span>
       </div>
@@ -99,7 +99,7 @@ export default function AtelierPage() {
             <span className="text-brand-gold-400/50 text-xs">✦</span>
             <div className="h-px w-20 bg-brand-gold-400/30" />
           </div>
-          <p className="font-fell italic text-[#D4AE58] text-lg max-w-lg mx-auto leading-relaxed">
+          <p className="font-fell text-[#F0E8FF] text-xl max-w-lg mx-auto leading-relaxed">
             Every tool you need to forge worlds, run campaigns, and bring stories to life — gathered under one roof.
           </p>
         </div>
@@ -114,7 +114,7 @@ export default function AtelierPage() {
               The Workshop
             </h2>
             <SectionDivider />
-            <p className="font-fell italic text-brand-muted max-w-md leading-relaxed">
+            <p className="font-fell text-brand-muted max-w-md leading-relaxed">
               Campaign management tools. GM-first, built for long-running worlds.
             </p>
           </div>
@@ -136,7 +136,7 @@ export default function AtelierPage() {
               The Generators
             </h2>
             <SectionDivider />
-            <p className="font-fell italic text-brand-muted max-w-md leading-relaxed">
+            <p className="font-fell text-brand-muted max-w-md leading-relaxed">
               AI-powered creative tools to fill your world with names, creatures, factions, and stories.
             </p>
           </div>

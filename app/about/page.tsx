@@ -17,7 +17,7 @@ export default function AboutPage() {
           <span className="text-brand-gold-400/50 text-xs">✦</span>
           <div className="h-px w-16 bg-brand-gold-400/30" />
         </div>
-        <p className="font-fell italic text-brand-gold-300 text-xl md:text-2xl max-w-lg mx-auto leading-relaxed opacity-90">
+        <p className="font-fell text-brand-gold-300 text-xl md:text-2xl max-w-lg mx-auto leading-relaxed opacity-90">
           [SUBTITLE PLACEHOLDER]
         </p>
       </section>

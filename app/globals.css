@@ -30,8 +30,24 @@
            tracking-widest uppercase font-cinzel;
   }
 
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: #F0E8FF;
+    font-style: normal;
+  }
+
+  .body-text,
+  .description-text {
+    font-size: 1.1rem;
+    color: #F0E8FF;
+    font-style: normal;
+  }
+
   .section-label {
-    @apply text-xs tracking-widest uppercase font-cinzel text-brand-gold-300 mb-2;
+    @apply text-xs uppercase font-cinzel mb-2;
+    color: #D4AE58;
+    font-style: normal;
+    letter-spacing: 0.15em;
   }
 
   .dark-card {
