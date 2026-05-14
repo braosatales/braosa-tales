@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" shape-rendering="geometricPrecision">
+  <defs>
+      
+      <symbol id="frame" viewBox="0 0 512 512">
+        <rect width="512" height="512" fill="#12100D"></rect>
+        
+        <circle cx="256" cy="256" r="244" fill="none" stroke="#5C3A1C" stroke-width="1"></circle>
+        
+        <circle cx="256" cy="256" r="232" fill="none" stroke="#D4AE58" stroke-width="2.2"></circle>
+        
+        <circle cx="256" cy="256" r="220" fill="none" stroke="#B8893D" stroke-width="1" stroke-dasharray="1.5 4"></circle>
+        
+        <g fill="#D4AE58">
+          <rect x="254" y="6" width="4" height="14"></rect>
+          <rect x="254" y="492" width="4" height="14"></rect>
+          <rect x="6" y="254" width="14" height="4"></rect>
+          <rect x="492" y="254" width="14" height="4"></rect>
+        </g>
+        
+        <g fill="#B8893D">
+          <circle cx="92" cy="92" r="2.4"></circle>
+          <circle cx="420" cy="92" r="2.4"></circle>
+          <circle cx="92" cy="420" r="2.4"></circle>
+          <circle cx="420" cy="420" r="2.4"></circle>
+        </g>
+        
+        <g fill="#D4AE58">
+          <path d="M256 22 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2z" opacity="0"></path>
+        </g>
+      </symbol>
+
+      
+      <pattern id="hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#8B5A2B" stroke-width="1"></line>
+      </pattern>
+      <pattern id="hatchLight" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="5" stroke="#B8893D" stroke-width=".8" opacity=".55"></line>
+      </pattern>
+      <pattern id="stipple" patternUnits="userSpaceOnUse" width="6" height="6">
+        <circle cx="1" cy="1" r=".7" fill="#8B5A2B"></circle>
+      </pattern>
+    </defs>
+  <use href="#frame"></use>
+  
+    <g stroke="#D4AE58" stroke-width="2.4" stroke-linejoin="round" fill="none">
+      
+      <rect x="148" y="318" width="216" height="44" rx="2" fill="#8B5A2B"></rect>
+      <line x1="160" y1="328" x2="352" y2="328" stroke="#D4AE58" stroke-width="1.2"></line>
+      <line x1="160" y1="354" x2="352" y2="354" stroke="#D4AE58" stroke-width="1.2"></line>
+      <rect x="240" y="318" width="32" height="44" fill="none" stroke="#D4AE58" stroke-width="1.2"></rect>
+      
+      <rect x="160" y="270" width="192" height="46" rx="2" fill="#B8893D"></rect>
+      <line x1="172" y1="282" x2="340" y2="282" stroke="#5C3A1C" stroke-width="1"></line>
+      <line x1="172" y1="306" x2="340" y2="306" stroke="#5C3A1C" stroke-width="1"></line>
+      <circle cx="256" cy="293" r="6" fill="#5C3A1C"></circle>
+      
+      <rect x="172" y="222" width="168" height="46" rx="2" fill="#8B5A2B"></rect>
+      <line x1="184" y1="234" x2="328" y2="234" stroke="#D4AE58" stroke-width="1.2"></line>
+      <line x1="184" y1="258" x2="328" y2="258" stroke="#D4AE58" stroke-width="1.2"></line>
+    </g>
+    
+    <g stroke="#D4AE58" stroke-width="3" stroke-linecap="round" fill="none">
+      <circle cx="206" cy="200" r="18" fill="#12100D"></circle>
+      <circle cx="206" cy="200" r="7" fill="none"></circle>
+      <line x1="224" y1="200" x2="320" y2="200"></line>
+      <line x1="296" y1="200" x2="296" y2="214"></line>
+      <line x1="310" y1="200" x2="310" y2="220"></line>
+    </g>
+</svg>
