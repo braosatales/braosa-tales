@@ -114,7 +114,7 @@ export default function AboutPage() {
           </div>
           <div className="dark-card mb-10">
             <p className="font-fell text-brand-muted leading-loose">
-              When not at the table, John manages construction teams in Portugal — coordinating the kind of complex, moving-parts work that turns out to be surprisingly good training for running campaigns. He&apos;s married with three kids, a committed Tolkien obsessive (The Silmarillion is the correct answer), and has been known to use genuinely terrible accents for NPCs.
+              When not at the table, John manages construction teams in Portugal — coordinating the kind of complex, moving-parts work that turns out to be surprisingly good training for running campaigns. He&apos;s married, father of three, a committed Tolkien obsessive (The Silmarillion is the correct answer), and has been known to use genuinely terrible accents for NPCs.
             </p>
           </div>
           <Link href="/atelier" className="btn-primary">
