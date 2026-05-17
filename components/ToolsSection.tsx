@@ -1,12 +1,13 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 const features = [
-  { title: 'World wiki', desc: 'Full lore library with per-article GM/player visibility toggles.', symbol: '✦' },
-  { title: 'Character sheets', desc: 'D&D 5e 2024 mechanical sheets, live and editable by players.', symbol: '⚔' },
-  { title: 'Encounter builder', desc: 'Design and run combat encounters with initiative tracking.', symbol: '🜲' },
-  { title: 'Maps & timelines', desc: 'Visual world maps linked to in-world events and history.', symbol: '◈' },
-  { title: 'Session notes', desc: 'GM private notes + player-visible session recaps per session.', symbol: '📜' },
-  { title: 'Campaign dashboard', desc: 'Manage multiple campaigns and universes from one hub.', symbol: '⬡' },
+  { title: 'World wiki', desc: 'Full lore library with per-article GM/player visibility toggles.', icon: '01 The Athenaeum.svg' },
+  { title: 'Character sheets', desc: 'Live, editable mechanical sheets for your players — built for D&D 5e 2024, with more systems on the way.', icon: '08 The Armature.svg' },
+  { title: 'Encounter builder', desc: 'Design and run combat encounters with initiative tracking.', icon: '06 The Blade.svg' },
+  { title: 'Maps & timelines', desc: 'Visual world maps linked to in-world events and history.', icon: '02 The Atlas.svg' },
+  { title: 'Session notes', desc: 'GM private notes + player-visible session recaps per session.', icon: '03 The Chronicle.svg' },
+  { title: 'Campaign dashboard', desc: 'Manage multiple campaigns and universes from one hub.', icon: '09 The Tome.svg' },
 ]
 
 export default function ToolsSection() {
@@ -31,7 +32,7 @@ export default function ToolsSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((f) => (
             <div key={f.title} className="dark-card flex gap-4 items-start">
-              <span className="text-brand-gold-400 text-lg mt-0.5 flex-shrink-0">{f.symbol}</span>
+              <Image src={`/icons/atelier/48/${f.icon}`} width={48} height={48} alt={f.title} className="mt-0.5 flex-shrink-0" />
               <div>
                 <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mb-2">{f.title}</p>
                 <p className="font-fell text-brand-muted text-sm leading-relaxed">{f.desc}</p>
