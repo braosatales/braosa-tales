@@ -10,12 +10,21 @@ const PRICE_MAP: Record<string, string> = {
 }
 
 export async function POST(req: Request) {
+  console.log('PRICE_MAP:', JSON.stringify(PRICE_MAP))
+  const body = await req.json()
+  console.log('Checkout body:', JSON.stringify(body))
   const { userId } = auth()
-  console.log('Checkout route hit, userId:', userId)
-  if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 })
-  const { tier } = await req.json()
+  console.log('User ID:', userId)
+  if (!userId) {
+    console.log('FAIL: no userId')
+    return Response.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  const { tier } = body
   const priceId = PRICE_MAP[tier]
-  if (!priceId) return Response.json({ error: 'Invalid tier' }, { status: 400 })
+  if (!priceId) {
+    console.log('FAIL: invalid tier, received:', tier, 'valid keys:', Object.keys(PRICE_MAP))
+    return Response.json({ error: 'Invalid tier' }, { status: 400 })
+  }
   const isOneTime = tier === 'author'
   const session = await stripe.checkout.sessions.create({
     mode: isOneTime ? 'payment' : 'subscription',
