@@ -273,7 +273,10 @@ export default function PricingPage() {
                 type="button"
                 className="btn-primary w-full"
                 disabled={loadingTier === tier.id}
-                onClick={() => handleCheckout(tier)}
+                onClick={() => {
+                  console.log('Button clicked:', tier)
+                  handleCheckout(tier)
+                }}
               >
                 {loadingTier === tier.id ? 'Loading...' : tier.cta}
               </button>
