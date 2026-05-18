@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
@@ -92,13 +93,13 @@ export default function StoriesPage() {
             </div>
             <div className="flex-1 grid grid-cols-2 gap-4">
               {[
-                { symbol: '🏛', title: 'Factions', desc: 'Guilds, empires, and secret orders' },
-                { symbol: '🗺', title: 'Locations', desc: 'Cities, ruins, and unmarked places' },
-                { symbol: '⚔', title: 'Histories', desc: 'Wars, eras, and founding myths' },
-                { symbol: '🌑', title: 'The Pantheon', desc: 'Gods that breathe, bleed, and lie' },
+                { icon: 'factions.svg', title: 'Factions', desc: 'Guilds, empires, and secret orders' },
+                { icon: 'locations.svg', title: 'Locations', desc: 'Cities, ruins, and unmarked places' },
+                { icon: 'histories-sq.svg', title: 'Histories', desc: 'Wars, eras, and founding myths' },
+                { icon: 'pantheon.svg', title: 'The Pantheon', desc: 'Gods that breathe, bleed, and lie' },
               ].map((c) => (
                 <div key={c.title} className="dark-card">
-                  <span className="text-xl">{c.symbol}</span>
+                  <Image src={`/icons/${c.icon}`} width={48} height={48} alt={c.title} />
                   <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mt-3 mb-1">{c.title}</p>
                   <p className="font-fell text-brand-muted text-xs leading-relaxed">{c.desc}</p>
                 </div>
@@ -121,12 +122,12 @@ export default function StoriesPage() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
-              { title: 'Digital Books', desc: 'DRM-free ePub & PDF editions', icon: '📄' },
-              { title: 'Physical Editions', desc: 'Print-on-demand, limited runs', icon: '📚' },
-              { title: 'Lore Supplements', desc: 'Player-facing campaign documents', icon: '🗒' },
+              { title: 'Digital Books', desc: 'DRM-free ePub & PDF editions', icon: 'digital-books.svg' },
+              { title: 'Physical Editions', desc: 'Print-on-demand, limited runs', icon: 'physical-editions.svg' },
+              { title: 'Lore Supplements', desc: 'Player-facing campaign documents', icon: 'lore-supplements-sq.svg' },
             ].map((item) => (
               <div key={item.title} className="dark-card">
-                <span className="text-2xl">{item.icon}</span>
+                <Image src={`/icons/${item.icon}`} width={48} height={48} alt={item.title} />
                 <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mt-3 mb-1">{item.title}</p>
                 <p className="font-fell text-brand-muted text-sm leading-relaxed mb-4">{item.desc}</p>
                 <span className="inline-block font-cinzel text-xs tracking-widest uppercase text-brand-purple-200 border border-brand-purple-600/40 px-2 py-1 rounded-sm">

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 
@@ -93,13 +94,13 @@ export default function GamesClient() {
           </div>
           <div className="flex-1 grid grid-cols-2 gap-4">
             {[
-              { symbol: '🗺', title: 'Living maps', desc: 'World-aware, not just image uploads' },
-              { symbol: '🎲', title: 'Rule sets', desc: 'Custom mechanics for the Braosa world' },
-              { symbol: '🧩', title: 'Tool sync', desc: 'Hooks directly into the Campaign Suite' },
-              { symbol: '🔴', title: 'Live sessions', desc: 'Streamed or private, your call' },
+              { icon: 'living-maps.svg', title: 'Living maps', desc: 'World-aware, not just image uploads' },
+              { icon: 'rule-sets.svg', title: 'Rule sets', desc: 'Custom mechanics for the Braosa world' },
+              { icon: 'tool-sync.svg', title: 'Tool sync', desc: 'Hooks directly into the Campaign Suite' },
+              { icon: 'live-sessions.svg', title: 'Live sessions', desc: 'Streamed or private, your call' },
             ].map((c) => (
               <div key={c.title} className="dark-card">
-                <span className="text-xl">{c.symbol}</span>
+                <Image src={`/icons/${c.icon}`} width={48} height={48} alt={c.title} />
                 <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mt-3 mb-1">{c.title}</p>
                 <p className="font-fell text-brand-muted text-xs leading-relaxed">{c.desc}</p>
               </div>
