@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import { useState } from 'react'
@@ -8,6 +9,7 @@ type Feature = { text: string; included: boolean }
 
 type Tier = {
   name: string
+  icon: string
   price: string
   period?: string
   flavour: string
@@ -21,6 +23,7 @@ type Tier = {
 const tiers: Tier[] = [
   {
     name: 'Wanderer',
+    icon: 'tier-wanderer.svg',
     price: 'Free',
     flavour: 'Every tale begins with a single word.',
     features: [
@@ -38,6 +41,7 @@ const tiers: Tier[] = [
   },
   {
     name: 'Keeper',
+    icon: 'tier-keeper.svg',
     price: '$6.99',
     period: '/mo',
     flavour: 'For the keeper of lore and language.',
@@ -56,6 +60,7 @@ const tiers: Tier[] = [
   },
   {
     name: 'Shaper',
+    icon: 'tier-shaper.svg',
     price: '$12.99',
     period: '/mo',
     flavour: 'Shape the names that will define your world.',
@@ -74,6 +79,7 @@ const tiers: Tier[] = [
   },
   {
     name: 'Weaver',
+    icon: 'tier-weaver.svg',
     price: '$19.99',
     period: '/mo',
     flavour: 'Weave worlds from the threads of ancient tongues.',
@@ -94,6 +100,7 @@ const tiers: Tier[] = [
   },
   {
     name: 'Visionary',
+    icon: 'tier-visionary.svg',
     price: '$34.99',
     period: '/mo',
     flavour: 'For those who build entire cosmologies.',
@@ -114,6 +121,7 @@ const tiers: Tier[] = [
   },
   {
     name: 'The Author',
+    icon: 'tier-author.svg',
     price: '$999',
     period: ' lifetime',
     flavour: 'Once, forever. The name of your world deserves no less.',
@@ -200,9 +208,12 @@ export default function PricingPage() {
                   {tier.badge}
                 </span>
               )}
-              <h2 className="font-cinzel font-black text-brand-parchment text-2xl mb-1">
-                {tier.name}
-              </h2>
+              <div className="flex items-center gap-3 mb-1">
+                <Image src={`/icons/${tier.icon}`} width={48} height={48} alt={tier.name} unoptimized />
+                <h2 className="font-cinzel font-black text-brand-parchment text-2xl">
+                  {tier.name}
+                </h2>
+              </div>
               <div className="flex items-baseline gap-1 mb-2">
                 <span className="font-cinzel font-black text-brand-gold-400 text-4xl">{tier.price}</span>
                 {tier.period && (

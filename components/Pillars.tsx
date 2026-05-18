@@ -24,7 +24,7 @@ const pillars = [
   },
   {
     label: 'The Tools',
-    accent: 'border-t-brand-purple-600',
+    accent: 'border-t-brand-gold-400',
     iconColor: 'text-brand-purple-400',
     linkColor: 'text-brand-purple-400 hover:text-brand-purple-200',
     href: '/atelier',
