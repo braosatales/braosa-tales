@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48">
+  <rect width="512" height="512" fill="#12100D"></rect>
+
+  
+  <g fill="none" stroke="#D4AE58">
+    <rect x="34" y="34" width="444" height="444" stroke-width="2.5"></rect>
+    <rect x="46" y="46" width="420" height="420" stroke-width="0.8"></rect>
+  </g>
+  <g fill="#D4AE58" stroke="#D4AE58" stroke-width="1.4" stroke-linecap="round">
+    <g transform="translate(60 60)"><path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path><path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path></g>
+    <g transform="translate(452 60)"><path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path><path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path></g>
+    <g transform="translate(60 452)"><path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path><path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path></g>
+    <g transform="translate(452 452)"><path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path><path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path></g>
+  </g>
+
+  
+  
+
+  
+  <g>
+    
+    <path d="M 94 320 L 418 320 L 418 396 L 94 396 Z" fill="#A88838" stroke="#12100D" stroke-width="2.5" stroke-linejoin="round"></path>
+    
+    <path d="M 94 320 L 418 320 L 414 326 L 98 326 Z" fill="#E8C878" stroke="#12100D" stroke-width="1.2"></path>
+    
+    <path d="M 94 388 L 418 388 L 418 396 L 94 396 Z" fill="#7A5E28" stroke="#12100D" stroke-width="1.4"></path>
+
+    
+    <g fill="#7A5E28" stroke="#12100D" stroke-width="1.4">
+      <rect x="124" y="330" width="14" height="56"></rect>
+      <rect x="374" y="330" width="14" height="56"></rect>
+    </g>
+    <g stroke="#E8C878" stroke-width="1" stroke-linecap="round">
+      <line x1="124" y1="332" x2="124" y2="386"></line>
+      <line x1="138" y1="332" x2="138" y2="386"></line>
+      <line x1="374" y1="332" x2="374" y2="386"></line>
+      <line x1="388" y1="332" x2="388" y2="386"></line>
+    </g>
+
+    
+    <rect x="170" y="338" width="172" height="40" fill="#7A5E28" stroke="#12100D" stroke-width="1.8"></rect>
+    <rect x="178" y="346" width="156" height="24" fill="none" stroke="#D4AE58" stroke-width="1"></rect>
+    
+    <g stroke="#D4AE58" stroke-width="2" stroke-linecap="round">
+      <line x1="192" y1="358" x2="320" y2="358"></line>
+    </g>
+  </g>
+
+  
+  <g>
+    <path d="M 108 248 L 404 248 L 404 320 L 108 320 Z" fill="#D4AE58" stroke="#12100D" stroke-width="2.5" stroke-linejoin="round"></path>
+    <path d="M 108 248 L 404 248 L 400 254 L 112 254 Z" fill="#E8C878" stroke="#12100D" stroke-width="1.2"></path>
+    <path d="M 108 312 L 404 312 L 404 320 L 108 320 Z" fill="#A88838" stroke="#12100D" stroke-width="1.4"></path>
+
+    <g fill="#A88838" stroke="#12100D" stroke-width="1.4">
+      <rect x="136" y="258" width="12" height="52"></rect>
+      <rect x="364" y="258" width="12" height="52"></rect>
+    </g>
+    <g stroke="#E8C878" stroke-width="1" stroke-linecap="round">
+      <line x1="136" y1="260" x2="136" y2="310"></line>
+      <line x1="148" y1="260" x2="148" y2="310"></line>
+      <line x1="364" y1="260" x2="364" y2="310"></line>
+      <line x1="376" y1="260" x2="376" y2="310"></line>
+    </g>
+
+    <rect x="180" y="266" width="152" height="36" fill="#A88838" stroke="#12100D" stroke-width="1.8"></rect>
+    <rect x="188" y="274" width="136" height="20" fill="none" stroke="#7A5E28" stroke-width="1"></rect>
+    <g stroke="#7A5E28" stroke-width="2" stroke-linecap="round">
+      <line x1="200" y1="284" x2="312" y2="284"></line>
+    </g>
+  </g>
+
+  
+  <g>
+    <path d="M 124 184 L 388 184 L 388 248 L 124 248 Z" fill="#7A5E28" stroke="#12100D" stroke-width="2.5" stroke-linejoin="round"></path>
+    <path d="M 124 184 L 388 184 L 384 190 L 128 190 Z" fill="#E8C878" stroke="#12100D" stroke-width="1.2"></path>
+    <path d="M 124 240 L 388 240 L 388 248 L 124 248 Z" fill="#12100D" stroke="#12100D" stroke-width="1.4"></path>
+
+    <g fill="#12100D" stroke="#12100D" stroke-width="1.2">
+      <rect x="148" y="192" width="12" height="48"></rect>
+      <rect x="352" y="192" width="12" height="48"></rect>
+    </g>
+    <g stroke="#D4AE58" stroke-width="1" stroke-linecap="round">
+      <line x1="148" y1="194" x2="148" y2="238"></line>
+      <line x1="160" y1="194" x2="160" y2="238"></line>
+      <line x1="352" y1="194" x2="352" y2="238"></line>
+      <line x1="364" y1="194" x2="364" y2="238"></line>
+    </g>
+
+    <rect x="186" y="200" width="140" height="32" fill="#12100D" stroke="#D4AE58" stroke-width="1.8"></rect>
+    <rect x="194" y="208" width="124" height="16" fill="none" stroke="#D4AE58" stroke-width="1"></rect>
+    <g stroke="#D4AE58" stroke-width="2" stroke-linecap="round">
+      <line x1="206" y1="216" x2="306" y2="216"></line>
+    </g>
+  </g>
+
+  
+  
+  <g>
+    
+    <path d="M 244 156&#xA;             L 250 184&#xA;             L 250 396&#xA;             L 232 410&#xA;             L 226 396&#xA;             L 232 184 Z" fill="#D4AE58" stroke="#12100D" stroke-width="2.4" stroke-linejoin="round"></path>
+    
+    <path d="M 268 156&#xA;             L 280 184&#xA;             L 280 396&#xA;             L 286 410&#xA;             L 268 396 Z" fill="#D4AE58" stroke="#12100D" stroke-width="2.4" stroke-linejoin="round"></path>
+    
+    <line x1="240" y1="200" x2="246" y2="394" stroke="#A88838" stroke-width="1.2"></line>
+    <line x1="274" y1="200" x2="276" y2="394" stroke="#A88838" stroke-width="1.2"></line>
+    
+    <path d="M 226 396 L 218 414 L 232 410 Z" fill="#7A5E28" stroke="#12100D" stroke-width="1.8" stroke-linejoin="round"></path>
+    <path d="M 286 410 L 296 414 L 286 398 Z" fill="#7A5E28" stroke="#12100D" stroke-width="1.8" stroke-linejoin="round"></path>
+
+    
+    
+    <path d="M 240 156&#xA;             C 200 130 192 158 208 174&#xA;             C 222 184 244 168 244 156 Z" fill="#D4AE58" stroke="#12100D" stroke-width="2.4" stroke-linejoin="round"></path>
+    
+    <path d="M 272 156&#xA;             C 312 130 320 158 304 174&#xA;             C 290 184 268 168 268 156 Z" fill="#D4AE58" stroke="#12100D" stroke-width="2.4" stroke-linejoin="round"></path>
+    
+    <path d="M 222 144 Q 208 162 216 174" stroke="#A88838" stroke-width="1.2" fill="none"></path>
+    <path d="M 290 144 Q 304 162 296 174" stroke="#A88838" stroke-width="1.2" fill="none"></path>
+
+    
+    <path d="M 240 152&#xA;             L 272 152&#xA;             L 280 164&#xA;             L 272 184&#xA;             L 240 184&#xA;             L 232 164 Z" fill="#A88838" stroke="#12100D" stroke-width="2.4" stroke-linejoin="round"></path>
+    
+    <g stroke="#12100D" stroke-width="1.4" stroke-linecap="round" fill="none">
+      <line x1="240" y1="158" x2="272" y2="158"></line>
+      <line x1="238" y1="170" x2="274" y2="170"></line>
+      <line x1="240" y1="180" x2="272" y2="180"></line>
+    </g>
+  </g>
+</svg>

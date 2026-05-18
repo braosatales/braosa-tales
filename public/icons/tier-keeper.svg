@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48">
+  <rect width="512" height="512" fill="#12100D"></rect>
+
+  
+  <circle cx="256" cy="256" r="216" fill="#D4AE58" stroke="#12100D" stroke-width="3"></circle>
+  <circle cx="256" cy="256" r="204" fill="none" stroke="#12100D" stroke-width="1.2"></circle>
+  <g fill="#7A5E28" stroke="#12100D" stroke-width="0.8">
+    <g transform="translate(256 256)">
+      <circle cy="-194" r="4.5"></circle>
+      <g transform="rotate(22.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(45)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(67.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(90)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(112.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(135)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(157.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(180)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(202.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(225)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(247.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(270)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(292.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(315)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(337.5)"><circle cy="-194" r="4.5"></circle></g>
+    </g>
+  </g>
+  <circle cx="256" cy="256" r="180" fill="#A88838" stroke="#12100D" stroke-width="2.4"></circle>
+  <circle cx="256" cy="256" r="172" fill="none" stroke="#12100D" stroke-width="0.8"></circle>
+  <g fill="#12100D">
+    <g transform="translate(256 76)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+    <g transform="translate(436 256)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+    <g transform="translate(256 436)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+    <g transform="translate(76 256)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+  </g>
+
+  
+  <g transform="translate(256 256)">
+    
+    <g>
+      
+      <circle cx="0" cy="-138" r="22" fill="#D4AE58" stroke="#12100D" stroke-width="2.4"></circle>
+      <circle cx="32" cy="-106" r="22" fill="#D4AE58" stroke="#12100D" stroke-width="2.4"></circle>
+      <circle cx="0" cy="-74" r="22" fill="#D4AE58" stroke="#12100D" stroke-width="2.4"></circle>
+      <circle cx="-32" cy="-106" r="22" fill="#D4AE58" stroke="#12100D" stroke-width="2.4"></circle>
+      
+      <circle cx="0" cy="-106" r="20" fill="#D4AE58" stroke="#12100D" stroke-width="2.4"></circle>
+      
+      <path d="M 0 -126&#xA;               C 6 -126 8 -118 6 -114&#xA;               C 12 -116 18 -110 16 -106&#xA;               C 18 -100 12 -96 6 -98&#xA;               C 8 -94 6 -86 0 -86&#xA;               C -6 -86 -8 -94 -6 -98&#xA;               C -12 -96 -18 -100 -16 -106&#xA;               C -18 -110 -12 -116 -6 -114&#xA;               C -8 -118 -6 -126 0 -126 Z" fill="#12100D"></path>
+      
+      <circle cx="0" cy="-106" r="4" fill="#D4AE58" stroke="#12100D" stroke-width="1.2"></circle>
+    </g>
+
+    
+    <rect x="-14" y="-58" width="28" height="14" fill="#7A5E28" stroke="#12100D" stroke-width="1.8"></rect>
+    <rect x="-18" y="-44" width="36" height="6" fill="#D4AE58" stroke="#12100D" stroke-width="1.4"></rect>
+
+    
+    <rect x="-7" y="-38" width="14" height="118" fill="#D4AE58" stroke="#12100D" stroke-width="2.2"></rect>
+    
+    <line x1="-2" y1="-34" x2="-2" y2="76" stroke="#12100D" stroke-width="0.9"></line>
+    <line x1="3" y1="-34" x2="3" y2="76" stroke="#E8C878" stroke-width="0.9"></line>
+
+    
+    <rect x="-14" y="78" width="28" height="10" fill="#7A5E28" stroke="#12100D" stroke-width="1.6"></rect>
+
+    
+    <path d="M -7 88&#xA;             L 7 88&#xA;             L 7 108&#xA;             L 38 108&#xA;             L 38 118&#xA;             L 26 118&#xA;             L 26 130&#xA;             L 38 130&#xA;             L 38 140&#xA;             L 7 140&#xA;             L 7 152&#xA;             L -7 152 Z" fill="#D4AE58" stroke="#12100D" stroke-width="2.4" stroke-linejoin="round"></path>
+    
+    <g fill="#12100D">
+      <circle cx="16" cy="124" r="2.4"></circle>
+      <path d="M 30 116 L 34 120 L 30 124 L 26 120 Z"></path>
+    </g>
+  </g>
+</svg>
