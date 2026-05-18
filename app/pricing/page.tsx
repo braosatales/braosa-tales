@@ -4,11 +4,14 @@ import Image from 'next/image'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useUser } from '@clerk/nextjs'
 
 type Feature = { text: string; included: boolean }
 
 type Tier = {
   name: string
+  id: string
   icon: string
   price: string
   period?: string
@@ -23,6 +26,7 @@ type Tier = {
 const tiers: Tier[] = [
   {
     name: 'Wanderer',
+    id: 'wanderer',
     icon: 'tier-wanderer.svg',
     price: 'Free',
     flavour: 'Every tale begins with a single word.',
@@ -41,6 +45,7 @@ const tiers: Tier[] = [
   },
   {
     name: 'Keeper',
+    id: 'keeper',
     icon: 'tier-keeper.svg',
     price: '$6.99',
     period: '/mo',
@@ -60,6 +65,7 @@ const tiers: Tier[] = [
   },
   {
     name: 'Shaper',
+    id: 'shaper',
     icon: 'tier-shaper.svg',
     price: '$12.99',
     period: '/mo',
@@ -79,6 +85,7 @@ const tiers: Tier[] = [
   },
   {
     name: 'Weaver',
+    id: 'weaver',
     icon: 'tier-weaver.svg',
     price: '$19.99',
     period: '/mo',
@@ -100,6 +107,7 @@ const tiers: Tier[] = [
   },
   {
     name: 'Visionary',
+    id: 'visionary',
     icon: 'tier-visionary.svg',
     price: '$34.99',
     period: '/mo',
@@ -121,6 +129,7 @@ const tiers: Tier[] = [
   },
   {
     name: 'The Author',
+    id: 'author',
     icon: 'tier-author.svg',
     price: '$999',
     period: ' lifetime',
@@ -172,6 +181,32 @@ const faqs = [
 
 export default function PricingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
+  const [loadingTier, setLoadingTier] = useState<string | null>(null)
+  const router = useRouter()
+  const { isSignedIn } = useUser()
+
+  async function handleCheckout(tier: Tier) {
+    if (tier.id === 'wanderer') {
+      router.push('/sign-up')
+      return
+    }
+    if (!isSignedIn) {
+      router.push('/sign-in')
+      return
+    }
+    setLoadingTier(tier.id)
+    try {
+      const res = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier: tier.id }),
+      })
+      const data = await res.json()
+      if (data.url) window.location.href = data.url
+    } finally {
+      setLoadingTier(null)
+    }
+  }
 
   return (
     <main>
@@ -234,8 +269,13 @@ export default function PricingPage() {
                   </li>
                 ))}
               </ul>
-              <button type="button" className="btn-primary w-full">
-                {tier.cta}
+              <button
+                type="button"
+                className="btn-primary w-full"
+                disabled={loadingTier === tier.id}
+                onClick={() => handleCheckout(tier)}
+              >
+                {loadingTier === tier.id ? 'Loading...' : tier.cta}
               </button>
             </div>
           ))}
