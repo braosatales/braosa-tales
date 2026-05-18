@@ -239,7 +239,7 @@ export default function PricingPage() {
 
       {/* Tier Cards */}
       <section className="px-8 py-20 border-b border-brand-border">
-        <div className="flex justify-center mb-10">
+        <div className="flex justify-center mb-5">
           <div
             className="relative flex items-center rounded-full border border-[#D4AE58] overflow-hidden"
             style={{ width: '180px', height: '40px', background: 'transparent' }}
