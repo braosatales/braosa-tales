@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function StoriesSection() {
   return (
@@ -29,13 +30,13 @@ export default function StoriesSection() {
 
         <div className="flex-1 grid grid-cols-2 gap-4">
           {[
-            { symbol: '🖋', title: 'Original worlds', desc: 'Built at the table, years in the making' },
-            { symbol: '📖', title: 'Written fiction', desc: 'Short stories, lore books, campaign journals' },
-            { symbol: '⚜', title: 'Buy the books', desc: 'Digital & physical, direct from the author' },
-            { symbol: '🌍', title: 'Free lore', desc: 'Open wiki for players at your table' },
+            { icon: 'original-worlds-sq.svg', title: 'Original worlds', desc: 'Built at the table, years in the making' },
+            { icon: 'written-fiction.svg', title: 'Written fiction', desc: 'Short stories, lore books, campaign journals' },
+            { icon: 'buy-the-books-sq.svg', title: 'Buy the books', desc: 'Digital & physical, direct from the author' },
+            { icon: 'free-lore.svg', title: 'Free lore', desc: 'Open wiki for players at your table' },
           ].map((c) => (
             <div key={c.title} className="dark-card">
-              <span className="text-xl">{c.symbol}</span>
+              <Image src={`/icons/${c.icon}`} width={48} height={48} alt={c.title} />
               <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mt-3 mb-1">{c.title}</p>
               <p className="font-fell text-brand-muted text-xs leading-relaxed">{c.desc}</p>
             </div>
