@@ -56,7 +56,7 @@ function ToolCard({ tool }: { tool: Tool }) {
       )}
 
       <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-md bg-brand-bg border border-brand-border">
-        <Image src={`/icons/atelier/48/${tool.icon}`} width={48} height={48} alt={tool.name} />
+        <Image src={`/icons/atelier/48/${tool.icon}`} width={48} height={48} alt={tool.name} unoptimized />
       </div>
 
       <div className="flex flex-col gap-1 min-w-0">

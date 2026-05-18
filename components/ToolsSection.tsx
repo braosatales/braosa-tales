@@ -32,7 +32,7 @@ export default function ToolsSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((f) => (
             <div key={f.title} className="dark-card flex gap-4 items-start">
-              <Image src={`/icons/atelier/48/${f.icon}`} width={48} height={48} alt={f.title} className="mt-0.5 flex-shrink-0" />
+              <Image src={`/icons/atelier/48/${f.icon}`} width={48} height={48} alt={f.title} className="mt-0.5 flex-shrink-0" unoptimized />
               <div>
                 <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mb-2">{f.title}</p>
                 <p className="font-fell text-brand-muted text-sm leading-relaxed">{f.desc}</p>

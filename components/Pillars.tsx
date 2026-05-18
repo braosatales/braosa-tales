@@ -40,7 +40,7 @@ export default function Pillars() {
       {pillars.map((p) => (
         <div key={p.label} className={`dark-card border-t-2 ${p.accent}`}>
           <div className={p.iconColor}>
-            <Image src={`/icons/${p.icon}`} width={48} height={48} alt={p.label} />
+            <Image src={`/icons/${p.icon}`} width={48} height={48} alt={p.label} unoptimized />
           </div>
           <h2 className="font-cinzel font-bold text-sm tracking-widest uppercase text-brand-parchment mt-4 mb-3">{p.label}</h2>
           <p className="font-fell text-brand-muted leading-relaxed mb-6 text-sm">{p.description}</p>

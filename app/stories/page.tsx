@@ -99,7 +99,7 @@ export default function StoriesPage() {
                 { icon: 'pantheon.svg', title: 'The Pantheon', desc: 'Gods that breathe, bleed, and lie' },
               ].map((c) => (
                 <div key={c.title} className="dark-card">
-                  <Image src={`/icons/${c.icon}`} width={48} height={48} alt={c.title} />
+                  <Image src={`/icons/${c.icon}`} width={48} height={48} alt={c.title} unoptimized />
                   <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mt-3 mb-1">{c.title}</p>
                   <p className="font-fell text-brand-muted text-xs leading-relaxed">{c.desc}</p>
                 </div>
@@ -127,7 +127,7 @@ export default function StoriesPage() {
               { title: 'Lore Supplements', desc: 'Player-facing campaign documents', icon: 'lore-supplements-sq.svg' },
             ].map((item) => (
               <div key={item.title} className="dark-card">
-                <Image src={`/icons/${item.icon}`} width={48} height={48} alt={item.title} />
+                <Image src={`/icons/${item.icon}`} width={48} height={48} alt={item.title} unoptimized />
                 <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mt-3 mb-1">{item.title}</p>
                 <p className="font-fell text-brand-muted text-sm leading-relaxed mb-4">{item.desc}</p>
                 <span className="inline-block font-cinzel text-xs tracking-widest uppercase text-brand-purple-200 border border-brand-purple-600/40 px-2 py-1 rounded-sm">
