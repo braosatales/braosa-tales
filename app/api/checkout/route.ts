@@ -1,5 +1,5 @@
 import { stripe } from '@/lib/stripe'
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 
 const PRICE_MAP: Record<string, string> = {
   keeper:    process.env.STRIPE_PRICE_KEEPER!,
