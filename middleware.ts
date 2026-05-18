@@ -15,6 +15,8 @@ export default authMiddleware({
     '/api/webhooks/clerk',
     '/api/waitlist',
     '/api/newsletter',
+    '/api/webhooks/stripe',
+    '/api/checkout',
     '/atelier/signet(.*)',
   ],
 })
