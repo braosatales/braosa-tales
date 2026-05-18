@@ -3,6 +3,7 @@ import { authMiddleware } from '@clerk/nextjs/server'
 export default authMiddleware({
   publicRoutes: [
     '/',
+    '/pricing(.*)',
     '/atelier(.*)',
     '/stories(.*)',
     '/games(.*)',

@@ -11,6 +11,7 @@ const PRICE_MAP: Record<string, string> = {
 
 export async function POST(req: Request) {
   const { userId } = auth()
+  console.log('Checkout route hit, userId:', userId)
   if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 })
   const { tier } = await req.json()
   const priceId = PRICE_MAP[tier]
