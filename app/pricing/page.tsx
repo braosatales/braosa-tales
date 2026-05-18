@@ -179,9 +179,19 @@ const faqs = [
   },
 ]
 
+const PRICES = {
+  wanderer:  { usd: 'Free',   eur: 'Free'   },
+  keeper:    { usd: '$6.99',  eur: '€5.99'  },
+  shaper:    { usd: '$12.99', eur: '€10.99' },
+  weaver:    { usd: '$19.99', eur: '€16.99' },
+  visionary: { usd: '$34.99', eur: '€29.99' },
+  author:    { usd: '$999',   eur: '€899'   },
+}
+
 export default function PricingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [loadingTier, setLoadingTier] = useState<string | null>(null)
+  const [currency, setCurrency] = useState<'usd' | 'eur'>('usd')
   const router = useRouter()
   const { isSignedIn } = useUser()
 
@@ -229,6 +239,20 @@ export default function PricingPage() {
 
       {/* Tier Cards */}
       <section className="px-8 py-20 border-b border-brand-border">
+        <div className="flex justify-center gap-2 mb-10">
+          <button
+            onClick={() => setCurrency('usd')}
+            className={currency === 'usd'
+              ? 'px-5 py-2 rounded-full bg-[#D4AE58] text-brand-bg font-semibold text-sm'
+              : 'px-5 py-2 rounded-full border border-[#D4AE58] text-[#D4AE58] text-sm'}
+          >$ USD</button>
+          <button
+            onClick={() => setCurrency('eur')}
+            className={currency === 'eur'
+              ? 'px-5 py-2 rounded-full bg-[#D4AE58] text-brand-bg font-semibold text-sm'
+              : 'px-5 py-2 rounded-full border border-[#D4AE58] text-[#D4AE58] text-sm'}
+          >€ EUR</button>
+        </div>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {tiers.map((tier) => (
             <div
@@ -250,9 +274,11 @@ export default function PricingPage() {
                 </h2>
               </div>
               <div className="flex items-baseline gap-1 mb-2">
-                <span className="font-cinzel font-black text-brand-gold-400 text-4xl">{tier.price}</span>
-                {tier.period && (
-                  <span className="font-cinzel text-brand-muted text-sm">{tier.period}</span>
+                <span className="font-cinzel font-black text-brand-gold-400 text-4xl">
+                  {PRICES[tier.id as keyof typeof PRICES]?.[currency]}
+                </span>
+                {tier.id !== 'wanderer' && tier.id !== 'author' && (
+                  <span className="font-cinzel text-brand-muted text-sm">/mo</span>
                 )}
               </div>
               <p className="font-fell text-brand-gold-300 text-sm mb-6 opacity-80">
