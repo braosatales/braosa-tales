@@ -13,6 +13,8 @@ export default authMiddleware({
     '/sign-up(.*)',
     '/api/webhook(.*)',
     '/api/webhooks/clerk',
+    '/api/waitlist',
+    '/api/newsletter',
     '/atelier/signet(.*)',
   ],
 })
