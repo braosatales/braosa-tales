@@ -12,6 +12,7 @@ export default authMiddleware({
     '/sign-in(.*)',
     '/sign-up(.*)',
     '/api/webhook(.*)',
+    '/api/webhooks/clerk',
     '/atelier/signet(.*)',
   ],
 })
