@@ -238,7 +238,7 @@ export default function PricingPage() {
       </section>
 
       {/* Tier Cards */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 pt-2 pb-20 border-b border-brand-border">
         <div className="flex justify-center mb-5">
           <div
             className="relative flex items-center rounded-full border border-[#D4AE58] overflow-hidden"
