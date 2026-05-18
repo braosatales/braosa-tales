@@ -100,7 +100,7 @@ export default function GamesClient() {
               { icon: 'live-sessions.svg', title: 'Live sessions', desc: 'Streamed or private, your call' },
             ].map((c) => (
               <div key={c.title} className="dark-card">
-                <Image src={`/icons/${c.icon}`} width={48} height={48} alt={c.title} />
+                <Image src={`/icons/${c.icon}`} width={48} height={48} alt={c.title} unoptimized />
                 <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mt-3 mb-1">{c.title}</p>
                 <p className="font-fell text-brand-muted text-xs leading-relaxed">{c.desc}</p>
               </div>

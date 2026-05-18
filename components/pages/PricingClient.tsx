@@ -209,7 +209,7 @@ export default function PricingClient() {
                 </span>
               )}
               <div className="flex items-center gap-3 mb-1">
-                <Image src={`/icons/${tier.icon}`} width={48} height={48} alt={tier.name} />
+                <Image src={`/icons/${tier.icon}`} width={48} height={48} alt={tier.name} unoptimized />
                 <h2 className="font-cinzel font-black text-brand-parchment text-2xl">
                   {tier.name}
                 </h2>
