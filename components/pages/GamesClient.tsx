@@ -3,8 +3,38 @@
 import Image from 'next/image'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import { useState } from 'react'
 
 export default function GamesClient() {
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  async function handleWaitlist() {
+    setLoading(true)
+    setError(null)
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'games' }),
+      })
+      const data = await res.json()
+      if (res.status === 409) {
+        setError("You're already on the list.")
+      } else if (!res.ok) {
+        setError('Something went wrong — try again.')
+      } else {
+        setSuccess(true)
+      }
+    } catch {
+      setError('Something went wrong — try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <main>
       <Nav />
@@ -34,16 +64,34 @@ export default function GamesClient() {
           <p className="font-fell text-brand-muted mb-8 leading-relaxed">
             Campaigns fill fast. Get early access before seats open to the public.
           </p>
-          <div className="flex flex-col sm:flex-row gap-2">
-            <input
-              type="email"
-              placeholder="your@email.com"
-              className="flex-1 bg-brand-card border border-brand-border rounded-sm px-4 py-3 text-sm text-brand-parchment placeholder-brand-muted focus:outline-none focus:border-brand-purple-600 font-fell"
-            />
-            <button type="button" className="btn-primary whitespace-nowrap">
-              Join waitlist
-            </button>
-          </div>
+          {success ? (
+            <p className="font-fell text-[#D4AE58]">You&apos;re on the list. We&apos;ll be in touch.</p>
+          ) : (
+            <>
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="email"
+                  placeholder="your@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 bg-brand-card border border-brand-border rounded-sm px-4 py-3 text-sm text-brand-parchment placeholder-brand-muted focus:outline-none focus:border-brand-purple-600 font-fell"
+                />
+                <button
+                  type="button"
+                  onClick={handleWaitlist}
+                  disabled={loading}
+                  className="btn-primary whitespace-nowrap"
+                >
+                  {loading ? 'Joining...' : 'Join waitlist'}
+                </button>
+              </div>
+              {error && (
+                <p className={`font-fell text-sm mt-3 ${error.includes('already') ? 'text-[#D4AE58]' : 'text-red-400'}`}>
+                  {error}
+                </p>
+              )}
+            </>
+          )}
         </div>
       </section>
 
