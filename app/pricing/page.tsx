@@ -239,19 +239,33 @@ export default function PricingPage() {
 
       {/* Tier Cards */}
       <section className="px-8 py-20 border-b border-brand-border">
-        <div className="flex justify-center gap-2 mb-10">
-          <button
-            onClick={() => setCurrency('usd')}
-            className={currency === 'usd'
-              ? 'px-5 py-2 rounded-full bg-[#D4AE58] text-brand-bg font-semibold text-sm'
-              : 'px-5 py-2 rounded-full border border-[#D4AE58] text-[#D4AE58] text-sm'}
-          >$ USD</button>
-          <button
-            onClick={() => setCurrency('eur')}
-            className={currency === 'eur'
-              ? 'px-5 py-2 rounded-full bg-[#D4AE58] text-brand-bg font-semibold text-sm'
-              : 'px-5 py-2 rounded-full border border-[#D4AE58] text-[#D4AE58] text-sm'}
-          >€ EUR</button>
+        <div className="flex justify-center mb-10">
+          <div
+            className="relative flex items-center rounded-full border border-[#D4AE58] overflow-hidden"
+            style={{ width: '180px', height: '40px', background: 'transparent' }}
+          >
+            {/* Sliding gold indicator */}
+            <div
+              className="absolute top-0 bottom-0 w-1/2 bg-[#D4AE58] rounded-full transition-all duration-200 ease-in-out"
+              style={{ left: currency === 'usd' ? '0%' : '50%' }}
+            />
+            {/* USD option */}
+            <button
+              onClick={() => setCurrency('usd')}
+              className="relative z-10 flex-1 h-full text-sm font-semibold transition-colors duration-200"
+              style={{ color: currency === 'usd' ? '#12100D' : '#D4AE58' }}
+            >
+              $ USD
+            </button>
+            {/* EUR option */}
+            <button
+              onClick={() => setCurrency('eur')}
+              className="relative z-10 flex-1 h-full text-sm font-semibold transition-colors duration-200"
+              style={{ color: currency === 'eur' ? '#12100D' : '#D4AE58' }}
+            >
+              € EUR
+            </button>
+          </div>
         </div>
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {tiers.map((tier) => (
