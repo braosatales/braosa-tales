@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48">
+  <rect width="512" height="512" fill="#12100D"></rect>
+
+  
+  
+  <circle cx="256" cy="256" r="216" fill="#D4AE58" stroke="#12100D" stroke-width="3"></circle>
+  
+  <circle cx="256" cy="256" r="204" fill="none" stroke="#12100D" stroke-width="1.2"></circle>
+  
+  <g fill="#7A5E28" stroke="#12100D" stroke-width="0.8">
+    <g transform="translate(256 256)">
+      <circle cy="-194" r="4.5"></circle>
+      <g transform="rotate(22.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(45)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(67.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(90)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(112.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(135)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(157.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(180)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(202.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(225)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(247.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(270)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(292.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(315)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(337.5)"><circle cy="-194" r="4.5"></circle></g>
+    </g>
+  </g>
+  
+  <circle cx="256" cy="256" r="180" fill="#A88838" stroke="#12100D" stroke-width="2.4"></circle>
+  <circle cx="256" cy="256" r="172" fill="none" stroke="#12100D" stroke-width="0.8"></circle>
+
+  
+  <g fill="#12100D">
+    <g transform="translate(256 76)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path><path d="M -10 0 L -16 0 M 10 0 L 16 0 M 0 -16 L 0 -22 M 0 16 L 0 22" stroke="#12100D" stroke-width="1.4"></path></g>
+    <g transform="translate(436 256)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+    <g transform="translate(256 436)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+    <g transform="translate(76 256)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+  </g>
+
+  
+  <g transform="translate(256 256)">
+    
+    <path d="M -10 -120&#xA;             Q -8 -100 -10 -80&#xA;             Q -14 -50 -9 -20&#xA;             Q -14 10 -10 40&#xA;             Q -14 70 -10 100&#xA;             Q -8 115 -2 122&#xA;             L 14 122&#xA;             Q 12 115 12 100&#xA;             Q 16 70 12 40&#xA;             Q 16 10 11 -20&#xA;             Q 16 -50 12 -80&#xA;             Q 14 -100 12 -120&#xA;             Q 4 -130 0 -128&#xA;             Q -4 -130 -10 -120 Z" fill="#A88838" stroke="#12100D" stroke-width="2.6" stroke-linejoin="round"></path>
+
+    
+    <g stroke="#12100D" stroke-width="1.1" fill="none" stroke-linecap="round">
+      <path d="M -6 -110 Q 0 -100 6 -110"></path>
+      <path d="M -7 -68 Q 0 -58 7 -68"></path>
+      <path d="M -7 -10 Q 0 0 7 -10"></path>
+      <path d="M -7 50 Q 0 60 7 50"></path>
+      <path d="M -7 88 Q 0 98 7 88"></path>
+    </g>
+
+    
+    <g fill="#7A5E28" stroke="#12100D" stroke-width="1.4">
+      <ellipse cx="-12" cy="-50" rx="5" ry="7"></ellipse>
+      <ellipse cx="12" cy="10" rx="5" ry="7"></ellipse>
+      <ellipse cx="-12" cy="70" rx="5" ry="7"></ellipse>
+    </g>
+
+    
+    <rect x="-14" y="-30" width="28" height="40" fill="#7A5E28" stroke="#12100D" stroke-width="2"></rect>
+    
+    <g stroke="#12100D" stroke-width="1.4" stroke-linecap="round">
+      <line x1="-14" y1="-22" x2="14" y2="-16"></line>
+      <line x1="-14" y1="-12" x2="14" y2="-6"></line>
+      <line x1="-14" y1="-2" x2="14" y2="4"></line>
+    </g>
+
+    
+    <path d="M -2 122 L 14 122 L 8 144 L 4 150 L 0 144 Z" fill="#7A5E28" stroke="#12100D" stroke-width="2" stroke-linejoin="round"></path>
+    <line x1="6" y1="126" x2="6" y2="142" stroke="#D4AE58" stroke-width="1"></line>
+
+    
+    <path d="M 8 -130 Q 22 -120 24 -100" stroke="#12100D" stroke-width="1.6" fill="none" stroke-linecap="round"></path>
+    <g transform="translate(24 -90)">
+      <path d="M -7 -4&#xA;               Q -7 -10 0 -10&#xA;               Q 7 -10 7 -4&#xA;               L 8 6&#xA;               L -8 6 Z" fill="#D4AE58" stroke="#12100D" stroke-width="1.6" stroke-linejoin="round"></path>
+      <circle cy="6" r="1.6" fill="#12100D"></circle>
+      <line x1="0" y1="-10" x2="0" y2="-14" stroke="#12100D" stroke-width="1.2"></line>
+    </g>
+  </g>
+</svg>

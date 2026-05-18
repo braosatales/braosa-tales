@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48">
+  
+  <rect width="512" height="512" fill="#12100D"></rect>
+
+  
+  <g fill="none" stroke="#D4AE58">
+    <rect x="34" y="34" width="444" height="444" stroke-width="2.5"></rect>
+    <rect x="46" y="46" width="420" height="420" stroke-width="0.8"></rect>
+  </g>
+
+  
+  <g fill="#D4AE58" stroke="#D4AE58" stroke-width="1.4" stroke-linecap="round">
+    <g transform="translate(60 60)">
+      <path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path>
+      <path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path>
+    </g>
+    <g transform="translate(452 60)">
+      <path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path>
+      <path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path>
+    </g>
+    <g transform="translate(60 452)">
+      <path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path>
+      <path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path>
+    </g>
+    <g transform="translate(452 452)">
+      <path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path>
+      <path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path>
+    </g>
+  </g>
+
+  
+  
+
+  
+  <path d="M 150 92&#xA;           L 370 92&#xA;           L 374 100&#xA;           L 146 100 Z" fill="#E8C878" stroke="#12100D" stroke-width="2" stroke-linejoin="round"></path>
+  
+  <g stroke="#A88838" stroke-width="0.8" stroke-linecap="round">
+    <line x1="156" y1="94" x2="156" y2="100"></line>
+    <line x1="166" y1="94" x2="166" y2="100"></line>
+    <line x1="178" y1="94" x2="178" y2="100"></line>
+    <line x1="190" y1="94" x2="190" y2="100"></line>
+    <line x1="204" y1="94" x2="204" y2="100"></line>
+    <line x1="218" y1="94" x2="218" y2="100"></line>
+    <line x1="232" y1="94" x2="232" y2="100"></line>
+    <line x1="248" y1="94" x2="248" y2="100"></line>
+    <line x1="264" y1="94" x2="264" y2="100"></line>
+    <line x1="280" y1="94" x2="280" y2="100"></line>
+    <line x1="296" y1="94" x2="296" y2="100"></line>
+    <line x1="312" y1="94" x2="312" y2="100"></line>
+    <line x1="328" y1="94" x2="328" y2="100"></line>
+    <line x1="344" y1="94" x2="344" y2="100"></line>
+    <line x1="358" y1="94" x2="358" y2="100"></line>
+  </g>
+
+  
+  <path d="M 146 100&#xA;           L 178 100&#xA;           L 178 432&#xA;           L 146 432 Z" fill="#A88838" stroke="#12100D" stroke-width="2.5" stroke-linejoin="round"></path>
+
+  
+  <g fill="#7A5E28" stroke="#12100D" stroke-width="1.4">
+    <rect x="146" y="140" width="32" height="12"></rect>
+    <rect x="146" y="200" width="32" height="12"></rect>
+    <rect x="146" y="260" width="32" height="12"></rect>
+    <rect x="146" y="320" width="32" height="12"></rect>
+    <rect x="146" y="380" width="32" height="12"></rect>
+  </g>
+  
+  <g stroke="#E8C878" stroke-width="1.2" stroke-linecap="round">
+    <line x1="150" y1="142" x2="174" y2="142"></line>
+    <line x1="150" y1="202" x2="174" y2="202"></line>
+    <line x1="150" y1="262" x2="174" y2="262"></line>
+    <line x1="150" y1="322" x2="174" y2="322"></line>
+    <line x1="150" y1="382" x2="174" y2="382"></line>
+  </g>
+  
+  <g fill="#D4AE58" stroke="#12100D" stroke-width="0.8">
+    <circle cx="162" cy="176" r="3"></circle>
+    <circle cx="162" cy="236" r="3"></circle>
+    <circle cx="162" cy="296" r="3"></circle>
+    <circle cx="162" cy="356" r="3"></circle>
+  </g>
+
+  
+  <path d="M 178 100&#xA;           L 374 100&#xA;           L 374 432&#xA;           L 178 432 Z" fill="#D4AE58" stroke="#12100D" stroke-width="2.5" stroke-linejoin="round"></path>
+
+  
+  <rect x="196" y="118" width="160" height="296" fill="none" stroke="#12100D" stroke-width="2"></rect>
+  <rect x="202" y="124" width="148" height="284" fill="none" stroke="#12100D" stroke-width="0.8"></rect>
+
+  
+  <g fill="#7A5E28" stroke="#12100D" stroke-width="1">
+    
+    <path d="M 196 118 L 216 118 L 196 138 Z"></path>
+    <path d="M 196 130 L 208 118" stroke="#12100D" stroke-width="0.8" fill="none"></path>
+    
+    <path d="M 356 118 L 336 118 L 356 138 Z"></path>
+    <path d="M 356 130 L 344 118" stroke="#12100D" stroke-width="0.8" fill="none"></path>
+    
+    <path d="M 196 414 L 216 414 L 196 394 Z"></path>
+    <path d="M 196 402 L 208 414" stroke="#12100D" stroke-width="0.8" fill="none"></path>
+    
+    <path d="M 356 414 L 336 414 L 356 394 Z"></path>
+    <path d="M 356 402 L 344 414" stroke="#12100D" stroke-width="0.8" fill="none"></path>
+  </g>
+
+  
+  <g>
+    
+    <path d="M 276 200&#xA;             C 312 200 332 230 332 266&#xA;             C 332 302 312 332 276 332&#xA;             C 240 332 220 302 220 266&#xA;             C 220 230 240 200 276 200 Z" fill="#7A5E28" stroke="#12100D" stroke-width="2"></path>
+    
+    <path d="M 276 210&#xA;             C 306 210 322 234 322 266&#xA;             C 322 298 306 322 276 322&#xA;             C 246 322 230 298 230 266&#xA;             C 230 234 246 210 276 210 Z" fill="none" stroke="#D4AE58" stroke-width="1.5"></path>
+
+    
+    <g transform="translate(276 266)">
+      <path d="M 0 -22 L 5 -7 L 21 -7 L 8 3 L 13 18 L 0 9 L -13 18 L -8 3 L -21 -7 L -5 -7 Z" fill="#D4AE58" stroke="#12100D" stroke-width="1"></path>
+      
+      <circle r="3" fill="#12100D"></circle>
+    </g>
+
+    
+    <g stroke="#12100D" stroke-width="1.6" fill="#D4AE58" stroke-linecap="round">
+      <path d="M 276 196 L 270 188 L 276 184 L 282 188 Z"></path>
+      <path d="M 276 336 L 270 344 L 276 348 L 282 344 Z"></path>
+    </g>
+  </g>
+
+  
+  <g fill="#7A5E28" stroke="#12100D" stroke-width="0.6">
+    <circle cx="276" cy="146" r="3"></circle>
+    <circle cx="276" cy="386" r="3"></circle>
+    <circle cx="232" cy="146" r="2"></circle>
+    <circle cx="320" cy="146" r="2"></circle>
+    <circle cx="232" cy="386" r="2"></circle>
+    <circle cx="320" cy="386" r="2"></circle>
+  </g>
+
+  
+  <g fill="#A88838">
+    <circle cx="190" cy="160" r="0.9"></circle>
+    <circle cx="208" cy="172" r="0.9"></circle>
+    <circle cx="362" cy="148" r="0.9"></circle>
+    <circle cx="350" cy="170" r="0.9"></circle>
+    <circle cx="190" cy="240" r="0.9"></circle>
+    <circle cx="208" cy="380" r="0.9"></circle>
+    <circle cx="358" cy="252" r="0.9"></circle>
+    <circle cx="352" cy="368" r="0.9"></circle>
+    <circle cx="190" cy="320" r="0.9"></circle>
+    <circle cx="362" cy="320" r="0.9"></circle>
+    <circle cx="190" cy="404" r="0.9"></circle>
+    <circle cx="356" cy="404" r="0.9"></circle>
+  </g>
+
+  
+  
+  <g>
+    
+    <path d="M 296 92&#xA;             L 314 92&#xA;             L 316 460&#xA;             L 290 460 Z" fill="#D4AE58" stroke="#12100D" stroke-width="2.4" stroke-linejoin="round"></path>
+    
+    <path d="M 308 96 L 312 456 L 314 456 L 312 96 Z" fill="#A88838"></path>
+
+    
+    <path d="M 290 432&#xA;             Q 286 446 290 460&#xA;             L 316 460&#xA;             Q 320 446 316 432 Z" fill="#A88838" stroke="#12100D" stroke-width="2.2" stroke-linejoin="round"></path>
+
+    
+    <path d="M 290 460&#xA;             L 296 470&#xA;             L 303 462&#xA;             L 309 470&#xA;             L 316 460 Z" fill="#7A5E28" stroke="#12100D" stroke-width="2.2" stroke-linejoin="round"></path>
+
+    
+    <g stroke="#A88838" stroke-width="0.9" stroke-linecap="round">
+      <line x1="298" y1="120" x2="312" y2="120"></line>
+      <line x1="298" y1="170" x2="312" y2="170"></line>
+      <line x1="298" y1="220" x2="312" y2="220"></line>
+      <line x1="298" y1="270" x2="312" y2="270"></line>
+      <line x1="298" y1="320" x2="312" y2="320"></line>
+      <line x1="298" y1="370" x2="312" y2="370"></line>
+      <line x1="298" y1="420" x2="312" y2="420"></line>
+    </g>
+  </g>
+</svg>

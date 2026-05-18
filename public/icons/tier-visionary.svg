@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48">
+  <rect width="512" height="512" fill="#12100D"></rect>
+
+  
+  <circle cx="256" cy="256" r="216" fill="#D4AE58" stroke="#12100D" stroke-width="3"></circle>
+  <circle cx="256" cy="256" r="204" fill="none" stroke="#12100D" stroke-width="1.2"></circle>
+  <g fill="#7A5E28" stroke="#12100D" stroke-width="0.8">
+    <g transform="translate(256 256)">
+      <circle cy="-194" r="4.5"></circle>
+      <g transform="rotate(22.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(45)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(67.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(90)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(112.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(135)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(157.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(180)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(202.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(225)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(247.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(270)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(292.5)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(315)"><circle cy="-194" r="4.5"></circle></g>
+      <g transform="rotate(337.5)"><circle cy="-194" r="4.5"></circle></g>
+    </g>
+  </g>
+  <circle cx="256" cy="256" r="180" fill="#A88838" stroke="#12100D" stroke-width="2.4"></circle>
+  <circle cx="256" cy="256" r="172" fill="none" stroke="#12100D" stroke-width="0.8"></circle>
+  <g fill="#12100D">
+    <g transform="translate(256 76)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+    <g transform="translate(436 256)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+    <g transform="translate(256 436)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+    <g transform="translate(76 256)"><path d="M 0 -10 L 6 0 L 0 10 L -6 0 Z"></path></g>
+  </g>
+
+  
+  <g transform="translate(256 256)">
+    
+    <path d="M 0 -150 L 130 75 L -130 75 Z" fill="#D4AE58" stroke="#12100D" stroke-width="3" stroke-linejoin="round"></path>
+    
+    <path d="M 0 -130 L 112 65 L -112 65 Z" fill="none" stroke="#12100D" stroke-width="1.4" stroke-linejoin="round"></path>
+
+    
+    <g fill="#7A5E28" stroke="#12100D" stroke-width="1.4">
+      <circle cx="0" cy="-150" r="6"></circle>
+      <circle cx="130" cy="75" r="6"></circle>
+      <circle cx="-130" cy="75" r="6"></circle>
+    </g>
+
+    
+    <g stroke="#12100D" stroke-width="2" stroke-linecap="round">
+      <line x1="0" y1="-44" x2="0" y2="-58"></line>
+      <line x1="50" y1="-22" x2="62" y2="-32"></line>
+      <line x1="-50" y1="-22" x2="-62" y2="-32"></line>
+      <line x1="46" y1="30" x2="58" y2="40"></line>
+      <line x1="-46" y1="30" x2="-58" y2="40"></line>
+      <line x1="0" y1="40" x2="0" y2="54"></line>
+    </g>
+
+    
+    <path d="M -64 0&#xA;             C -42 -34 42 -34 64 0&#xA;             C 42 34 -42 34 -64 0 Z" fill="#E8C878" stroke="#12100D" stroke-width="2.6" stroke-linejoin="round"></path>
+    
+    <g stroke="#12100D" stroke-width="1.4" fill="none" stroke-linecap="round">
+      <path d="M -56 -8 Q -56 -22 -48 -28"></path>
+      <path d="M -32 -22 L -32 -32"></path>
+      <path d="M -10 -28 L -10 -38"></path>
+      <path d="M 10 -28 L 10 -38"></path>
+      <path d="M 32 -22 L 32 -32"></path>
+      <path d="M 56 -8 Q 56 -22 48 -28"></path>
+    </g>
+    
+    <circle r="24" fill="#7A5E28" stroke="#12100D" stroke-width="2.2"></circle>
+    
+    <g stroke="#12100D" stroke-width="1" stroke-linecap="round" fill="none">
+      <line x1="0" y1="-22" x2="0" y2="-12"></line>
+      <line x1="16" y1="-16" x2="8" y2="-8"></line>
+      <line x1="22" y1="0" x2="12" y2="0"></line>
+      <line x1="16" y1="16" x2="8" y2="8"></line>
+      <line x1="0" y1="22" x2="0" y2="12"></line>
+      <line x1="-16" y1="16" x2="-8" y2="8"></line>
+      <line x1="-22" y1="0" x2="-12" y2="0"></line>
+      <line x1="-16" y1="-16" x2="-8" y2="-8"></line>
+    </g>
+    
+    <circle r="8" fill="#12100D"></circle>
+    
+    <circle cx="-3" cy="-3" r="2" fill="#E8C878"></circle>
+  </g>
+</svg>

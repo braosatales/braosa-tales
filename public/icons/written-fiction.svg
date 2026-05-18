@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="48" height="48">
+  
+  <rect width="512" height="512" fill="#12100D"></rect>
+
+  
+  <g fill="none" stroke="#D4AE58">
+    <rect x="34" y="34" width="444" height="444" stroke-width="2.5"></rect>
+    <rect x="46" y="46" width="420" height="420" stroke-width="0.8"></rect>
+  </g>
+
+  
+  <g fill="#D4AE58" stroke="#D4AE58" stroke-width="1.4" stroke-linecap="round">
+    <g transform="translate(60 60)">
+      <path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path>
+      <path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path>
+    </g>
+    <g transform="translate(452 60)">
+      <path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path>
+      <path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path>
+    </g>
+    <g transform="translate(60 452)">
+      <path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path>
+      <path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path>
+    </g>
+    <g transform="translate(452 452)">
+      <path d="M 0 -7 L 7 0 L 0 7 L -7 0 Z"></path>
+      <path d="M -14 0 L -9 0 M 14 0 L 9 0 M 0 -14 L 0 -9 M 0 14 L 0 9" fill="none"></path>
+    </g>
+  </g>
+
+  
+  <g>
+    
+    <path d="M 78 388 Q 256 372 434 388 L 434 412 Q 256 432 78 412 Z" fill="#7A5E28" stroke="#D4AE58" stroke-width="2.5" stroke-linejoin="round"></path>
+    
+    <g stroke="#12100D" stroke-width="1.2" stroke-linecap="round">
+      <line x1="100" y1="396" x2="100" y2="418"></line>
+      <line x1="120" y1="392" x2="120" y2="421"></line>
+      <line x1="142" y1="389" x2="142" y2="424"></line>
+      <line x1="166" y1="386" x2="166" y2="426"></line>
+      <line x1="190" y1="383" x2="190" y2="427"></line>
+      <line x1="216" y1="380" x2="216" y2="429"></line>
+      <line x1="296" y1="380" x2="296" y2="429"></line>
+      <line x1="322" y1="383" x2="322" y2="428"></line>
+      <line x1="346" y1="385" x2="346" y2="426"></line>
+      <line x1="370" y1="388" x2="370" y2="424"></line>
+      <line x1="392" y1="391" x2="392" y2="421"></line>
+      <line x1="412" y1="395" x2="412" y2="418"></line>
+    </g>
+
+    
+    <path d="M 82 388&#xA;             Q 88 252 252 234&#xA;             L 256 388 Z" fill="#D4AE58" stroke="#D4AE58" stroke-width="2.5" stroke-linejoin="round"></path>
+    
+    <path d="M 256 234 L 256 388 L 240 388 Q 232 310 248 244 Z" fill="#A88838"></path>
+
+    
+    <path d="M 430 388&#xA;             Q 424 252 260 234&#xA;             L 256 388 Z" fill="#D4AE58" stroke="#D4AE58" stroke-width="2.5" stroke-linejoin="round"></path>
+    
+    <path d="M 256 234 L 256 388 L 272 388 Q 280 310 264 244 Z" fill="#A88838"></path>
+
+    
+    <path d="M 256 234 L 256 388" stroke="#12100D" stroke-width="2.5" fill="none" stroke-linecap="round"></path>
+
+    
+    <g stroke="#12100D" stroke-width="2.4" stroke-linecap="round" fill="none">
+      <path d="M 116 290 Q 180 280 240 282"></path>
+      <path d="M 112 308 Q 170 298 198 298"></path>
+      <path d="M 110 326 Q 180 316 240 318"></path>
+      <path d="M 108 344 Q 160 334 220 335"></path>
+      <path d="M 106 362 Q 180 352 240 354"></path>
+      <path d="M 104 378 Q 130 372 180 372"></path>
+    </g>
+    
+    <g stroke="#12100D" stroke-width="2.4" stroke-linecap="round" fill="none">
+      <path d="M 272 282 Q 332 280 396 290"></path>
+      <path d="M 314 298 Q 342 298 400 308"></path>
+      <path d="M 272 318 Q 332 316 402 326"></path>
+      <path d="M 292 335 Q 352 334 404 344"></path>
+      <path d="M 272 354 Q 332 352 406 362"></path>
+      <path d="M 332 372 Q 382 372 408 378"></path>
+    </g>
+
+    
+    <rect x="112" y="266" width="14" height="14" fill="#7A5E28" stroke="#12100D" stroke-width="1"></rect>
+    <rect x="386" y="266" width="14" height="14" fill="#7A5E28" stroke="#12100D" stroke-width="1"></rect>
+  </g>
+
+  
+  
+  <g transform="rotate(38 256 256)">
+    
+    <path d="M 256 80&#xA;             C 224 130 218 200 248 260&#xA;             C 268 220 280 150 256 80 Z" fill="#E8C878" stroke="#12100D" stroke-width="2.5" stroke-linejoin="round"></path>
+    
+    <path d="M 256 88&#xA;             C 240 140 242 200 254 254&#xA;             L 254 90 Z" fill="#D4AE58"></path>
+
+    
+    <path d="M 254 88 L 252 256" stroke="#12100D" stroke-width="2" fill="none" stroke-linecap="round"></path>
+
+    
+    <g stroke="#12100D" stroke-width="1.4" stroke-linecap="round" fill="none">
+      <path d="M 252 102 L 240 112"></path>
+      <path d="M 250 118 L 232 132"></path>
+      <path d="M 248 134 L 226 152"></path>
+      <path d="M 246 150 L 222 172"></path>
+      <path d="M 244 166 L 222 192"></path>
+      <path d="M 244 182 L 224 210"></path>
+      <path d="M 244 198 L 228 226"></path>
+      <path d="M 246 214 L 234 240"></path>
+      <path d="M 248 230 L 242 250"></path>
+    </g>
+    
+    <g stroke="#12100D" stroke-width="1.4" stroke-linecap="round" fill="none">
+      <path d="M 256 102 L 268 112"></path>
+      <path d="M 258 118 L 274 132"></path>
+      <path d="M 260 134 L 280 152"></path>
+      <path d="M 262 150 L 282 172"></path>
+      <path d="M 264 166 L 282 192"></path>
+      <path d="M 264 182 L 278 210"></path>
+      <path d="M 264 198 L 272 226"></path>
+      <path d="M 262 214 L 266 240"></path>
+    </g>
+
+    
+    <path d="M 252 258 Q 256 320 260 396" stroke="#E8C878" stroke-width="5.5" fill="none" stroke-linecap="round"></path>
+    <path d="M 252 258 Q 256 320 260 396" stroke="#A88838" stroke-width="1.4" fill="none" stroke-linecap="round"></path>
+
+    
+    <path d="M 256 392&#xA;             L 254 410&#xA;             L 262 422&#xA;             L 268 412&#xA;             L 266 396 Z" fill="#D4AE58" stroke="#12100D" stroke-width="2" stroke-linejoin="round"></path>
+    
+    <path d="M 261 400 L 263 420" stroke="#12100D" stroke-width="1.4" fill="none" stroke-linecap="round"></path>
+
+    
+    <path d="M 268 432&#xA;             C 262 432 258 438 258 444&#xA;             C 258 452 264 458 268 458&#xA;             C 272 458 278 452 278 444&#xA;             C 278 438 274 432 268 432 Z" fill="#D4AE58" stroke="#12100D" stroke-width="1.6"></path>
+    
+    <ellipse cx="264" cy="442" rx="2.4" ry="3.4" fill="#E8C878"></ellipse>
+  </g>
+</svg>
