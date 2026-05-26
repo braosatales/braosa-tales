@@ -20,7 +20,7 @@ export default function Nav() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-brand-bg/80 backdrop-blur-sm border-b border-brand-border">
       <Link href="/" className="flex items-center gap-3">
-        <Image src="/logo-mark.png" alt="Braosa Tales" width={36} height={36} className="opacity-90" />
+        <Image src="/mark-purple.png" alt="Braosa Tales" width={36} height={36} className="opacity-90" />
         <span className="font-cinzel font-bold text-brand-parchment tracking-widest text-sm hidden sm:block">
           BRAOSA TALES
         </span>
