@@ -1,4 +1,4 @@
-import Nav from '@/components/Nav'
+import Nav from '@/components/NavServer'
 import Footer from '@/components/Footer'
 
 export default function ToolsPage() {

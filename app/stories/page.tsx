@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Image from 'next/image'
-import Nav from '@/components/Nav'
+import Nav from '@/components/NavServer'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 

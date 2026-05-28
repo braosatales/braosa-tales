@@ -15,7 +15,17 @@ const links = [
   { href: '/about', label: 'About' },
 ]
 
-export default function Nav() {
+interface NavProps {
+  userProfile?: {
+    tier: string
+    credits: number
+    daily_credits: number
+    credits_reset_date: string
+    daily_reset_date: string
+  } | null
+}
+
+export default function Nav({ userProfile }: NavProps = {}) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
@@ -53,7 +63,7 @@ export default function Nav() {
         </SignedOut>
         <SignedIn>
           <Suspense fallback={null}>
-            <CreditsBadge />
+            <CreditsBadge initialProfile={userProfile ?? null} />
           </Suspense>
           <UserButton
             afterSignOutUrl="/"

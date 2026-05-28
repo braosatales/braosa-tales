@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import Nav from '@/components/Nav'
+import Nav from '@/components/NavServer'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {

@@ -58,16 +58,27 @@ const C = {
 const GS = { fontFamily:"Georgia,serif" } as React.CSSProperties
 const SS = { fontFamily:"system-ui,sans-serif" } as React.CSSProperties
 
-export default function CreditsBadge() {
-  const [profile, setProfile]         = useState<UserProfile | null>(null)
+interface CreditsBadgeProps {
+  initialProfile?: {
+    tier: string
+    credits: number
+    daily_credits: number
+    credits_reset_date: string
+    daily_reset_date: string
+  } | null
+}
+
+export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {}) {
+  const [profile, setProfile]         = useState<UserProfile | null>(initialProfile ?? null)
   const [showCredits, setShowCredits] = useState(false)
   const [showTier, setShowTier]       = useState(false)
   const creditsRef = useRef<HTMLDivElement>(null)
   const tierRef    = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    if (initialProfile) return
     fetch("/api/user/profile").then(r => r.json()).then(setProfile).catch(() => {})
-  }, [])
+  }, [initialProfile])
 
   useEffect(() => {
     const h = (e: MouseEvent) => {
@@ -107,16 +118,17 @@ export default function CreditsBadge() {
         <div
           onClick={() => { setShowCredits(!showCredits); setShowTier(false) }}
           style={{
-            display:"flex", alignItems:"center", gap:6,
-            background:C.goldDim, border:`1px solid ${C.goldB}`,
-            borderRadius:20, padding:"5px 12px", cursor:"pointer",
-            transition:"all 0.15s", minWidth:110,
+            display:"flex", alignItems:"center", gap:8,
+            background:"rgba(212,174,88,0.12)",
+            border:"1px solid rgba(212,174,88,0.35)",
+            borderRadius:24, padding:"6px 16px", cursor:"pointer",
+            transition:"all 0.2s",
           }}
           onMouseEnter={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(212,174,88,0.22)"}
-          onMouseLeave={e=>(e.currentTarget as HTMLDivElement).style.background=C.goldDim}
+          onMouseLeave={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(212,174,88,0.12)"}
         >
-          <span style={{color:C.t3,fontSize:9,letterSpacing:1,fontWeight:600,...SS}}>CREDITS</span>
-          <span style={{color:C.gold,fontSize:13,...GS,fontWeight:"bold"}}>
+          <span style={{color:"rgba(212,174,88,0.6)",fontSize:10,letterSpacing:2,fontWeight:600,fontFamily:"Cinzel, serif"}}>CREDITS</span>
+          <span style={{color:"#D4AE58",fontSize:15,fontFamily:"Cinzel, serif",fontWeight:700}}>
             {isInfinite ? "∞" : profile.credits.toLocaleString()}
           </span>
         </div>
@@ -126,7 +138,7 @@ export default function CreditsBadge() {
             position:"absolute", top:"calc(100% + 10px)", right:0,
             background:"#1C1810", border:`1px solid ${C.goldB}`,
             borderRadius:12, padding:"16px 18px", zIndex:1000,
-            minWidth:220, boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
+            minWidth:240, boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
           }}>
             <div style={{color:C.gold,fontSize:11,fontWeight:600,letterSpacing:1.5,textTransform:"uppercase",...SS,marginBottom:12}}>Credit Breakdown</div>
 
@@ -177,16 +189,17 @@ export default function CreditsBadge() {
         <div
           onClick={() => { setShowTier(!showTier); setShowCredits(false) }}
           style={{
-            display:"flex", alignItems:"center", gap:6,
-            background:C.purpleDim, border:`1px solid ${C.purpleB}`,
-            borderRadius:20, padding:"5px 12px", cursor:"pointer",
-            transition:"all 0.15s", minWidth:110,
+            display:"flex", alignItems:"center", gap:8,
+            background:"rgba(107,28,168,0.2)",
+            border:"1px solid rgba(107,28,168,0.4)",
+            borderRadius:24, padding:"6px 16px", cursor:"pointer",
+            transition:"all 0.2s",
           }}
-          onMouseEnter={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.28)"}
-          onMouseLeave={e=>(e.currentTarget as HTMLDivElement).style.background=C.purpleDim}
+          onMouseEnter={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.32)"}
+          onMouseLeave={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.2)"}
         >
-          <span style={{color:C.purpleL,fontSize:11,...GS,fontStyle:"italic"}}>{tier.label}</span>
-          <span style={{color:C.t3,fontSize:9,...SS}}>▾</span>
+          <span style={{color:"#C090F0",fontSize:13,fontFamily:"Cinzel, serif",fontStyle:"italic",letterSpacing:0.5}}>{tier.label}</span>
+          <span style={{color:"rgba(192,144,240,0.5)",fontSize:10}}>▾</span>
         </div>
 
         {showTier && (
@@ -194,7 +207,7 @@ export default function CreditsBadge() {
             position:"absolute", top:"calc(100% + 10px)", right:0,
             background:"#1C1810", border:`1px solid ${C.purpleB}`,
             borderRadius:12, padding:"16px 18px", zIndex:1000,
-            minWidth:260, boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
+            minWidth:240, boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
           }}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:4}}>
               <span style={{color:C.purpleL,fontSize:13,...GS,fontStyle:"italic",fontWeight:600}}>{tier.label}</span>

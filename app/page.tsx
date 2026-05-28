@@ -1,4 +1,4 @@
-import Nav from '@/components/Nav'
+import Nav from '@/components/NavServer'
 import Hero from '@/components/Hero'
 import Pillars from '@/components/Pillars'
 import ToolsSection from '@/components/ToolsSection'
