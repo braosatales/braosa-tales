@@ -100,7 +100,7 @@ export default function CreditsBadge() {
   }
 
   return (
-    <div style={{display:"flex",alignItems:"center",gap:8}}>
+    <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap",justifyContent:"center"}}>
 
       {/* Credits pill */}
       <div ref={creditsRef} style={{position:"relative"}}>
@@ -110,7 +110,7 @@ export default function CreditsBadge() {
             display:"flex", alignItems:"center", gap:6,
             background:C.goldDim, border:`1px solid ${C.goldB}`,
             borderRadius:20, padding:"5px 12px", cursor:"pointer",
-            transition:"all 0.15s",
+            transition:"all 0.15s", minWidth:110,
           }}
           onMouseEnter={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(212,174,88,0.22)"}
           onMouseLeave={e=>(e.currentTarget as HTMLDivElement).style.background=C.goldDim}
@@ -180,7 +180,7 @@ export default function CreditsBadge() {
             display:"flex", alignItems:"center", gap:6,
             background:C.purpleDim, border:`1px solid ${C.purpleB}`,
             borderRadius:20, padding:"5px 12px", cursor:"pointer",
-            transition:"all 0.15s",
+            transition:"all 0.15s", minWidth:110,
           }}
           onMouseEnter={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.28)"}
           onMouseLeave={e=>(e.currentTarget as HTMLDivElement).style.background=C.purpleDim}

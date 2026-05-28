@@ -489,6 +489,7 @@ export default function TheSignet() {
   const [generatedNames, setGeneratedNames] = useState<string[]>([])
   const [presets,        setPresets]        = useState<PresetType[]>([])
   const [activePreset,   setActivePreset]   = useState<string|null>(null)
+  const [activeTab,      setActiveTab]      = useState<"results"|"saved"|"history">("results")
 
   const tier = TIERS[tierKey] || TIERS["wanderer"]
 
@@ -719,56 +720,204 @@ export default function TheSignet() {
 
   const MobileFilters = () => (
     <div style={{display:"flex",flexDirection:"column",gap:20}}>
-      {isCharTarget&&<div><Label>Cultural Archetype</Label><SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES} placeholder="Search archetype…" accent={C.purpleL}/></div>}
-      {isItemTarget&&(
+      {isCharTarget && (
+        <div>
+          <Label>Cultural Archetype</Label>
+          <SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES} placeholder="Search archetype…" accent={C.purpleL}/>
+        </div>
+      )}
+      {isItemTarget && (
         <div style={{display:"flex",flexDirection:"column",gap:14}}>
-          <div><Label>Item Type</Label><SearchableSelect value={itemType} onChange={setItemType} options={Object.entries(ITEM_TYPES).map(([group,items])=>({group,items}))} placeholder="Search item type…" accent={C.gold}/></div>
+          <div>
+            <Label>Item Type</Label>
+            <SearchableSelect value={itemType} onChange={setItemType} options={Object.entries(ITEM_TYPES).map(([group,items])=>({group,items}))} placeholder="Search item type…" accent={C.gold}/>
+          </div>
           <div>
             <Label>Rarity</Label>
             <div style={{display:"flex",flexDirection:"column",gap:5}}>
               {RARITIES.map(r=>{ const active=rarity===r.id; return(
                 <div key={r.id} onClick={()=>setRarity(r.id)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 11px",borderRadius:7,cursor:"pointer",background:active?`rgba(${hexToRgb(r.color)},0.1)`:C.t4,border:`1px solid ${active?r.color+"55":"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
                   <div style={{width:10,height:10,borderRadius:"50%",flexShrink:0,background:active?r.color:"transparent",border:`2px solid ${r.color}`,boxShadow:active?`0 0 6px ${r.glow}`:"none",transition:"all 0.15s"}}/>
-                  <div style={{flex:1}}><div style={{color:active?r.color:C.t2,fontSize:11,fontWeight:active?600:400,...SS}}>{r.label}</div>{active&&<div style={{color:C.t3,fontSize:9,marginTop:2,lineHeight:1.5,...SS}}>{r.desc}</div>}</div>
+                  <div style={{flex:1}}>
+                    <div style={{color:active?r.color:C.t2,fontSize:11,fontWeight:active?600:400,...SS}}>{r.label}</div>
+                    {active&&<div style={{color:C.t3,fontSize:9,marginTop:2,lineHeight:1.5,...SS}}>{r.desc}</div>}
+                  </div>
                 </div>
               )})}
             </div>
           </div>
           <div onClick={()=>setSentient(!sentient)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"9px 12px",borderRadius:7,cursor:"pointer",background:sentient?C.purpleDim:C.t4,border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
-            <div><div style={{color:sentient?C.purpleL:C.t2,fontSize:11,fontWeight:sentient?600:400,...SS}}>Sentient Item</div><div style={{color:C.t3,fontSize:9,marginTop:1,...SS}}>Has its own consciousness and will</div></div>
+            <div>
+              <div style={{color:sentient?C.purpleL:C.t2,fontSize:11,fontWeight:sentient?600:400,...SS}}>Sentient Item</div>
+              <div style={{color:C.t3,fontSize:9,marginTop:1,...SS}}>Has its own consciousness and will</div>
+            </div>
             <div style={{width:28,height:16,borderRadius:8,background:sentient?C.purple:"rgba(237,224,200,0.1)",border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.15)"}`,position:"relative",transition:"all 0.2s",flexShrink:0}}>
               <div style={{position:"absolute",top:2,left:sentient?12:2,width:10,height:10,borderRadius:"50%",background:sentient?C.purpleL:C.t3,transition:"all 0.2s"}}/>
             </div>
           </div>
         </div>
       )}
-      <div><Label>Languages <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:9}}>𓂀 Ancient &nbsp;◈ Modern &nbsp;⚔ Hi-Fantasy &nbsp;☽ Dark &nbsp;✦ Sci-Fi &nbsp;⚙ Steam &nbsp;◆ Mythpunk &nbsp;✿ Solarpunk</span></Label><LanguagePicker selected={languages} onChange={setLanguages} maxLangs={tier.maxLangs}/></div>
-      <div><Label>Aesthetic Vibe</Label><SearchableSelect value={vibe} onChange={setVibe} options={VIBES} placeholder="Search vibe…" accent={C.purpleL}/></div>
-      <div><Label>Naming Style <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:9}}>phonological feel</span></Label><div style={{display:"flex",flexWrap:"wrap"}}>{STYLES.map(s=><Chip key={s} active={style===s} onClick={()=>setStyle(s)}>{s}</Chip>)}</div></div>
-      <div><Label>Thematic Undertones</Label><MultiDropdown selected={themes} onChange={setThemes} options={THEMES} placeholder="Choose themes…"/></div>
-      <div style={{background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:9,padding:14}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-          <Label style={{marginBottom:0}}>★ Saved Names</Label>
-          <div style={{display:"flex",alignItems:"center",gap:8}}>
-            {tier.maxSaves!==Infinity&&<span style={{fontSize:9,color:!canSave?C.danger:C.t3,...SS,background:!canSave?C.dangerDim:"transparent",border:`1px solid ${!canSave?C.dangerB:"transparent"}`,borderRadius:4,padding:!canSave?"2px 6px":"0"}}>{saved.length}/{tier.maxSaves}</span>}
-            {saved.length>0&&<button onClick={exportSaved} style={{background:"transparent",border:`1px solid ${C.goldB}`,borderRadius:5,padding:"3px 9px",color:C.gold,cursor:"pointer",fontSize:9,letterSpacing:1,...SS}}>⎘ Export</button>}
-          </div>
-        </div>
-        {!canSave&&<div style={{fontSize:9,color:C.danger,marginBottom:8,...SS}}>Limit reached. <span style={{color:C.gold,cursor:"pointer",textDecoration:"underline"}}>Upgrade →</span></div>}
-        {saved.length===0?<div style={{color:C.t3,fontSize:11,...GS,fontStyle:"italic",opacity:0.6}}>No saved names yet</div>:(
-          <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
-            {saved.map((s,i)=>(
-              <div key={i} style={{background:"rgba(212,174,88,0.1)",border:`1px solid ${C.goldB}`,borderRadius:5,padding:"3px 9px",display:"flex",alignItems:"center",gap:5}}>
-                <span style={{color:C.t1,fontSize:12,fontStyle:"italic",...GS}}>{s.name}</span>
-                <button onClick={()=>toggleSave(s)} style={{background:"transparent",border:"none",cursor:"pointer",color:C.t3,fontSize:13,padding:0,lineHeight:1}}>×</button>
-              </div>
-            ))}
-          </div>
-        )}
+      <div>
+        <Label>Languages <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:9}}>𓂀 Ancient &nbsp;◈ Modern &nbsp;⚔ Hi-Fantasy &nbsp;☽ Dark &nbsp;✦ Sci-Fi &nbsp;⚙ Steam &nbsp;◆ Mythpunk &nbsp;✿ Solarpunk</span></Label>
+        <LanguagePicker selected={languages} onChange={setLanguages} maxLangs={tier.maxLangs}/>
+      </div>
+      <div>
+        <Label>Aesthetic Vibe</Label>
+        <SearchableSelect value={vibe} onChange={setVibe} options={VIBES} placeholder="Search vibe…" accent={C.purpleL}/>
+      </div>
+      <div>
+        <Label>Naming Style <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:9}}>phonological feel</span></Label>
+        <div style={{display:"flex",flexWrap:"wrap"}}>{STYLES.map(s=><Chip key={s} active={style===s} onClick={()=>setStyle(s)}>{s}</Chip>)}</div>
+      </div>
+      <div>
+        <Label>Thematic Undertones</Label>
+        <MultiDropdown selected={themes} onChange={setThemes} options={THEMES} placeholder="Choose themes…"/>
       </div>
       <TierNudge/>
     </div>
   )
+
+  const TabbedPanel = () => {
+    const tabs: {id:"results"|"saved"|"history"; label:string; count?:number}[] = [
+      { id:"results",  label:"Results",  count: results.length > 0 ? results.length : undefined },
+      { id:"saved",    label:"Saved",    count: saved.length > 0 ? saved.length : undefined },
+      { id:"history",  label:"History",  count: history.length > 0 ? history.length : undefined },
+    ]
+
+    return (
+      <div>
+        {/* Tab bar */}
+        <div style={{display:"flex",borderBottom:`1px solid ${C.t4}`,marginBottom:16}}>
+          {tabs.map(t => (
+            <button
+              key={t.id}
+              onClick={()=>setActiveTab(t.id)}
+              style={{
+                flex:1, padding:"10px 4px",
+                background:"transparent", border:"none",
+                borderBottom:`2px solid ${activeTab===t.id?C.gold:"transparent"}`,
+                color: activeTab===t.id ? C.gold : C.t3,
+                cursor:"pointer", fontSize:10, letterSpacing:1.5,
+                textTransform:"uppercase", ...SS,
+                transition:"all 0.15s",
+                display:"flex", alignItems:"center", justifyContent:"center", gap:5,
+              }}
+            >
+              {t.label}
+              {t.count !== undefined && (
+                <span style={{background:activeTab===t.id?C.goldDim:C.t4,border:`1px solid ${activeTab===t.id?C.goldB:"rgba(237,224,200,0.1)"}`,borderRadius:9,padding:"1px 6px",fontSize:9,color:activeTab===t.id?C.gold:C.t3}}>
+                  {t.count}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* Results tab */}
+        {activeTab==="results" && (
+          <div>
+            {loading && (
+              <div style={{textAlign:"center",padding:"50px 0",color:C.t3,fontSize:12,letterSpacing:2,...SS}}>
+                <div style={{fontSize:36,marginBottom:14,display:"inline-block",animation:"spin 3s linear infinite"}}>⚗</div>
+                <div>Consulting the ancient tongues…</div>
+              </div>
+            )}
+            {!loading && results.length===0 && (
+              <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:13,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
+                <div style={{fontSize:32,marginBottom:10}}>𓂀</div>
+                Configure your filters and forge names
+              </div>
+            )}
+            {!loading && results.length>0 && (
+              <>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+                  <div style={{color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS}}>
+                    {results.length} proposal{results.length!==1?"s":""} — {target}
+                    {forgingId&&<span style={{color:C.gold,marginLeft:8}}>↻ forging…</span>}
+                  </div>
+                  <button onClick={generate} disabled={!canAfford||loading} style={{background:"transparent",border:`1px solid rgba(237,224,200,0.1)`,borderRadius:5,padding:"4px 12px",color:canAfford?C.t3:"rgba(237,224,200,0.1)",cursor:canAfford?"pointer":"not-allowed",fontSize:9,letterSpacing:1,textTransform:"uppercase",...GS}}>↺ ({totalCost}cr)</button>
+                </div>
+                {results.map((r,i)=><ResultCard key={`${r.name}-${i}`} r={r} saved={!!saved.find(s=>s.name===r.name)} canSave={canSave} onSave={r=>{toggleSave(r);}} onCopy={name=>showToast(`"${name}" copied`)} onForgeOne={forgeOne}/>)}
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Saved tab */}
+        {activeTab==="saved" && (
+          <div>
+            {saved.length===0 ? (
+              <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:13,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
+                <div style={{fontSize:28,marginBottom:10}}>☆</div>
+                No saved names yet.<br/>Star a name from your results.
+              </div>
+            ) : (
+              <>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+                  <div style={{color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS}}>
+                    {saved.length}{tier.maxSaves!==Infinity?` / ${tier.maxSaves}`:""} saved
+                  </div>
+                  {saved.length>0&&<button onClick={exportSaved} style={{background:"transparent",border:`1px solid ${C.goldB}`,borderRadius:5,padding:"3px 9px",color:C.gold,cursor:"pointer",fontSize:9,letterSpacing:1,...SS}}>⎘ Export all</button>}
+                </div>
+                {saved.map((s,i)=>(
+                  <ResultCard key={i} r={s} saved={true} canSave={canSave} onSave={toggleSave} onCopy={name=>showToast(`"${name}" copied`)} onForgeOne={forgeOne}/>
+                ))}
+                {tier.maxSaves!==Infinity && saved.length>=tier.maxSaves && (
+                  <div style={{textAlign:"center",padding:"16px",color:C.t3,fontSize:10,...SS,background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:8,marginTop:8}}>
+                    Save limit reached. <span style={{color:C.gold,cursor:"pointer",textDecoration:"underline"}}>Upgrade to save more →</span>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {/* History tab */}
+        {activeTab==="history" && (
+          <div>
+            {tier.historyLimit === 0 ? (
+              <div style={{textAlign:"center",padding:"60px 24px",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
+                <div style={{fontSize:28,marginBottom:10,opacity:0.3}}>🕰</div>
+                <div style={{color:C.t3,fontSize:12,...GS,fontStyle:"italic",marginBottom:12}}>Generation history is not available on your plan.</div>
+                <div style={{background:"rgba(212,174,88,0.08)",border:`1px solid rgba(212,174,88,0.2)`,borderRadius:6,padding:"6px 12px",display:"inline-block"}}>
+                  <span style={{color:C.gold,fontSize:9,letterSpacing:1,...SS}}>Keeper+ unlocks history</span>
+                </div>
+              </div>
+            ) : history.length===0 ? (
+              <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:13,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
+                <div style={{fontSize:28,marginBottom:10}}>🕰</div>
+                No history yet this session.
+              </div>
+            ) : (
+              <div>
+                {history.map((b,i) => {
+                  const isOverLimit = tier.historyLimit !== Infinity && i >= (tier.historyLimit as number)
+                  if (isOverLimit) {
+                    if (i === tier.historyLimit) return (
+                      <div key={b.id} style={{position:"relative",marginBottom:8}}>
+                        <div style={{filter:"blur(3px)",pointerEvents:"none",opacity:0.4}}>
+                          <HistoryBatch batch={b} onToggle={()=>{}}/>
+                        </div>
+                        <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(18,16,13,0.7)",borderRadius:9,border:`1px solid rgba(212,174,88,0.2)`}}>
+                          <div style={{textAlign:"center",padding:"0 20px"}}>
+                            <div style={{color:C.gold,fontSize:10,letterSpacing:1,...SS,marginBottom:4}}>History limit reached</div>
+                            <div style={{color:C.t3,fontSize:9,...SS,marginBottom:8}}>Upgrade to keep more than {tier.historyLimit} generations</div>
+                            <button style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"5px 14px",color:C.purpleL,cursor:"pointer",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",...GS}}>Upgrade →</button>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                    return null
+                  }
+                  return <HistoryBatch key={b.id} batch={b} onToggle={()=>toggleHistory(b.id)}/>
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
 
   if(profileLoading) return (
     <div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",...GS}}>
@@ -786,13 +935,13 @@ export default function TheSignet() {
       {!mobile&&(
         <div style={{display:"flex",minHeight:"calc(100vh - 61px)"}}>
           <div style={{width:310,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"24px 20px",overflowY:"auto"}}><Controls/></div>
-          <div style={{flex:1,padding:"28px 30px",overflowY:"auto"}}><ResultsPanel/></div>
+          <div style={{flex:1,padding:"28px 30px",overflowY:"auto"}}><TabbedPanel/></div>
         </div>
       )}
-      {mobile&&(
+      {mobile && (
         <div style={{padding:16}}>
 
-          {/* Always visible: Naming + Preset */}
+          {/* Row 1: Naming + Preset — always visible */}
           <div style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:12}}>
             <div style={{flex:"0 0 42%"}}>
               <Label>Naming</Label>
@@ -804,7 +953,22 @@ export default function TheSignet() {
             </div>
           </div>
 
-          {/* Always visible: Proposals */}
+          {/* Row 2: Filters & Settings — collapsible */}
+          <button
+            onClick={()=>setFiltersOpen(!filtersOpen)}
+            style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",background:C.t4,border:`1px solid rgba(237,224,200,0.1)`,borderRadius:8,padding:"9px 14px",color:C.t3,cursor:"pointer",fontSize:10,letterSpacing:2,textTransform:"uppercase",...SS,marginBottom:8}}
+          >
+            <span>⚙ Filters &amp; Settings</span>
+            <span style={{transform:filtersOpen?"rotate(180deg)":"none",transition:"transform 0.2s",fontSize:9}}>▼</span>
+          </button>
+
+          {filtersOpen && (
+            <div style={{background:"rgba(237,224,200,0.02)",border:`1px solid ${C.border}`,borderRadius:10,padding:16,marginBottom:12}}>
+              <MobileFilters/>
+            </div>
+          )}
+
+          {/* Row 3: Proposals — always visible */}
           <div style={{marginBottom:12}}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:7}}>
               <Label style={{marginBottom:0}}>Proposals: <span style={{color:C.gold,marginLeft:3}}>{count}</span></Label>
@@ -819,26 +983,15 @@ export default function TheSignet() {
             </div>
           </div>
 
-          {/* Always visible: Forge Names */}
+          {/* Row 4: Forge Names — always visible */}
           <button onClick={generate} disabled={loading||!canAfford} style={{width:"100%",padding:"13px",marginBottom:12,background:!canAfford?C.dangerDim:loading?C.purpleDim:`linear-gradient(135deg,${C.purpleDim},rgba(107,28,168,0.3))`,border:`1px solid ${!canAfford?C.dangerB:loading?"rgba(107,28,168,0.2)":C.purpleB}`,borderRadius:9,color:!canAfford?C.danger:loading?"rgba(192,144,240,0.35)":C.purpleL,cursor:loading||!canAfford?"not-allowed":"pointer",fontSize:12,letterSpacing:3,textTransform:"uppercase",...GS,transition:"all 0.2s"}}>
             {loading?"Consulting the tongues…":!canAfford?"Not enough credits":"⚗  Forge Names"}
           </button>
 
           {error&&<div style={{color:C.danger,fontSize:11,textAlign:"center",marginBottom:12,...SS}}>{error}</div>}
 
-          {/* Collapsible: everything else */}
-          <button onClick={()=>setFiltersOpen(!filtersOpen)} style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",background:C.t4,border:`1px solid rgba(237,224,200,0.1)`,borderRadius:8,padding:"10px 16px",color:C.t3,cursor:"pointer",fontSize:10,letterSpacing:2,textTransform:"uppercase",...SS,marginBottom:8}}>
-            <span>⚙ Filters &amp; Settings</span>
-            <span style={{transform:filtersOpen?"rotate(180deg)":"none",transition:"transform 0.2s",fontSize:9}}>▼</span>
-          </button>
-
-          {filtersOpen && (
-            <div style={{background:"rgba(237,224,200,0.02)",border:`1px solid ${C.border}`,borderRadius:10,padding:16,marginBottom:16}}>
-              <MobileFilters/>
-            </div>
-          )}
-
-          <ResultsPanel/>
+          {/* Row 5: Tabbed results panel */}
+          <TabbedPanel/>
         </div>
       )}
       <Toast message={toast}/>
