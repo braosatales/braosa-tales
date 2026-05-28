@@ -597,7 +597,7 @@ export default function TheSignet() {
     if(results.length)archiveResults(results)
     setLoading(true); setError(null); setResults([])
     try {
-      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1400,messages:[{role:"user",content:buildPrompt(count,null)}],creditsToUse:totalCost,target,languages,vibe,themes,style})})
+      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:1400,messages:[{role:"user",content:buildPrompt(count,null)}],creditsToUse:totalCost,target,languages,vibe,themes,style})})
       const data = await res.json()
       if(data.creditsRemaining!==undefined)setCredits(data.creditsRemaining)
       const text = (data.content||[]).map((b:{text?:string})=>b.text||"").join("")
@@ -611,7 +611,7 @@ export default function TheSignet() {
     if(credits!==Infinity&&credits<1){showToast("Not enough credits");return}
     setForgingId(ref.name)
     try {
-      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:400,messages:[{role:"user",content:buildPrompt(1,ref)}],creditsToUse:1,target,languages,vibe,themes,style})})
+      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:400,messages:[{role:"user",content:buildPrompt(1,ref)}],creditsToUse:1,target,languages,vibe,themes,style})})
       const data = await res.json()
       if(data.creditsRemaining!==undefined)setCredits(data.creditsRemaining)
       const text = (data.content||[]).map((b:{text?:string})=>b.text||"").join("")
