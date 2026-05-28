@@ -98,6 +98,11 @@ export default function Nav() {
             <Link href="/sign-up" className="btn-primary text-xs py-2 px-4 text-center" onClick={() => setMenuOpen(false)}>Get started</Link>
           </SignedOut>
           <SignedIn>
+            <div style={{padding:"12px 0", borderBottom:"1px solid rgba(237,224,200,0.08)"}}>
+              <CreditsBadge/>
+            </div>
+          </SignedIn>
+          <SignedIn>
             <div className="flex items-center gap-3">
               <UserButton afterSignOutUrl="/" />
               <span className="font-cinzel text-xs tracking-widest uppercase text-brand-muted">Account</span>

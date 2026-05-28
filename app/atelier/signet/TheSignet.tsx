@@ -717,6 +717,59 @@ export default function TheSignet() {
     </div>
   )
 
+  const MobileFilters = () => (
+    <div style={{display:"flex",flexDirection:"column",gap:20}}>
+      {isCharTarget&&<div><Label>Cultural Archetype</Label><SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES} placeholder="Search archetype…" accent={C.purpleL}/></div>}
+      {isItemTarget&&(
+        <div style={{display:"flex",flexDirection:"column",gap:14}}>
+          <div><Label>Item Type</Label><SearchableSelect value={itemType} onChange={setItemType} options={Object.entries(ITEM_TYPES).map(([group,items])=>({group,items}))} placeholder="Search item type…" accent={C.gold}/></div>
+          <div>
+            <Label>Rarity</Label>
+            <div style={{display:"flex",flexDirection:"column",gap:5}}>
+              {RARITIES.map(r=>{ const active=rarity===r.id; return(
+                <div key={r.id} onClick={()=>setRarity(r.id)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 11px",borderRadius:7,cursor:"pointer",background:active?`rgba(${hexToRgb(r.color)},0.1)`:C.t4,border:`1px solid ${active?r.color+"55":"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
+                  <div style={{width:10,height:10,borderRadius:"50%",flexShrink:0,background:active?r.color:"transparent",border:`2px solid ${r.color}`,boxShadow:active?`0 0 6px ${r.glow}`:"none",transition:"all 0.15s"}}/>
+                  <div style={{flex:1}}><div style={{color:active?r.color:C.t2,fontSize:11,fontWeight:active?600:400,...SS}}>{r.label}</div>{active&&<div style={{color:C.t3,fontSize:9,marginTop:2,lineHeight:1.5,...SS}}>{r.desc}</div>}</div>
+                </div>
+              )})}
+            </div>
+          </div>
+          <div onClick={()=>setSentient(!sentient)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"9px 12px",borderRadius:7,cursor:"pointer",background:sentient?C.purpleDim:C.t4,border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
+            <div><div style={{color:sentient?C.purpleL:C.t2,fontSize:11,fontWeight:sentient?600:400,...SS}}>Sentient Item</div><div style={{color:C.t3,fontSize:9,marginTop:1,...SS}}>Has its own consciousness and will</div></div>
+            <div style={{width:28,height:16,borderRadius:8,background:sentient?C.purple:"rgba(237,224,200,0.1)",border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.15)"}`,position:"relative",transition:"all 0.2s",flexShrink:0}}>
+              <div style={{position:"absolute",top:2,left:sentient?12:2,width:10,height:10,borderRadius:"50%",background:sentient?C.purpleL:C.t3,transition:"all 0.2s"}}/>
+            </div>
+          </div>
+        </div>
+      )}
+      <div><Label>Languages <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:9}}>𓂀 Ancient &nbsp;◈ Modern &nbsp;⚔ Hi-Fantasy &nbsp;☽ Dark &nbsp;✦ Sci-Fi &nbsp;⚙ Steam &nbsp;◆ Mythpunk &nbsp;✿ Solarpunk</span></Label><LanguagePicker selected={languages} onChange={setLanguages} maxLangs={tier.maxLangs}/></div>
+      <div><Label>Aesthetic Vibe</Label><SearchableSelect value={vibe} onChange={setVibe} options={VIBES} placeholder="Search vibe…" accent={C.purpleL}/></div>
+      <div><Label>Naming Style <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:9}}>phonological feel</span></Label><div style={{display:"flex",flexWrap:"wrap"}}>{STYLES.map(s=><Chip key={s} active={style===s} onClick={()=>setStyle(s)}>{s}</Chip>)}</div></div>
+      <div><Label>Thematic Undertones</Label><MultiDropdown selected={themes} onChange={setThemes} options={THEMES} placeholder="Choose themes…"/></div>
+      <div style={{background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:9,padding:14}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+          <Label style={{marginBottom:0}}>★ Saved Names</Label>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            {tier.maxSaves!==Infinity&&<span style={{fontSize:9,color:!canSave?C.danger:C.t3,...SS,background:!canSave?C.dangerDim:"transparent",border:`1px solid ${!canSave?C.dangerB:"transparent"}`,borderRadius:4,padding:!canSave?"2px 6px":"0"}}>{saved.length}/{tier.maxSaves}</span>}
+            {saved.length>0&&<button onClick={exportSaved} style={{background:"transparent",border:`1px solid ${C.goldB}`,borderRadius:5,padding:"3px 9px",color:C.gold,cursor:"pointer",fontSize:9,letterSpacing:1,...SS}}>⎘ Export</button>}
+          </div>
+        </div>
+        {!canSave&&<div style={{fontSize:9,color:C.danger,marginBottom:8,...SS}}>Limit reached. <span style={{color:C.gold,cursor:"pointer",textDecoration:"underline"}}>Upgrade →</span></div>}
+        {saved.length===0?<div style={{color:C.t3,fontSize:11,...GS,fontStyle:"italic",opacity:0.6}}>No saved names yet</div>:(
+          <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
+            {saved.map((s,i)=>(
+              <div key={i} style={{background:"rgba(212,174,88,0.1)",border:`1px solid ${C.goldB}`,borderRadius:5,padding:"3px 9px",display:"flex",alignItems:"center",gap:5}}>
+                <span style={{color:C.t1,fontSize:12,fontStyle:"italic",...GS}}>{s.name}</span>
+                <button onClick={()=>toggleSave(s)} style={{background:"transparent",border:"none",cursor:"pointer",color:C.t3,fontSize:13,padding:0,lineHeight:1}}>×</button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <TierNudge/>
+    </div>
+  )
+
   if(profileLoading) return (
     <div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",...GS}}>
       <div style={{textAlign:"center",color:C.t3}}>
@@ -738,11 +791,53 @@ export default function TheSignet() {
       )}
       {mobile&&(
         <div style={{padding:16}}>
-          <button onClick={()=>setFiltersOpen(!filtersOpen)} style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:8,padding:"10px 16px",color:C.purpleL,cursor:"pointer",fontSize:11,letterSpacing:2,textTransform:"uppercase",...GS,marginBottom:12}}>
-            <span>⚗ Filters &amp; Settings</span>
+
+          {/* Always visible: Naming + Preset */}
+          <div style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:12}}>
+            <div style={{flex:"0 0 42%"}}>
+              <Label>Naming</Label>
+              <SearchableSelect value={target} onChange={setTarget} options={TARGETS} placeholder="Search what to name…" accent={C.purpleL}/>
+            </div>
+            <div style={{flex:1}}>
+              <Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:9,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label>
+              <PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets}/>
+            </div>
+          </div>
+
+          {/* Always visible: Proposals */}
+          <div style={{marginBottom:12}}>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:7}}>
+              <Label style={{marginBottom:0}}>Proposals: <span style={{color:C.gold,marginLeft:3}}>{count}</span></Label>
+              <div style={{display:"flex",alignItems:"center",gap:8}}>
+                <ComplexityDots langCount={languages.length} themeCount={themes.length} proposals={count}/>
+                <span style={{background:canAfford?C.goldDim:C.dangerDim,border:`1px solid ${canAfford?C.goldB:C.dangerB}`,borderRadius:4,padding:"2px 8px",color:canAfford?C.gold:C.danger,fontSize:10,...GS,transition:"all 0.2s"}}>{totalCost} credit{totalCost!==1?"s":""}</span>
+              </div>
+            </div>
+            <input type="range" min={1} max={6} step={1} value={count} onChange={e=>setCount(Number(e.target.value))} style={{width:"100%",accentColor:C.purple,marginTop:2}}/>
+            <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+              {[1,2,3,4,5,6].map(n=><span key={n} style={{color:n===count?C.gold:C.t3,fontSize:n===count?10:9,fontWeight:n===count?"bold":"normal",...SS,transition:"color 0.15s"}}>{n}</span>)}
+            </div>
+          </div>
+
+          {/* Always visible: Forge Names */}
+          <button onClick={generate} disabled={loading||!canAfford} style={{width:"100%",padding:"13px",marginBottom:12,background:!canAfford?C.dangerDim:loading?C.purpleDim:`linear-gradient(135deg,${C.purpleDim},rgba(107,28,168,0.3))`,border:`1px solid ${!canAfford?C.dangerB:loading?"rgba(107,28,168,0.2)":C.purpleB}`,borderRadius:9,color:!canAfford?C.danger:loading?"rgba(192,144,240,0.35)":C.purpleL,cursor:loading||!canAfford?"not-allowed":"pointer",fontSize:12,letterSpacing:3,textTransform:"uppercase",...GS,transition:"all 0.2s"}}>
+            {loading?"Consulting the tongues…":!canAfford?"Not enough credits":"⚗  Forge Names"}
+          </button>
+
+          {error&&<div style={{color:C.danger,fontSize:11,textAlign:"center",marginBottom:12,...SS}}>{error}</div>}
+
+          {/* Collapsible: everything else */}
+          <button onClick={()=>setFiltersOpen(!filtersOpen)} style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",background:C.t4,border:`1px solid rgba(237,224,200,0.1)`,borderRadius:8,padding:"10px 16px",color:C.t3,cursor:"pointer",fontSize:10,letterSpacing:2,textTransform:"uppercase",...SS,marginBottom:8}}>
+            <span>⚙ Filters &amp; Settings</span>
             <span style={{transform:filtersOpen?"rotate(180deg)":"none",transition:"transform 0.2s",fontSize:9}}>▼</span>
           </button>
-          {filtersOpen&&<div style={{background:C.bg2,border:`1px solid ${C.border}`,borderRadius:10,padding:16,marginBottom:16}}><Controls/></div>}
+
+          {filtersOpen && (
+            <div style={{background:"rgba(237,224,200,0.02)",border:`1px solid ${C.border}`,borderRadius:10,padding:16,marginBottom:16}}>
+              <MobileFilters/>
+            </div>
+          )}
+
           <ResultsPanel/>
         </div>
       )}
