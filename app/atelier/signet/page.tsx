@@ -10,5 +10,9 @@ export const metadata = {
 export default async function SignetPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
-  return <TheSignet />
+  return (
+    <div style={{minHeight:"100vh", background:"#12100D"}}>
+      <TheSignet />
+    </div>
+  )
 }

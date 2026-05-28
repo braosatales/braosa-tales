@@ -490,6 +490,7 @@ export default function TheSignet() {
   const [presets,        setPresets]        = useState<PresetType[]>([])
   const [activePreset,   setActivePreset]   = useState<string|null>(null)
   const [activeTab,      setActiveTab]      = useState<"results"|"saved"|"history">("results")
+  const [selectedHistoryName, setSelectedHistoryName] = useState<NameResult|null>(null)
 
   const tier = TIERS[tierKey] || TIERS["wanderer"]
 
@@ -783,6 +784,7 @@ export default function TheSignet() {
       { id:"saved",    label:"Saved",    count: saved.length > 0 ? saved.length : undefined },
       { id:"history",  label:"History",  count: history.length > 0 ? history.length : undefined },
     ]
+    const historyLocked = tier.historyLimit === 0
 
     return (
       <div>
@@ -875,7 +877,7 @@ export default function TheSignet() {
         {/* History tab */}
         {activeTab==="history" && (
           <div>
-            {tier.historyLimit === 0 ? (
+            {historyLocked ? (
               <div style={{textAlign:"center",padding:"60px 24px",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
                 <div style={{fontSize:28,marginBottom:10,opacity:0.3}}>🕰</div>
                 <div style={{color:C.t3,fontSize:12,...GS,fontStyle:"italic",marginBottom:12}}>Generation history is not available on your plan.</div>
@@ -883,38 +885,151 @@ export default function TheSignet() {
                   <span style={{color:C.gold,fontSize:9,letterSpacing:1,...SS}}>Keeper+ unlocks history</span>
                 </div>
               </div>
-            ) : history.length===0 ? (
-              <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:13,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
-                <div style={{fontSize:28,marginBottom:10}}>🕰</div>
-                No history yet this session.
-              </div>
-            ) : (
-              <div>
-                {history.map((b,i) => {
-                  const isOverLimit = tier.historyLimit !== Infinity && i >= (tier.historyLimit as number)
-                  if (isOverLimit) {
-                    if (i === tier.historyLimit) return (
-                      <div key={b.id} style={{position:"relative",marginBottom:8}}>
-                        <div style={{filter:"blur(3px)",pointerEvents:"none",opacity:0.4}}>
-                          <HistoryBatch batch={b} onToggle={()=>{}}/>
-                        </div>
-                        <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(18,16,13,0.7)",borderRadius:9,border:`1px solid rgba(212,174,88,0.2)`}}>
-                          <div style={{textAlign:"center",padding:"0 20px"}}>
-                            <div style={{color:C.gold,fontSize:10,letterSpacing:1,...SS,marginBottom:4}}>History limit reached</div>
-                            <div style={{color:C.t3,fontSize:9,...SS,marginBottom:8}}>Upgrade to keep more than {tier.historyLimit} generations</div>
-                            <button style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"5px 14px",color:C.purpleL,cursor:"pointer",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",...GS}}>Upgrade →</button>
-                          </div>
-                        </div>
+            ) : (() => {
+              const allNames: (NameResult & {batchTarget:string; batchTs:number; globalIndex:number})[] = []
+              history.forEach(batch => {
+                batch.results.forEach(r => {
+                  allNames.push({...r, batchTarget:batch.target, batchTs:batch.ts, globalIndex:allNames.length})
+                })
+              })
+
+              if (allNames.length === 0) return (
+                <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:13,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
+                  <div style={{fontSize:28,marginBottom:10}}>🕰</div>
+                  No history yet this session.
+                </div>
+              )
+
+              const limit = tier.historyLimit === Infinity ? allNames.length : tier.historyLimit as number
+              const visible = allNames.slice(0, limit)
+              const hasMore = allNames.length > limit
+
+              return (
+                <div>
+                  <div style={{color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS,marginBottom:12}}>
+                    {allNames.length} name{allNames.length!==1?"s":""} this session
+                  </div>
+
+                  {visible.map((r, i) => (
+                    <div
+                      key={i}
+                      onClick={()=>setSelectedHistoryName(r)}
+                      style={{
+                        display:"flex", alignItems:"center", justifyContent:"space-between",
+                        padding:"10px 14px", marginBottom:4, borderRadius:8,
+                        background:C.t4, border:`1px solid transparent`,
+                        cursor:"pointer", transition:"all 0.15s",
+                      }}
+                      onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.08)";(e.currentTarget as HTMLDivElement).style.borderColor=C.purpleB}}
+                      onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.background=C.t4;(e.currentTarget as HTMLDivElement).style.borderColor="transparent"}}
+                    >
+                      <div style={{display:"flex",alignItems:"center",gap:10,flex:1,minWidth:0}}>
+                        <span style={{color:C.t1,fontSize:14,fontStyle:"italic",...GS,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.name}</span>
+                        <span style={{color:C.t3,fontSize:10,flexShrink:0,...SS}}>{r.language}</span>
                       </div>
-                    )
-                    return null
-                  }
-                  return <HistoryBatch key={b.id} batch={b} onToggle={()=>toggleHistory(b.id)}/>
-                })}
-              </div>
-            )}
+                      <span style={{color:C.t3,fontSize:10,flexShrink:0,marginLeft:8,...SS}}>→</span>
+                    </div>
+                  ))}
+
+                  {hasMore && (
+                    <div style={{marginTop:12,padding:"14px 16px",background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:9,textAlign:"center"}}>
+                      <div style={{color:C.t3,fontSize:10,marginBottom:6,...SS}}>
+                        Showing {limit} of {allNames.length} names this session
+                      </div>
+                      <div style={{color:C.purpleL,fontSize:11,fontStyle:"italic",...GS,marginBottom:10}}>
+                        Upgrade to keep your full history
+                      </div>
+                      <button style={{background:`linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.5))`,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"6px 16px",color:C.purpleL,cursor:"pointer",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",...GS}}>
+                        Upgrade →
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
           </div>
         )}
+      </div>
+    )
+  }
+
+  const HistoryNameModal = () => {
+    if (!selectedHistoryName) return null
+    const r = selectedHistoryName
+    const isSaved = !!saved.find(s=>s.name===r.name)
+
+    const doExport = () => {
+      navigator.clipboard.writeText(`${r.name} (${r.pronunciation}) — ${r.language} · ${r.root_words}: "${r.meaning}"\n${r.resonance}`)
+      showToast(`"${r.name}" copied`)
+    }
+
+    return (
+      <div
+        onClick={()=>setSelectedHistoryName(null)}
+        style={{
+          position:"fixed", inset:0, zIndex:500,
+          background:"rgba(12,10,9,0.85)",
+          display:"flex", alignItems:"center", justifyContent:"center",
+          padding:20,
+        }}
+      >
+        <div
+          onClick={e=>e.stopPropagation()}
+          style={{
+            background:"#1C1810", border:`1px solid ${C.purpleB}`,
+            borderRadius:14, padding:"20px 20px 16px",
+            width:"100%", maxWidth:420,
+            boxShadow:"0 32px 80px rgba(0,0,0,0.8)",
+          }}
+        >
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
+            <div>
+              <div style={{color:C.t1,fontSize:22,fontStyle:"italic",...GS,fontWeight:600}}>{r.name}</div>
+              <div style={{color:C.gold,fontSize:11,marginTop:3,letterSpacing:1.5,fontWeight:500,...SS}}>{r.pronunciation}</div>
+            </div>
+            <button onClick={()=>setSelectedHistoryName(null)} style={{background:"transparent",border:"none",color:C.t3,cursor:"pointer",fontSize:20,lineHeight:1,padding:"0 4px"}} onMouseEnter={e=>(e.target as HTMLButtonElement).style.color=C.t1} onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=C.t3}>×</button>
+          </div>
+
+          <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:7,marginBottom:12}}>
+            <span style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:4,padding:"3px 9px",fontSize:11,color:C.purpleL,letterSpacing:0.4,fontWeight:600,...SS}}>{r.language}</span>
+            <span style={{color:C.t2,fontSize:11,fontStyle:"italic",...GS}}>{r.root_words} — &ldquo;{r.meaning}&rdquo;</span>
+          </div>
+
+          <div style={{color:C.t2,fontSize:12,lineHeight:1.75,fontStyle:"italic",...GS,borderTop:`1px solid ${C.t4}`,paddingTop:12,marginBottom:16}}>
+            {r.resonance}
+          </div>
+
+          <div style={{display:"flex",gap:8}}>
+            <button
+              onClick={()=>{ toggleSave(r); showToast(isSaved?`"${r.name}" removed`:`"${r.name}" saved ★`) }}
+              style={{
+                flex:1, padding:"9px",
+                background:isSaved?C.goldDim:C.t4,
+                border:`1px solid ${isSaved?C.goldB:"rgba(237,224,200,0.12)"}`,
+                borderRadius:7, color:isSaved?C.gold:C.t2,
+                cursor:canSave||isSaved?"pointer":"not-allowed",
+                fontSize:11, ...GS, transition:"all 0.15s",
+                opacity:!canSave&&!isSaved?0.4:1,
+              }}
+            >
+              {isSaved ? "★ Saved" : "☆ Save"}
+            </button>
+            <button
+              onClick={doExport}
+              style={{
+                flex:1, padding:"9px",
+                background:C.t4,
+                border:`1px solid rgba(237,224,200,0.12)`,
+                borderRadius:7, color:C.t2,
+                cursor:"pointer", fontSize:11, ...GS, transition:"all 0.15s",
+              }}
+              onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.goldB;(e.currentTarget as HTMLButtonElement).style.color=C.gold}}
+              onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.12)";(e.currentTarget as HTMLButtonElement).style.color=C.t2}}
+            >
+              ⎘ Copy
+            </button>
+          </div>
+        </div>
       </div>
     )
   }
@@ -930,8 +1045,8 @@ export default function TheSignet() {
   )
 
   return (
-    <div style={{minHeight:"100vh",background:C.bg,...GS,color:C.t2}}>
-      <div style={{position:"fixed",inset:0,pointerEvents:"none",backgroundImage:`radial-gradient(ellipse at 10% 50%,rgba(107,28,168,0.07) 0%,transparent 55%),radial-gradient(ellipse at 90% 20%,rgba(107,28,168,0.04) 0%,transparent 50%)`}}/>
+    <div style={{...GS,color:C.t2}}>
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,backgroundImage:`radial-gradient(ellipse at 10% 50%,rgba(107,28,168,0.07) 0%,transparent 55%),radial-gradient(ellipse at 90% 20%,rgba(107,28,168,0.04) 0%,transparent 50%)`}}/>
       {!mobile&&(
         <div style={{display:"flex",minHeight:"calc(100vh - 61px)"}}>
           <div style={{width:310,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"24px 20px",overflowY:"auto"}}><Controls/></div>
@@ -995,6 +1110,7 @@ export default function TheSignet() {
         </div>
       )}
       <Toast message={toast}/>
+      <HistoryNameModal/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}} ::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-thumb{background:${C.purpleB};border-radius:2px;} input[type=range]{cursor:pointer;}`}</style>
     </div>
   )
