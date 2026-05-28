@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useRef, useEffect, useMemo } from "react"
 
@@ -22,7 +22,6 @@ const TIERS: Record<string, { label:string; price:string; credits:number; daily:
   author:    { label:"The Author", price:"$999",   credits:500,  daily:50, maxLangs:Infinity, maxSaves:Infinity, maxPresets:20, historyLimit:Infinity, dedup:true  },
 }
 
-const LOGO = "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"
 
 function getComplexity(langCount: number, themeCount: number) {
   let score = 0
@@ -222,26 +221,6 @@ function Toast({ message }: { message: string }) {
   return <div style={{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",background:"#2A2318",border:`1px solid ${C.goldB}`,borderRadius:8,padding:"9px 20px",color:C.gold,fontSize:12,...GS,zIndex:1000,boxShadow:"0 8px 32px rgba(0,0,0,0.6)",pointerEvents:"none",whiteSpace:"nowrap"}}>{message}</div>
 }
 
-function CreditPill({ remaining, total, cost }: { remaining: number; total: number; cost: number }) {
-  const low   = total !== Infinity && remaining < total * 0.15
-  const broke = total !== Infinity && remaining < cost
-  const pct   = total === Infinity ? 100 : Math.max(0,(remaining/total)*100)
-  const col   = broke||low ? C.danger : C.gold
-  return (
-    <div style={{display:"flex",flexDirection:"column",gap:3,alignItems:"flex-end"}}>
-      <div style={{display:"flex",alignItems:"center",gap:6}}>
-        <span style={{color:C.t3,fontSize:9,letterSpacing:1,fontWeight:600,...SS}}>CREDITS</span>
-        <span style={{color:col,fontSize:13,...GS,fontWeight:"bold"}}>{total===Infinity?"∞":remaining}</span>
-        {total!==Infinity&&<span style={{color:C.t3,fontSize:9,fontWeight:500,...SS}}>/ {total}</span>}
-      </div>
-      {total!==Infinity&&(
-        <div style={{width:80,height:3,background:C.t4,borderRadius:2,overflow:"hidden"}}>
-          <div style={{width:`${pct}%`,height:"100%",background:col,borderRadius:2,transition:"width 0.4s"}}/>
-        </div>
-      )}
-    </div>
-  )
-}
 
 function SearchableSelect({ value, onChange, options, placeholder="Search…", accent }: { value: string; onChange: (v: string) => void; options: (string | {group: string; items: string[]})[] ; placeholder?: string; accent?: string }) {
   const [open, setOpen] = useState(false)
@@ -751,17 +730,6 @@ export default function TheSignet() {
   return (
     <div style={{minHeight:"100vh",background:C.bg,...GS,color:C.t2}}>
       <div style={{position:"fixed",inset:0,pointerEvents:"none",backgroundImage:`radial-gradient(ellipse at 10% 50%,rgba(107,28,168,0.07) 0%,transparent 55%),radial-gradient(ellipse at 90% 20%,rgba(107,28,168,0.04) 0%,transparent 50%)`}}/>
-      <div style={{background:C.bg2,borderBottom:`1px solid ${C.border}`,padding:`12px ${mobile?"16px":"28px"}`,display:"flex",alignItems:"center",gap:12,position:"sticky",top:0,zIndex:10}}>
-        <img src={`data:image/png;base64,${LOGO}`} alt="" style={{width:36,height:36,objectFit:"contain",flexShrink:0}}/>
-        <div>
-          <div style={{color:C.t1,fontSize:mobile?13:15,letterSpacing:0.5,fontWeight:600}}>Braosa&apos;s Atelier</div>
-          <div style={{color:C.t3,fontSize:8,letterSpacing:2.5,textTransform:"uppercase",fontWeight:600,...SS}}>The Signet</div>
-        </div>
-        <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:16}}>
-          <CreditPill remaining={credits} total={tier.credits} cost={totalCost}/>
-          {!mobile&&<div style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"5px 14px",color:C.purpleL,fontSize:11,cursor:"pointer",...SS}}>{tier.label} ▸</div>}
-        </div>
-      </div>
       {!mobile&&(
         <div style={{display:"flex",minHeight:"calc(100vh - 61px)"}}>
           <div style={{width:310,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"24px 20px",overflowY:"auto"}}><Controls/></div>

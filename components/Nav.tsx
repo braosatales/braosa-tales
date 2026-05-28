@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import CreditsBadge from '@/app/atelier/signet/CreditsBadge'
 
 const links = [
   { href: '/', label: 'Home' },
@@ -51,6 +52,9 @@ export default function Nav() {
           </Link>
         </SignedOut>
         <SignedIn>
+          <Suspense fallback={null}>
+            <CreditsBadge />
+          </Suspense>
           <UserButton
             afterSignOutUrl="/"
             appearance={{
