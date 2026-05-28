@@ -30,7 +30,7 @@ const workshopTools: Tool[] = [
 ]
 
 const generatorTools: Tool[] = [
-  { name: 'The Signet', description: 'Name generator for characters, places, and factions.', icon: '10 The Signet.svg' },
+  { name: 'The Signet', description: 'Name generator for characters, places, and factions.', icon: '10 The Signet.svg', ready: true, href: '/atelier/signet' },
   { name: 'The Mallet', description: 'Forge unique weapons, armour, and magical items.', icon: '11 The Mallet.svg' },
   { name: 'The Chisel', description: 'Build rich NPCs with personality, secrets, and hooks.', icon: '12 The Chisel.svg' },
   { name: 'The Blueprint', description: 'Generate detailed locations — towns, dungeons, ruins.', icon: '13 The Blueprint.svg' },
