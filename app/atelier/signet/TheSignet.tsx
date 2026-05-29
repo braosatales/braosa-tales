@@ -182,6 +182,17 @@ interface Lang { id: string; label: string; note?: string; category: string }
 interface NameResult { id?: string; name: string; pronunciation: string; language: string; root_words: string; meaning: string; resonance: string; forged?: boolean }
 interface HistoryBatchType { id: number; ts: number; open: boolean; target: string; langs: string; results: NameResult[] }
 interface PresetType { id: string; name: string; settings: { archetype: string; languages: Lang[]; vibe: string; style: string; themes: string[]; count: number } }
+interface DbHistoryEntry {
+  id: string
+  target: string
+  languages: {id:string; label:string; category:string}[]
+  vibe: string
+  style: string
+  themes: string[]
+  results: NameResult[]
+  credits_used: number
+  generated_at: string
+}
 
 function ComplexityDots({ langCount, themeCount, proposals }: { langCount: number; themeCount: number; proposals: number }) {
   const cx = getComplexity(langCount, themeCount)
@@ -485,12 +496,15 @@ export default function TheSignet() {
   const [saved,          setSaved]          = useState<NameResult[]>([])
   const [toast,          setToast]          = useState("")
   const [mobile,         setMobile]         = useState(false)
-  const [filtersOpen,    setFiltersOpen]    = useState(true)
+  const [filtersOpen,    setFiltersOpen]    = useState(false)
   const [generatedNames, setGeneratedNames] = useState<string[]>([])
   const [presets,        setPresets]        = useState<PresetType[]>([])
   const [activePreset,   setActivePreset]   = useState<string|null>(null)
   const [activeTab,      setActiveTab]      = useState<"results"|"saved"|"history">("results")
   const [selectedHistoryName, setSelectedHistoryName] = useState<NameResult|null>(null)
+  const [dbHistory,      setDbHistory]      = useState<DbHistoryEntry[]>([])
+  const [savedFilter,    setSavedFilter]    = useState<string>("all")
+  const [savedSort,      setSavedSort]      = useState<"newest"|"oldest"|"az"|"za">("newest")
 
   const tier = TIERS[tierKey] || TIERS["wanderer"]
 
@@ -499,18 +513,20 @@ export default function TheSignet() {
   useEffect(()=>{
     const init = async () => {
       try {
-        const [profileRes, savedRes, presetsRes] = await Promise.all([
+        const [profileRes, savedRes, presetsRes, historyRes] = await Promise.all([
           fetch("/api/user/profile"),
           fetch("/api/user/saved-names"),
           fetch("/api/user/presets"),
+          fetch("/api/user/history"),
         ])
-        const [profile, savedData, presetsData] = await Promise.all([
-          profileRes.json(), savedRes.json(), presetsRes.json(),
+        const [profile, savedData, presetsData, historyData] = await Promise.all([
+          profileRes.json(), savedRes.json(), presetsRes.json(), historyRes.json(),
         ])
         if (profile.tier) setTierKey(profile.tier)
         if (profile.credits !== undefined) setCredits(profile.credits)
         if (Array.isArray(savedData)) setSaved(savedData)
         if (Array.isArray(presetsData)) setPresets(presetsData.map((p: {id:string;name:string;settings:PresetType["settings"]})=>({id:p.id,name:p.name,settings:p.settings})))
+        if (Array.isArray(historyData)) setDbHistory(historyData)
       } catch(e) { console.error("Failed to load profile",e) }
       finally { setProfileLoading(false) }
     }
@@ -826,29 +842,100 @@ export default function TheSignet() {
         {/* Saved tab */}
         {activeTab==="saved" && (
           <div>
-            {saved.length===0 ? (
+            {saved.length === 0 ? (
               <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:16,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
                 <div style={{fontSize:28,marginBottom:10}}>☆</div>
                 No saved names yet.<br/>Star a name from your results.
               </div>
-            ) : (
-              <>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-                  <div style={{color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS}}>
-                    {saved.length}{tier.maxSaves!==Infinity?` / ${tier.maxSaves}`:""} saved
+            ) : (() => {
+              const targets = ["all", ...Array.from(new Set(saved.map(s => (s as NameResult & {batchTarget?:string}).batchTarget || "Unknown")))]
+
+              let filtered = savedFilter === "all"
+                ? saved
+                : saved.filter(s => ((s as NameResult & {batchTarget?:string}).batchTarget || "Unknown") === savedFilter)
+
+              filtered = [...filtered].sort((a, b) => {
+                if (savedSort === "az") return a.name.localeCompare(b.name)
+                if (savedSort === "za") return b.name.localeCompare(a.name)
+                return 0
+              })
+
+              return (
+                <div>
+                  <div style={{display:"flex",gap:8,marginBottom:14,flexWrap:"wrap",alignItems:"center"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6,flex:1,minWidth:120}}>
+                      <span style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,flexShrink:0}}>TYPE</span>
+                      <select
+                        value={savedFilter}
+                        onChange={e=>setSavedFilter(e.target.value)}
+                        style={{flex:1,background:C.t4,border:`1px solid rgba(237,224,200,0.12)`,borderRadius:7,padding:"7px 10px",color:C.t1,fontSize:13,...GS,outline:"none",cursor:"pointer"}}
+                      >
+                        {targets.map(t=>(
+                          <option key={t} value={t}>{t === "all" ? "All types" : t}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div style={{display:"flex",alignItems:"center",gap:6,flex:1,minWidth:120}}>
+                      <span style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,flexShrink:0}}>SORT</span>
+                      <select
+                        value={savedSort}
+                        onChange={e=>setSavedSort(e.target.value as "newest"|"oldest"|"az"|"za")}
+                        style={{flex:1,background:C.t4,border:`1px solid rgba(237,224,200,0.12)`,borderRadius:7,padding:"7px 10px",color:C.t1,fontSize:13,...GS,outline:"none",cursor:"pointer"}}
+                      >
+                        <option value="newest">Newest first</option>
+                        <option value="oldest">Oldest first</option>
+                        <option value="az">A → Z</option>
+                        <option value="za">Z → A</option>
+                      </select>
+                    </div>
+                    {saved.length > 0 && (
+                      <button onClick={exportSaved} style={{background:"transparent",border:`1px solid ${C.goldB}`,borderRadius:7,padding:"7px 12px",color:C.gold,cursor:"pointer",fontSize:13,...GS,flexShrink:0}}>
+                        ⎘ Export all
+                      </button>
+                    )}
                   </div>
-                  {saved.length>0&&<button onClick={exportSaved} style={{background:"transparent",border:`1px solid ${C.goldB}`,borderRadius:5,padding:"3px 9px",color:C.gold,cursor:"pointer",fontSize:11,letterSpacing:1.5,...SS}}>⎘ Export all</button>}
+
+                  <div style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,marginBottom:10}}>
+                    {filtered.length} name{filtered.length!==1?"s":""}
+                    {tier.maxSaves!==Infinity?` · ${saved.length}/${tier.maxSaves} saved`:""}
+                  </div>
+
+                  <div style={{display:"flex",flexDirection:"column",gap:3}}>
+                    {filtered.map((s,i) => (
+                      <div
+                        key={i}
+                        style={{
+                          display:"flex", alignItems:"center",
+                          padding:"10px 14px", borderRadius:8,
+                          background:C.t4,
+                          border:"1px solid transparent",
+                          transition:"all 0.15s", cursor:"pointer",
+                        }}
+                        onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.08)";(e.currentTarget as HTMLDivElement).style.borderColor=C.purpleB}}
+                        onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.background=C.t4;(e.currentTarget as HTMLDivElement).style.borderColor="transparent"}}
+                        onClick={()=>setSelectedHistoryName(s)}
+                      >
+                        <div style={{flex:1,minWidth:0,display:"flex",alignItems:"center",gap:12}}>
+                          <span style={{color:C.t1,fontSize:15,fontStyle:"italic",...GS,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.name}</span>
+                          <span style={{color:C.t3,fontSize:11,flexShrink:0,...SS}}>{s.language}</span>
+                          <span style={{color:"rgba(237,224,200,0.2)",fontSize:11,flexShrink:0,...GS,fontStyle:"italic",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>"{s.meaning}"</span>
+                        </div>
+                        <button
+                          onClick={e=>{e.stopPropagation();toggleSave(s)}}
+                          style={{background:"transparent",border:"none",cursor:"pointer",color:C.gold,fontSize:16,padding:"0 4px",flexShrink:0,lineHeight:1}}
+                        >★</button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {tier.maxSaves!==Infinity && saved.length>=tier.maxSaves && (
+                    <div style={{textAlign:"center",padding:"14px",color:C.t3,fontSize:13,...SS,background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:8,marginTop:10}}>
+                      Save limit reached. <span style={{color:C.gold,cursor:"pointer",textDecoration:"underline"}}>Upgrade →</span>
+                    </div>
+                  )}
                 </div>
-                {saved.map((s,i)=>(
-                  <ResultCard key={i} r={s} saved={true} canSave={canSave} onSave={toggleSave} onCopy={name=>showToast(`"${name}" copied`)} onForgeOne={forgeOne}/>
-                ))}
-                {tier.maxSaves!==Infinity && saved.length>=tier.maxSaves && (
-                  <div style={{textAlign:"center",padding:"16px",color:C.t3,fontSize:13,...SS,background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:8,marginTop:8}}>
-                    Save limit reached. <span style={{color:C.gold,cursor:"pointer",textDecoration:"underline"}}>Upgrade to save more →</span>
-                  </div>
-                )}
-              </>
-            )}
+              )
+            })()}
           </div>
         )}
 
@@ -864,17 +951,30 @@ export default function TheSignet() {
                 </div>
               </div>
             ) : (() => {
-              const allNames: (NameResult & {batchTarget:string; batchTs:number; globalIndex:number})[] = []
-              history.forEach(batch => {
-                batch.results.forEach(r => {
-                  allNames.push({...r, batchTarget:batch.target, batchTs:batch.ts, globalIndex:allNames.length})
-                })
-              })
+              const dbNames = dbHistory.flatMap(entry =>
+                (entry.results || []).map(r => ({
+                  ...r,
+                  batchTarget: entry.target,
+                  batchTs: new Date(entry.generated_at).getTime(),
+                }))
+              )
+
+              const sessionNames = history.flatMap(batch =>
+                batch.results.map(r => ({
+                  ...r,
+                  batchTarget: batch.target,
+                  batchTs: batch.ts,
+                }))
+              )
+
+              const dbNameSet = new Set(dbNames.map(n => n.name))
+              const sessionOnly = sessionNames.filter(n => !dbNameSet.has(n.name))
+              const allNames = [...sessionOnly, ...dbNames]
 
               if (allNames.length === 0) return (
                 <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:16,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
-                  <div style={{fontSize:28,marginBottom:10}}>🕰</div>
-                  No history yet this session.
+                  <div style={{fontSize:40,marginBottom:10}}>🕰</div>
+                  No generation history yet.
                 </div>
               )
 
