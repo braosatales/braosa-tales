@@ -190,18 +190,18 @@ function ComplexityDots({ langCount, themeCount, proposals }: { langCount: numbe
   return (
     <div style={{position:"relative",display:"inline-flex",alignItems:"center",gap:4}} onMouseEnter={()=>setHover(true)} onMouseLeave={()=>setHover(false)}>
       {[0,1,2].map(i=>(
-        <div key={i} style={{width:8,height:8,borderRadius:"50%",background:i<cx.score+1?"#D4AE58":"rgba(237,224,200,0.12)",border:i<cx.score+1?"none":"1px solid rgba(237,224,200,0.2)",transition:"background 0.2s"}}/>
+        <div key={i} style={{width:11,height:11,borderRadius:"50%",background:i<cx.score+1?"#D4AE58":"rgba(237,224,200,0.12)",border:i<cx.score+1?"none":"1px solid rgba(237,224,200,0.2)",transition:"background 0.2s"}}/>
       ))}
-      <span style={{color:C.t3,fontSize:9,marginLeft:2,...SS}}>{cx.label}</span>
+      <span style={{color:C.t3,fontSize:11,marginLeft:2,...SS}}>{cx.label}</span>
       {hover&&(
         <div style={{position:"absolute",bottom:"calc(100% + 8px)",left:"50%",transform:"translateX(-50%)",background:"#1C1810",border:`1px solid ${C.goldB}`,borderRadius:8,padding:"10px 14px",zIndex:200,minWidth:160,pointerEvents:"none",boxShadow:"0 8px 32px rgba(0,0,0,0.6)"}}>
-          <div style={{color:C.gold,fontSize:11,fontWeight:600,...SS,marginBottom:6}}>Complexity Breakdown</div>
+          <div style={{color:C.gold,fontSize:14,fontWeight:600,...SS,marginBottom:6}}>Complexity Breakdown</div>
           <div style={{height:1,background:C.t4,marginBottom:8}}/>
-          <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{color:C.t2,fontSize:10,...SS}}>Languages ({langCount})</span><span style={{color:C.gold,fontSize:10,...SS}}>{cx.score===0?"Simple":cx.score===1&&langCount>=3?"Standard":"—"}</span></div>
-          <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{color:C.t2,fontSize:10,...SS}}>Themes ({themeCount})</span><span style={{color:C.gold,fontSize:10,...SS}}>{themeCount>=8&&cx.score>=1?"→ Complex":"+0"}</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{color:C.t2,fontSize:13,...SS}}>Languages ({langCount})</span><span style={{color:C.gold,fontSize:13,...SS}}>{cx.score===0?"Simple":cx.score===1&&langCount>=3?"Standard":"—"}</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}><span style={{color:C.t2,fontSize:13,...SS}}>Themes ({themeCount})</span><span style={{color:C.gold,fontSize:13,...SS}}>{themeCount>=8&&cx.score>=1?"→ Complex":"+0"}</span></div>
           <div style={{height:1,background:C.t4,margin:"8px 0"}}/>
-          <div style={{display:"flex",justifyContent:"space-between"}}><span style={{color:C.t2,fontSize:10,...SS}}>Per name</span><span style={{color:C.gold,fontSize:10,fontWeight:600,...SS}}>{cx.costPerName} credit{cx.costPerName!==1?"s":""}</span></div>
-          <div style={{display:"flex",justifyContent:"space-between",marginTop:3}}><span style={{color:C.t2,fontSize:10,...SS}}>{proposals} proposals</span><span style={{color:C.gold,fontSize:10,fontWeight:600,...SS}}>{totalCost} credits total</span></div>
+          <div style={{display:"flex",justifyContent:"space-between"}}><span style={{color:C.t2,fontSize:13,...SS}}>Per name</span><span style={{color:C.gold,fontSize:13,fontWeight:600,...SS}}>{cx.costPerName} credit{cx.costPerName!==1?"s":""}</span></div>
+          <div style={{display:"flex",justifyContent:"space-between",marginTop:3}}><span style={{color:C.t2,fontSize:13,...SS}}>{proposals} proposals</span><span style={{color:C.gold,fontSize:13,fontWeight:600,...SS}}>{totalCost} credits total</span></div>
         </div>
       )}
     </div>
@@ -209,16 +209,16 @@ function ComplexityDots({ langCount, themeCount, proposals }: { langCount: numbe
 }
 
 function Label({ children, style={} }: { children: React.ReactNode; style?: React.CSSProperties }) {
-  return <div style={{color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",marginBottom:7,fontWeight:600,...SS,...style}}>{children}</div>
+  return <div style={{color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",marginBottom:10,fontWeight:600,...SS,...style}}>{children}</div>
 }
 
 function Chip({ children, active, onClick, disabled }: { children: React.ReactNode; active: boolean; onClick: () => void; disabled?: boolean }) {
-  return <button onClick={onClick} disabled={disabled} style={{background:active?C.goldDim:C.t4,border:`1px solid ${active?C.goldB:"rgba(237,224,200,0.09)"}`,borderRadius:5,padding:"4px 10px",marginRight:5,marginBottom:5,color:active?C.gold:disabled?"rgba(237,224,200,0.15)":C.t3,cursor:disabled?"not-allowed":"pointer",fontSize:10,...GS,transition:"all 0.15s",opacity:disabled?0.5:1}}>{children}</button>
+  return <button onClick={onClick} disabled={disabled} style={{background:active?C.goldDim:C.t4,border:`1px solid ${active?C.goldB:"rgba(237,224,200,0.09)"}`,borderRadius:5,padding:"7px 14px",marginRight:7,marginBottom:7,color:active?C.gold:disabled?"rgba(237,224,200,0.15)":C.t3,cursor:disabled?"not-allowed":"pointer",fontSize:13,...GS,transition:"all 0.15s",opacity:disabled?0.5:1}}>{children}</button>
 }
 
 function Toast({ message }: { message: string }) {
   if (!message) return null
-  return <div style={{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",background:"#2A2318",border:`1px solid ${C.goldB}`,borderRadius:8,padding:"9px 20px",color:C.gold,fontSize:12,...GS,zIndex:1000,boxShadow:"0 8px 32px rgba(0,0,0,0.6)",pointerEvents:"none",whiteSpace:"nowrap"}}>{message}</div>
+  return <div style={{position:"fixed",bottom:24,left:"50%",transform:"translateX(-50%)",background:"#2A2318",border:`1px solid ${C.goldB}`,borderRadius:8,padding:"9px 20px",color:C.gold,fontSize:15,...GS,zIndex:1000,boxShadow:"0 8px 32px rgba(0,0,0,0.6)",pointerEvents:"none",whiteSpace:"nowrap"}}>{message}</div>
 }
 
 
@@ -238,20 +238,20 @@ function SearchableSelect({ value, onChange, options, placeholder="Search…", a
   const select = (item: string)=>{ onChange(item); setSearch("") }
   return (
     <div ref={ref} style={{position:"relative"}}>
-      <div onClick={()=>setOpen(!open)} style={{background:C.t4,border:`1px solid ${open?acb:"rgba(237,224,200,0.12)"}`,borderRadius:8,padding:"9px 12px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:40,transition:"border-color 0.2s"}}>
-        <span style={{color:value?C.t1:C.t3,fontSize:13,...GS,fontWeight:value?500:400}}>{value||placeholder}</span>
-        <span style={{color:C.t3,fontSize:9,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:8,flexShrink:0}}>▼</span>
+      <div onClick={()=>setOpen(!open)} style={{background:C.t4,border:`1px solid ${open?acb:"rgba(237,224,200,0.12)"}`,borderRadius:8,padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:48,transition:"border-color 0.2s"}}>
+        <span style={{color:value?C.t1:C.t3,fontSize:16,...GS,fontWeight:value?500:400}}>{value||placeholder}</span>
+        <span style={{color:C.t3,fontSize:11,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:8,flexShrink:0}}>▼</span>
       </div>
       {open&&(
         <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:0,zIndex:300,background:"#1C1810",border:`1px solid ${acb}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
           <div style={{padding:"10px 10px 8px",borderBottom:`1px solid ${C.t4}`}}>
-            <input ref={inputRef} placeholder={placeholder} value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>{ if(e.key==="Enter"&&flat.length>0){select(flat[0]);setOpen(false)} if(e.key==="Escape"){setOpen(false);setSearch("")} }} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:12,...GS,outline:"none"}}/>
-            {search&&<div style={{color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS,marginTop:6}}>{flat.length} result{flat.length!==1?"s":""}{flat.length>0&&<span style={{marginLeft:8,fontStyle:"italic"}}>↵ to pick first</span>}</div>}
+            <input ref={inputRef} placeholder={placeholder} value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>{ if(e.key==="Enter"&&flat.length>0){select(flat[0]);setOpen(false)} if(e.key==="Escape"){setOpen(false);setSearch("")} }} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:15,...GS,outline:"none"}}/>
+            {search&&<div style={{color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS,marginTop:6}}>{flat.length} result{flat.length!==1?"s":""}{flat.length>0&&<span style={{marginLeft:8,fontStyle:"italic"}}>↵ to pick first</span>}</div>}
           </div>
-          <div style={{maxHeight:240,overflowY:"auto",padding:"4px 0"}}>
-            {flat.length===0&&<div style={{color:C.t3,fontSize:12,textAlign:"center",padding:"20px 0",...GS,fontStyle:"italic"}}>No results</div>}
-            {!isGrouped&&(filtered as string[]).map(opt=>{ const active=opt===value; return(<div key={opt} onClick={()=>{select(opt);setOpen(false)}} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"7px 14px",cursor:"pointer",background:active?acDim:"transparent",transition:"background 0.1s"}} onMouseEnter={e=>{if(!active)(e.currentTarget as HTMLDivElement).style.background="rgba(255,255,255,0.04)"}} onMouseLeave={e=>{if(!active)(e.currentTarget as HTMLDivElement).style.background="transparent"}}><span style={{color:active?ac:C.t1,fontSize:12,fontWeight:active?600:400,...SS}}>{opt}</span>{active&&<span style={{color:ac,fontSize:13}}>✓</span>}</div>) })}
-            {isGrouped&&(filtered as {group:string;items:string[]}[]).map(g=>(<div key={g.group}><div style={{padding:"6px 14px 3px",color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS,borderTop:`1px solid ${C.t4}`,marginTop:2}}>{g.group}</div>{g.items.map(opt=>{ const active=opt===value; return(<div key={opt} onClick={()=>{select(opt);setOpen(false)}} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"6px 14px 6px 20px",cursor:"pointer",background:active?acDim:"transparent",transition:"background 0.1s"}} onMouseEnter={e=>{if(!active)(e.currentTarget as HTMLDivElement).style.background="rgba(255,255,255,0.04)"}} onMouseLeave={e=>{if(!active)(e.currentTarget as HTMLDivElement).style.background="transparent"}}><span style={{color:active?ac:C.t1,fontSize:12,fontWeight:active?600:400,...SS}}>{opt}</span>{active&&<span style={{color:ac,fontSize:13}}>✓</span>}</div>) })}</div>))}
+          <div style={{maxHeight:300,overflowY:"auto",padding:"4px 0"}}>
+            {flat.length===0&&<div style={{color:C.t3,fontSize:15,textAlign:"center",padding:"20px 0",...GS,fontStyle:"italic"}}>No results</div>}
+            {!isGrouped&&(filtered as string[]).map(opt=>{ const active=opt===value; return(<div key={opt} onClick={()=>{select(opt);setOpen(false)}} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 16px",cursor:"pointer",background:active?acDim:"transparent",transition:"background 0.1s"}} onMouseEnter={e=>{if(!active)(e.currentTarget as HTMLDivElement).style.background="rgba(255,255,255,0.04)"}} onMouseLeave={e=>{if(!active)(e.currentTarget as HTMLDivElement).style.background="transparent"}}><span style={{color:active?ac:C.t1,fontSize:15,fontWeight:active?600:400,...SS}}>{opt}</span>{active&&<span style={{color:ac,fontSize:16}}>✓</span>}</div>) })}
+            {isGrouped&&(filtered as {group:string;items:string[]}[]).map(g=>(<div key={g.group}><div style={{padding:"6px 14px 3px",color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS,borderTop:`1px solid ${C.t4}`,marginTop:2}}>{g.group}</div>{g.items.map(opt=>{ const active=opt===value; return(<div key={opt} onClick={()=>{select(opt);setOpen(false)}} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"9px 16px 9px 24px",cursor:"pointer",background:active?acDim:"transparent",transition:"background 0.1s"}} onMouseEnter={e=>{if(!active)(e.currentTarget as HTMLDivElement).style.background="rgba(255,255,255,0.04)"}} onMouseLeave={e=>{if(!active)(e.currentTarget as HTMLDivElement).style.background="transparent"}}><span style={{color:active?ac:C.t1,fontSize:15,fontWeight:active?600:400,...SS}}>{opt}</span>{active&&<span style={{color:ac,fontSize:16}}>✓</span>}</div>) })}</div>))}
           </div>
         </div>
       )}
@@ -271,48 +271,48 @@ function LanguagePicker({ selected, onChange, maxLangs }: { selected: Lang[]; on
   const toggle = (lang: Lang) => { if(selected.find(s=>s.id===lang.id))onChange(selected.filter(s=>s.id!==lang.id)); else if(!atLimit)onChange([...selected,lang]) }
   return (
     <div ref={ref} style={{position:"relative"}}>
-      {maxLangs!==Infinity&&<div style={{display:"flex",justifyContent:"flex-end",marginBottom:4}}><span style={{fontSize:9,letterSpacing:1,...SS,color:atLimit?C.danger:C.t3,background:atLimit?C.dangerDim:"transparent",border:`1px solid ${atLimit?C.dangerB:"transparent"}`,borderRadius:4,padding:atLimit?"2px 7px":"0"}}>{selected.length}/{maxLangs}{atLimit&&" — limit reached"}</span></div>}
-      <div onClick={()=>setOpen(!open)} style={{background:C.t4,border:`1px solid ${open?C.purpleB:"rgba(237,224,200,0.12)"}`,borderRadius:8,padding:"9px 12px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:44,transition:"border-color 0.2s"}}>
+      {maxLangs!==Infinity&&<div style={{display:"flex",justifyContent:"flex-end",marginBottom:4}}><span style={{fontSize:11,letterSpacing:1.5,...SS,color:atLimit?C.danger:C.t3,background:atLimit?C.dangerDim:"transparent",border:`1px solid ${atLimit?C.dangerB:"transparent"}`,borderRadius:4,padding:atLimit?"2px 7px":"0"}}>{selected.length}/{maxLangs}{atLimit&&" — limit reached"}</span></div>}
+      <div onClick={()=>setOpen(!open)} style={{background:C.t4,border:`1px solid ${open?C.purpleB:"rgba(237,224,200,0.12)"}`,borderRadius:8,padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:52,transition:"border-color 0.2s"}}>
         <div style={{display:"flex",flexWrap:"wrap",gap:5,flex:1}}>
-          {selected.length===0?<span style={{color:C.t3,fontSize:13,...GS}}>Select languages…</span>:selected.map(l=>(
-            <span key={l.id} style={{background:catBg(l.category,0.18),border:`1px solid ${catBg(l.category,0.4)}`,borderRadius:4,padding:"2px 8px",fontSize:11,color:catText(l.category),display:"flex",alignItems:"center",gap:4,...SS}}>
-              {l.label}<span onClick={e=>{e.stopPropagation();toggle(l)}} style={{opacity:0.55,cursor:"pointer",fontSize:13,lineHeight:1}}>×</span>
+          {selected.length===0?<span style={{color:C.t3,fontSize:16,...GS}}>Select languages…</span>:selected.map(l=>(
+            <span key={l.id} style={{background:catBg(l.category,0.18),border:`1px solid ${catBg(l.category,0.4)}`,borderRadius:4,padding:"2px 8px",fontSize:14,color:catText(l.category),display:"flex",alignItems:"center",gap:4,...SS}}>
+              {l.label}<span onClick={e=>{e.stopPropagation();toggle(l)}} style={{opacity:0.55,cursor:"pointer",fontSize:16,lineHeight:1}}>×</span>
             </span>
           ))}
         </div>
-        <span style={{color:C.t3,fontSize:9,flexShrink:0,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:6}}>▼</span>
+        <span style={{color:C.t3,fontSize:11,flexShrink:0,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:6}}>▼</span>
       </div>
       {open&&(
         <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:0,zIndex:300,background:"#1C1810",border:`1px solid ${C.purpleB}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
-          <div style={{padding:"10px 10px 0"}}><input autoFocus placeholder="Search all languages…" value={search} onChange={e=>setSearch(e.target.value)} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:12,...GS,outline:"none"}}/></div>
-          {atLimit&&<div style={{margin:"8px 10px 0",padding:"6px 10px",background:C.dangerDim,border:`1px solid ${C.dangerB}`,borderRadius:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:C.danger,fontSize:10,...SS}}>Language limit reached.</span><span style={{color:C.gold,fontSize:10,cursor:"pointer",...SS}}>Upgrade →</span></div>}
-          <div style={{display:"flex",maxHeight:260}}>
+          <div style={{padding:"10px 10px 0"}}><input autoFocus placeholder="Search all languages…" value={search} onChange={e=>setSearch(e.target.value)} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:15,...GS,outline:"none"}}/></div>
+          {atLimit&&<div style={{margin:"8px 10px 0",padding:"6px 10px",background:C.dangerDim,border:`1px solid ${C.dangerB}`,borderRadius:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:C.danger,fontSize:13,...SS}}>Language limit reached.</span><span style={{color:C.gold,fontSize:13,cursor:"pointer",...SS}}>Upgrade →</span></div>}
+          <div style={{display:"flex",maxHeight:320}}>
             {!search&&(
-              <div style={{width:120,flexShrink:0,borderRight:`1px solid ${C.t4}`,overflowY:"auto",padding:"8px 0"}}>
+              <div style={{width:150,flexShrink:0,borderRight:`1px solid ${C.t4}`,overflowY:"auto",padding:"8px 0"}}>
                 {Object.entries(CAT_META).map(([key,meta])=>{ const cnt=selected.filter(s=>s.category===key).length; const active=tab===key; return(
                   <div key={key} onClick={()=>setTab(key)} style={{display:"flex",alignItems:"center",gap:7,padding:"7px 10px",cursor:"pointer",background:active?catBg(key,0.15):"transparent",borderRight:active?`2px solid ${catText(key)}`:"2px solid transparent",transition:"all 0.12s"}}>
-                    <span style={{fontSize:13}}>{meta.icon}</span>
-                    <span style={{fontSize:10,color:active?catText(key):C.t3,fontWeight:active?600:400,...SS,flex:1}}>{meta.label}</span>
-                    {cnt>0&&<span style={{fontSize:9,background:catBg(key,0.3),borderRadius:9,padding:"1px 5px",color:catText(key),...SS}}>{cnt}</span>}
+                    <span style={{fontSize:16}}>{meta.icon}</span>
+                    <span style={{fontSize:13,color:active?catText(key):C.t3,fontWeight:active?600:400,...SS,flex:1}}>{meta.label}</span>
+                    {cnt>0&&<span style={{fontSize:11,background:catBg(key,0.3),borderRadius:9,padding:"1px 5px",color:catText(key),...SS}}>{cnt}</span>}
                   </div>
                 )})}
               </div>
             )}
             <div style={{flex:1,overflowY:"auto",padding:"6px"}}>
-              {search&&<div style={{padding:"4px 8px 6px",color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS}}>{filtered?.length||0} results</div>}
-              {list.length===0?<div style={{color:C.t3,fontSize:12,textAlign:"center",padding:"20px 0",...GS}}>No results</div>:list.map(lang=>{ const isSel=!!selected.find(s=>s.id===lang.id); const blocked=atLimit&&!isSel; return(
-                <div key={lang.id} onClick={()=>!blocked&&toggle(lang as Lang)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"6px 9px",borderRadius:6,cursor:blocked?"not-allowed":"pointer",background:isSel?catBg(lang.category,0.12):"transparent",opacity:blocked?0.35:1,transition:"background 0.1s"}} onMouseEnter={e=>{if(!isSel&&!blocked)(e.currentTarget as HTMLDivElement).style.background="rgba(255,255,255,0.04)"}} onMouseLeave={e=>{if(!isSel)(e.currentTarget as HTMLDivElement).style.background="transparent"}}>
+              {search&&<div style={{padding:"4px 8px 6px",color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS}}>{filtered?.length||0} results</div>}
+              {list.length===0?<div style={{color:C.t3,fontSize:15,textAlign:"center",padding:"20px 0",...GS}}>No results</div>:list.map(lang=>{ const isSel=!!selected.find(s=>s.id===lang.id); const blocked=atLimit&&!isSel; return(
+                <div key={lang.id} onClick={()=>!blocked&&toggle(lang as Lang)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"9px 12px",borderRadius:6,cursor:blocked?"not-allowed":"pointer",background:isSel?catBg(lang.category,0.12):"transparent",opacity:blocked?0.35:1,transition:"background 0.1s"}} onMouseEnter={e=>{if(!isSel&&!blocked)(e.currentTarget as HTMLDivElement).style.background="rgba(255,255,255,0.04)"}} onMouseLeave={e=>{if(!isSel)(e.currentTarget as HTMLDivElement).style.background="transparent"}}>
                   <div style={{display:"flex",alignItems:"center",gap:8}}>
-                    {search&&<span style={{fontSize:9,textTransform:"uppercase",letterSpacing:0.5,background:catBg(lang.category,0.15),border:`1px solid ${catBg(lang.category,0.3)}`,borderRadius:3,padding:"1px 5px",color:catText(lang.category),...SS}}>{lang.category.replace("_"," ")}</span>}
-                    <span style={{color:isSel?catText(lang.category):C.t1,fontSize:12,fontWeight:isSel?600:400,...SS}}>{lang.label}</span>
-                    {lang.note&&<span style={{color:C.t3,fontSize:10,...SS}}>{lang.note}</span>}
+                    {search&&<span style={{fontSize:11,textTransform:"uppercase",letterSpacing:0.5,background:catBg(lang.category,0.15),border:`1px solid ${catBg(lang.category,0.3)}`,borderRadius:3,padding:"1px 5px",color:catText(lang.category),...SS}}>{lang.category.replace("_"," ")}</span>}
+                    <span style={{color:isSel?catText(lang.category):C.t1,fontSize:15,fontWeight:isSel?600:400,...SS}}>{lang.label}</span>
+                    {lang.note&&<span style={{color:C.t3,fontSize:13,...SS}}>{lang.note}</span>}
                   </div>
-                  {isSel&&<span style={{color:catText(lang.category),fontSize:12}}>✓</span>}
+                  {isSel&&<span style={{color:catText(lang.category),fontSize:15}}>✓</span>}
                 </div>
               )})}
             </div>
           </div>
-          {selected.length>0&&<div style={{borderTop:`1px solid ${C.t4}`,padding:"7px 12px",display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:C.t2,fontSize:10,...SS}}>{selected.length} selected</span><button onClick={()=>onChange([])} style={{background:"transparent",border:"none",color:C.gold,cursor:"pointer",fontSize:10,...GS,opacity:0.65}}>Clear all</button></div>}
+          {selected.length>0&&<div style={{borderTop:`1px solid ${C.t4}`,padding:"7px 12px",display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:C.t2,fontSize:13,...SS}}>{selected.length} selected</span><button onClick={()=>onChange([])} style={{background:"transparent",border:"none",color:C.gold,cursor:"pointer",fontSize:13,...GS,opacity:0.65}}>Clear all</button></div>}
         </div>
       )}
     </div>
@@ -328,26 +328,26 @@ function MultiDropdown({ selected, onChange, options, placeholder="Select…" }:
   const toggle = (opt: string) => onChange(selected.includes(opt)?selected.filter(x=>x!==opt):[...selected,opt])
   return (
     <div ref={ref} style={{position:"relative"}}>
-      <div onClick={()=>setOpen(!open)} style={{background:C.t4,border:`1px solid ${open?C.purpleB:"rgba(237,224,200,0.12)"}`,borderRadius:8,padding:"9px 12px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:44,transition:"border-color 0.2s"}}>
+      <div onClick={()=>setOpen(!open)} style={{background:C.t4,border:`1px solid ${open?C.purpleB:"rgba(237,224,200,0.12)"}`,borderRadius:8,padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:52,transition:"border-color 0.2s"}}>
         <div style={{display:"flex",flexWrap:"wrap",gap:5,flex:1}}>
-          {selected.length===0?<span style={{color:C.t3,fontSize:13,...GS}}>{placeholder}</span>:selected.map(s=>(
-            <span key={s} style={{background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:4,padding:"2px 8px",fontSize:11,color:C.gold,display:"flex",alignItems:"center",gap:4,...SS}}>{s}<span onClick={e=>{e.stopPropagation();toggle(s)}} style={{opacity:0.55,cursor:"pointer",fontSize:13,lineHeight:1}}>×</span></span>
+          {selected.length===0?<span style={{color:C.t3,fontSize:16,...GS}}>{placeholder}</span>:selected.map(s=>(
+            <span key={s} style={{background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:4,padding:"2px 8px",fontSize:14,color:C.gold,display:"flex",alignItems:"center",gap:4,...SS}}>{s}<span onClick={e=>{e.stopPropagation();toggle(s)}} style={{opacity:0.55,cursor:"pointer",fontSize:16,lineHeight:1}}>×</span></span>
           ))}
         </div>
-        <span style={{color:C.t3,fontSize:9,flexShrink:0,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:6}}>▼</span>
+        <span style={{color:C.t3,fontSize:11,flexShrink:0,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:6}}>▼</span>
       </div>
       {open&&(
         <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:0,zIndex:300,background:"#1C1810",border:`1px solid ${C.purpleB}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
-          <div style={{padding:"10px 10px 0"}}><input autoFocus placeholder="Search…" value={search} onChange={e=>setSearch(e.target.value)} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:12,...GS,outline:"none"}}/></div>
-          <div style={{maxHeight:220,overflowY:"auto",padding:"6px"}}>
-            {filtered.length===0?<div style={{color:C.t3,fontSize:12,textAlign:"center",padding:"16px 0",...GS}}>No results</div>:filtered.map(opt=>{ const isSel=selected.includes(opt); return(
+          <div style={{padding:"10px 10px 0"}}><input autoFocus placeholder="Search…" value={search} onChange={e=>setSearch(e.target.value)} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:15,...GS,outline:"none"}}/></div>
+          <div style={{maxHeight:280,overflowY:"auto",padding:"6px"}}>
+            {filtered.length===0?<div style={{color:C.t3,fontSize:15,textAlign:"center",padding:"16px 0",...GS}}>No results</div>:filtered.map(opt=>{ const isSel=selected.includes(opt); return(
               <div key={opt} onClick={()=>toggle(opt)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"7px 10px",borderRadius:6,cursor:"pointer",background:isSel?C.goldDim:"transparent",transition:"background 0.1s"}} onMouseEnter={e=>{if(!isSel)(e.currentTarget as HTMLDivElement).style.background="rgba(255,255,255,0.04)"}} onMouseLeave={e=>{if(!isSel)(e.currentTarget as HTMLDivElement).style.background="transparent"}}>
-                <span style={{color:isSel?C.gold:C.t1,fontSize:12,fontWeight:isSel?600:400,...SS}}>{opt}</span>
-                {isSel&&<span style={{color:C.gold,fontSize:13}}>✓</span>}
+                <span style={{color:isSel?C.gold:C.t1,fontSize:15,fontWeight:isSel?600:400,...SS}}>{opt}</span>
+                {isSel&&<span style={{color:C.gold,fontSize:16}}>✓</span>}
               </div>
             )})}
           </div>
-          {selected.length>0&&<div style={{borderTop:`1px solid ${C.t4}`,padding:"7px 12px",display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:C.t2,fontSize:10,...SS}}>{selected.length} selected</span><button onClick={()=>onChange([])} style={{background:"transparent",border:"none",color:C.gold,cursor:"pointer",fontSize:10,...GS,opacity:0.65}}>Clear all</button></div>}
+          {selected.length>0&&<div style={{borderTop:`1px solid ${C.t4}`,padding:"7px 12px",display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:C.t2,fontSize:13,...SS}}>{selected.length} selected</span><button onClick={()=>onChange([])} style={{background:"transparent",border:"none",color:C.gold,cursor:"pointer",fontSize:13,...GS,opacity:0.65}}>Clear all</button></div>}
         </div>
       )}
     </div>
@@ -365,21 +365,21 @@ function PresetDropdown({ presets, activeId, onLoad, onSave, onDelete, maxPreset
   const doSave = () => { if(!newName.trim())return; onSave(newName.trim()); setNewName(""); setSaving(false); setOpen(false) }
   return (
     <div ref={ref} style={{position:"relative"}}>
-      <div onClick={()=>setOpen(!open)} style={{background:C.t4,border:`1px solid ${open?C.purpleB:"rgba(237,224,200,0.12)"}`,borderRadius:8,padding:"9px 12px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:40,transition:"border-color 0.2s"}}>
+      <div onClick={()=>setOpen(!open)} style={{background:C.t4,border:`1px solid ${open?C.purpleB:"rgba(237,224,200,0.12)"}`,borderRadius:8,padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:48,transition:"border-color 0.2s"}}>
         <div style={{display:"flex",alignItems:"center",gap:8,flex:1}}>
-          {active?<span style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:4,padding:"2px 10px",fontSize:12,color:C.purpleL,...GS,fontStyle:"italic"}}>{active.name}</span>:<span style={{color:C.t3,fontSize:13,...GS}}>Select a preset…</span>}
+          {active?<span style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:4,padding:"2px 10px",fontSize:15,color:C.purpleL,...GS,fontStyle:"italic"}}>{active.name}</span>:<span style={{color:C.t3,fontSize:16,...GS}}>Select a preset…</span>}
         </div>
-        <span style={{color:C.t3,fontSize:9,flexShrink:0,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:6}}>▼</span>
+        <span style={{color:C.t3,fontSize:11,flexShrink:0,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:6}}>▼</span>
       </div>
       {open&&(
         <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:0,zIndex:300,background:"#1C1810",border:`1px solid ${C.purpleB}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
-          {presets.length===0?<div style={{padding:"16px",color:C.t3,fontSize:12,textAlign:"center",...GS,fontStyle:"italic"}}>No presets saved yet</div>:(
-            <div style={{maxHeight:200,overflowY:"auto",padding:"6px"}}>
+          {presets.length===0?<div style={{padding:"16px",color:C.t3,fontSize:15,textAlign:"center",...GS,fontStyle:"italic"}}>No presets saved yet</div>:(
+            <div style={{maxHeight:260,overflowY:"auto",padding:"6px"}}>
               {presets.map(p=>(
                 <div key={p.id} style={{display:"flex",alignItems:"center",padding:"8px 10px",borderRadius:6,background:p.id===activeId?C.purpleDim:"transparent",transition:"background 0.1s"}} onMouseEnter={e=>{if(p.id!==activeId)(e.currentTarget as HTMLDivElement).style.background="rgba(255,255,255,0.04)"}} onMouseLeave={e=>{if(p.id!==activeId)(e.currentTarget as HTMLDivElement).style.background="transparent"}}>
                   <div onClick={()=>{onLoad(p);setOpen(false)}} style={{flex:1,cursor:"pointer"}}>
-                    <span style={{color:p.id===activeId?C.purpleL:C.t1,fontSize:13,...GS,fontStyle:"italic",fontWeight:p.id===activeId?600:400}}>{p.name}</span>
-                    <span style={{color:C.t3,fontSize:10,marginLeft:8,...SS}}>{p.settings.languages.slice(0,2).map(l=>l.label).join(", ")}{p.settings.languages.length>2?` +${p.settings.languages.length-2}`:""} · {p.settings.vibe.split(" ")[0]}</span>
+                    <span style={{color:p.id===activeId?C.purpleL:C.t1,fontSize:16,...GS,fontStyle:"italic",fontWeight:p.id===activeId?600:400}}>{p.name}</span>
+                    <span style={{color:C.t3,fontSize:13,marginLeft:8,...SS}}>{p.settings.languages.slice(0,2).map(l=>l.label).join(", ")}{p.settings.languages.length>2?` +${p.settings.languages.length-2}`:""} · {p.settings.vibe.split(" ")[0]}</span>
                   </div>
                   <button onClick={e=>{e.stopPropagation();onDelete(p.id)}} style={{background:"transparent",border:"none",cursor:"pointer",color:C.t3,fontSize:16,padding:"0 6px",lineHeight:1,transition:"color 0.15s",flexShrink:0}} onMouseEnter={e=>(e.target as HTMLButtonElement).style.color=C.danger} onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=C.t3}>×</button>
                 </div>
@@ -387,14 +387,14 @@ function PresetDropdown({ presets, activeId, onLoad, onSave, onDelete, maxPreset
             </div>
           )}
           <div style={{borderTop:`1px solid ${C.t4}`,padding:"10px"}}>
-            {!canAdd?<div style={{color:C.t3,fontSize:10,textAlign:"center",...SS}}>Preset limit reached ({maxPresets}). <span style={{color:C.gold,cursor:"pointer"}}>Upgrade →</span></div>:saving?(
+            {!canAdd?<div style={{color:C.t3,fontSize:13,textAlign:"center",...SS}}>Preset limit reached ({maxPresets}). <span style={{color:C.gold,cursor:"pointer"}}>Upgrade →</span></div>:saving?(
               <div style={{display:"flex",gap:6}}>
-                <input autoFocus placeholder="Preset name…" value={newName} onChange={e=>setNewName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&doSave()} style={{flex:1,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:6,padding:"7px 10px",color:C.t1,fontSize:12,...GS,outline:"none"}}/>
-                <button onClick={doSave} disabled={!newName.trim()} style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"7px 12px",color:C.purpleL,cursor:newName.trim()?"pointer":"not-allowed",fontSize:11,...GS}}>Save</button>
-                <button onClick={()=>{setSaving(false);setNewName("")}} style={{background:"transparent",border:`1px solid rgba(237,224,200,0.1)`,borderRadius:6,padding:"7px 10px",color:C.t3,cursor:"pointer",fontSize:11,...SS}}>✕</button>
+                <input autoFocus placeholder="Preset name…" value={newName} onChange={e=>setNewName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&doSave()} style={{flex:1,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:6,padding:"7px 10px",color:C.t1,fontSize:15,...GS,outline:"none"}}/>
+                <button onClick={doSave} disabled={!newName.trim()} style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"7px 12px",color:C.purpleL,cursor:newName.trim()?"pointer":"not-allowed",fontSize:14,...GS}}>Save</button>
+                <button onClick={()=>{setSaving(false);setNewName("")}} style={{background:"transparent",border:`1px solid rgba(237,224,200,0.1)`,borderRadius:6,padding:"7px 10px",color:C.t3,cursor:"pointer",fontSize:14,...SS}}>✕</button>
               </div>
             ):(
-              <button onClick={()=>setSaving(true)} style={{width:"100%",background:"transparent",border:"1px dashed rgba(107,28,168,0.35)",borderRadius:6,padding:"8px",color:C.t3,cursor:"pointer",fontSize:10,letterSpacing:1.5,textTransform:"uppercase",...GS,transition:"all 0.15s"}} onMouseEnter={e=>{(e.target as HTMLButtonElement).style.borderColor=C.purpleB;(e.target as HTMLButtonElement).style.color=C.purpleL}} onMouseLeave={e=>{(e.target as HTMLButtonElement).style.borderColor="rgba(107,28,168,0.35)";(e.target as HTMLButtonElement).style.color=C.t3}}>+ Save current settings as preset</button>
+              <button onClick={()=>setSaving(true)} style={{width:"100%",background:"transparent",border:"1px dashed rgba(107,28,168,0.35)",borderRadius:6,padding:"8px",color:C.t3,cursor:"pointer",fontSize:13,letterSpacing:2,textTransform:"uppercase",...GS,transition:"all 0.15s"}} onMouseEnter={e=>{(e.target as HTMLButtonElement).style.borderColor=C.purpleB;(e.target as HTMLButtonElement).style.color=C.purpleL}} onMouseLeave={e=>{(e.target as HTMLButtonElement).style.borderColor="rgba(107,28,168,0.35)";(e.target as HTMLButtonElement).style.color=C.t3}}>+ Save current settings as preset</button>
             )}
           </div>
         </div>
@@ -415,27 +415,27 @@ function ResultCard({ r, saved, canSave, onSave, onCopy, onForgeOne, isHistory }
   const [copying, setCopying] = useState(false)
   const doCopy = () => { navigator.clipboard.writeText(r.name).then(()=>{ setCopying(true); setTimeout(()=>setCopying(false),1500); onCopy&&onCopy(r.name) }) }
   return (
-    <div style={{background:C.card2,border:`1px solid ${r.forged?"rgba(212,174,88,0.28)":C.border}`,borderRadius:10,padding:"14px 16px",marginBottom:9,transition:"border-color 0.2s,background 0.2s",position:"relative"}} onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.borderColor=r.forged?C.goldB:C.purpleB;(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.05)"}} onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.borderColor=r.forged?"rgba(212,174,88,0.28)":C.border;(e.currentTarget as HTMLDivElement).style.background=C.card2}}>
-      {r.forged&&<div style={{position:"absolute",top:10,right:48,fontSize:9,color:C.gold,letterSpacing:1,textTransform:"uppercase",...SS,opacity:0.7}}>↻ forged</div>}
+    <div style={{background:C.card2,border:`1px solid ${r.forged?"rgba(212,174,88,0.28)":C.border}`,borderRadius:12,padding:"20px 22px",marginBottom:14,transition:"border-color 0.2s,background 0.2s",position:"relative"}} onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.borderColor=r.forged?C.goldB:C.purpleB;(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.05)"}} onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.borderColor=r.forged?"rgba(212,174,88,0.28)":C.border;(e.currentTarget as HTMLDivElement).style.background=C.card2}}>
+      {r.forged&&<div style={{position:"absolute",top:10,right:48,fontSize:11,color:C.gold,letterSpacing:1.5,textTransform:"uppercase",...SS,opacity:0.7}}>↻ forged</div>}
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
         <div style={{flex:1}}>
-          <div style={{color:C.t1,fontSize:20,fontStyle:"italic",...GS,letterSpacing:0.5,fontWeight:600}}>{r.name}</div>
-          <div style={{color:C.gold,fontSize:11,marginTop:3,letterSpacing:1.5,fontWeight:500,...SS}}>{r.pronunciation}</div>
+          <div style={{color:C.t1,fontSize:28,fontStyle:"italic",...GS,letterSpacing:0.5,fontWeight:600}}>{r.name}</div>
+          <div style={{color:C.gold,fontSize:14,marginTop:3,letterSpacing:2,fontWeight:500,...SS}}>{r.pronunciation}</div>
         </div>
         <div style={{display:"flex",gap:4,flexShrink:0,marginLeft:10,alignItems:"center"}}>
-          <button onClick={()=>speak(r.pronunciation||r.name)} style={{background:"transparent",border:"none",cursor:"pointer",fontSize:14,color:C.t3,padding:"3px 5px",transition:"color 0.15s"}} onMouseEnter={e=>(e.target as HTMLButtonElement).style.color=C.t1} onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=C.t3}>🔊</button>
-          <button onClick={doCopy} style={{background:copying?C.goldDim:"transparent",border:`1px solid ${copying?C.goldB:"transparent"}`,borderRadius:5,cursor:"pointer",fontSize:12,color:copying?C.gold:C.t3,padding:"3px 7px",transition:"all 0.15s",...SS}}>{copying?"✓":"⎘"}</button>
+          <button onClick={()=>speak(r.pronunciation||r.name)} style={{background:"transparent",border:"none",cursor:"pointer",fontSize:17,color:C.t3,padding:"3px 5px",transition:"color 0.15s"}} onMouseEnter={e=>(e.target as HTMLButtonElement).style.color=C.t1} onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=C.t3}>🔊</button>
+          <button onClick={doCopy} style={{background:copying?C.goldDim:"transparent",border:`1px solid ${copying?C.goldB:"transparent"}`,borderRadius:5,cursor:"pointer",fontSize:15,color:copying?C.gold:C.t3,padding:"3px 7px",transition:"all 0.15s",...SS}}>{copying?"✓":"⎘"}</button>
           {!isHistory&&<button onClick={()=>(saved||canSave)&&onSave(r)} style={{background:"transparent",border:"none",cursor:saved||canSave?"pointer":"not-allowed",fontSize:18,color:saved?C.gold:"rgba(237,224,200,0.18)",padding:"2px 4px",transition:"color 0.2s",opacity:!saved&&!canSave?0.35:1}}>{saved?"★":"☆"}</button>}
         </div>
       </div>
       <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:7,margin:"9px 0 8px"}}>
-        <span style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:4,padding:"3px 9px",fontSize:11,color:C.purpleL,letterSpacing:0.4,fontWeight:600,...SS}}>{r.language}</span>
-        <span style={{color:C.t2,fontSize:11,fontStyle:"italic",...GS}}>{r.root_words} — &ldquo;{r.meaning}&rdquo;</span>
+        <span style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:4,padding:"3px 9px",fontSize:14,color:C.purpleL,letterSpacing:0.4,fontWeight:600,...SS}}>{r.language}</span>
+        <span style={{color:C.t2,fontSize:14,fontStyle:"italic",...GS}}>{r.root_words} — &ldquo;{r.meaning}&rdquo;</span>
       </div>
-      <div style={{color:C.t2,fontSize:12,lineHeight:1.75,fontStyle:"italic",...GS,borderTop:`1px solid ${C.t4}`,paddingTop:9}}>{r.resonance}</div>
+      <div style={{color:C.t2,fontSize:15,lineHeight:1.75,fontStyle:"italic",...GS,borderTop:`1px solid ${C.t4}`,paddingTop:9}}>{r.resonance}</div>
       {!isHistory&&(
         <div style={{marginTop:10,display:"flex",justifyContent:"flex-end"}}>
-          <button onClick={()=>onForgeOne(r)} style={{background:"transparent",border:`1px solid rgba(237,224,200,0.1)`,borderRadius:5,padding:"4px 10px",color:C.t3,cursor:"pointer",fontSize:9,letterSpacing:1,textTransform:"uppercase",...GS,transition:"all 0.15s"}} onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.goldB;(e.currentTarget as HTMLButtonElement).style.color=C.gold}} onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.1)";(e.currentTarget as HTMLButtonElement).style.color=C.t3}}>↻ forge similar (1cr)</button>
+          <button onClick={()=>onForgeOne(r)} style={{background:"transparent",border:`1px solid rgba(237,224,200,0.1)`,borderRadius:5,padding:"4px 10px",color:C.t3,cursor:"pointer",fontSize:11,letterSpacing:1.5,textTransform:"uppercase",...GS,transition:"all 0.15s"}} onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.goldB;(e.currentTarget as HTMLButtonElement).style.color=C.gold}} onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.1)";(e.currentTarget as HTMLButtonElement).style.color=C.t3}}>↻ forge similar (1cr)</button>
         </div>
       )}
     </div>
@@ -446,14 +446,14 @@ function HistoryBatch({ batch, onToggle }: { batch: HistoryBatchType; onToggle: 
   const age = () => { const s=Math.floor((Date.now()-batch.ts)/1000); if(s<60)return`${s}s ago`; if(s<3600)return`${Math.floor(s/60)}m ago`; return`${Math.floor(s/3600)}h ago` }
   return (
     <div style={{border:`1px solid rgba(237,224,200,0.07)`,borderRadius:9,marginBottom:8,overflow:"hidden"}}>
-      <div onClick={onToggle} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 14px",cursor:"pointer",background:"rgba(237,224,200,0.02)",transition:"background 0.15s"}} onMouseEnter={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(237,224,200,0.04)"} onMouseLeave={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(237,224,200,0.02)"}>
+      <div onClick={onToggle} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"14px 18px",cursor:"pointer",background:"rgba(237,224,200,0.02)",transition:"background 0.15s"}} onMouseEnter={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(237,224,200,0.04)"} onMouseLeave={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(237,224,200,0.02)"}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <span style={{color:C.t3,fontSize:10,...SS}}>{age()}</span>
-          <span style={{color:C.t2,fontSize:11,...GS,fontStyle:"italic"}}>{batch.target}</span>
-          <span style={{color:C.t3,fontSize:10,...SS}}>{batch.langs}</span>
-          <span style={{color:C.t3,fontSize:10,background:C.t4,borderRadius:4,padding:"1px 6px",...SS}}>{batch.results.length} names</span>
+          <span style={{color:C.t3,fontSize:13,...SS}}>{age()}</span>
+          <span style={{color:C.t2,fontSize:14,...GS,fontStyle:"italic"}}>{batch.target}</span>
+          <span style={{color:C.t3,fontSize:13,...SS}}>{batch.langs}</span>
+          <span style={{color:C.t3,fontSize:13,background:C.t4,borderRadius:4,padding:"1px 6px",...SS}}>{batch.results.length} names</span>
         </div>
-        <span style={{color:C.t3,fontSize:9,transform:batch.open?"rotate(180deg)":"none",transition:"transform 0.2s"}}>▼</span>
+        <span style={{color:C.t3,fontSize:11,transform:batch.open?"rotate(180deg)":"none",transition:"transform 0.2s"}}>▼</span>
       </div>
       {batch.open&&<div style={{padding:"8px 12px 4px",borderTop:`1px solid ${C.t4}`}}>{batch.results.map((r,i)=><ResultCard key={i} r={r} isHistory saved={false} canSave={false} onCopy={()=>{}} onSave={()=>{}} onForgeOne={()=>{}}/>)}</div>}
     </div>
@@ -612,11 +612,11 @@ export default function TheSignet() {
     return (
       <div style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:8,padding:"12px 14px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:3}}>
-          <div style={{color:C.purpleL,fontSize:10,letterSpacing:1,textTransform:"uppercase",...SS}}>{n.label}</div>
-          <div style={{color:C.t3,fontSize:9,...SS}}>{n.sub}</div>
+          <div style={{color:C.purpleL,fontSize:13,letterSpacing:1.5,textTransform:"uppercase",...SS}}>{n.label}</div>
+          <div style={{color:C.t3,fontSize:11,...SS}}>{n.sub}</div>
         </div>
-        <div style={{color:C.t2,fontSize:10,lineHeight:1.65,marginBottom:10,...SS}}>{n.desc}</div>
-        <button style={{width:"100%",padding:"8px",background:"linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.45))",border:`1px solid ${C.purpleB}`,borderRadius:6,color:C.purpleL,cursor:"pointer",fontSize:10,letterSpacing:2,textTransform:"uppercase",...GS}}>Upgrade →</button>
+        <div style={{color:C.t2,fontSize:13,lineHeight:1.65,marginBottom:10,...SS}}>{n.desc}</div>
+        <button style={{width:"100%",padding:"8px",background:"linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.45))",border:`1px solid ${C.purpleB}`,borderRadius:6,color:C.purpleL,cursor:"pointer",fontSize:13,letterSpacing:2.5,textTransform:"uppercase",...GS}}>Upgrade →</button>
       </div>
     )
   }
@@ -625,7 +625,7 @@ export default function TheSignet() {
     <div style={{display:"flex",flexDirection:"column",gap:20}}>
       <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
         <div style={{flex:"0 0 42%"}}><Label>Naming</Label><SearchableSelect value={target} onChange={setTarget} options={TARGETS} placeholder="Search what to name…" accent={C.purpleL}/></div>
-        <div style={{flex:1}}><Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:9,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label><PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets}/></div>
+        <div style={{flex:1}}><Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:11,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label><PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets}/></div>
       </div>
       <div style={{height:1,background:C.t4}}/>
       {isCharTarget&&<div><Label>Cultural Archetype</Label><SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES} placeholder="Search archetype…" accent={C.purpleL}/></div>}
@@ -636,62 +636,62 @@ export default function TheSignet() {
             <Label>Rarity</Label>
             <div style={{display:"flex",flexDirection:"column",gap:5}}>
               {RARITIES.map(r=>{ const active=rarity===r.id; return(
-                <div key={r.id} onClick={()=>setRarity(r.id)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 11px",borderRadius:7,cursor:"pointer",background:active?`rgba(${hexToRgb(r.color)},0.1)`:C.t4,border:`1px solid ${active?r.color+"55":"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
-                  <div style={{width:10,height:10,borderRadius:"50%",flexShrink:0,background:active?r.color:"transparent",border:`2px solid ${r.color}`,boxShadow:active?`0 0 6px ${r.glow}`:"none",transition:"all 0.15s"}}/>
-                  <div style={{flex:1}}><div style={{color:active?r.color:C.t2,fontSize:11,fontWeight:active?600:400,...SS}}>{r.label}</div>{active&&<div style={{color:C.t3,fontSize:9,marginTop:2,lineHeight:1.5,...SS}}>{r.desc}</div>}</div>
+                <div key={r.id} onClick={()=>setRarity(r.id)} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 14px",borderRadius:7,cursor:"pointer",background:active?`rgba(${hexToRgb(r.color)},0.1)`:C.t4,border:`1px solid ${active?r.color+"55":"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
+                  <div style={{width:14,height:14,borderRadius:"50%",flexShrink:0,background:active?r.color:"transparent",border:`2px solid ${r.color}`,boxShadow:active?`0 0 6px ${r.glow}`:"none",transition:"all 0.15s"}}/>
+                  <div style={{flex:1}}><div style={{color:active?r.color:C.t2,fontSize:14,fontWeight:active?600:400,...SS}}>{r.label}</div>{active&&<div style={{color:C.t3,fontSize:11,marginTop:2,lineHeight:1.5,...SS}}>{r.desc}</div>}</div>
                 </div>
               )})}
             </div>
           </div>
-          <div onClick={()=>setSentient(!sentient)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"9px 12px",borderRadius:7,cursor:"pointer",background:sentient?C.purpleDim:C.t4,border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
-            <div><div style={{color:sentient?C.purpleL:C.t2,fontSize:11,fontWeight:sentient?600:400,...SS}}>Sentient Item</div><div style={{color:C.t3,fontSize:9,marginTop:1,...SS}}>Has its own consciousness and will</div></div>
-            <div style={{width:28,height:16,borderRadius:8,background:sentient?C.purple:"rgba(237,224,200,0.1)",border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.15)"}`,position:"relative",transition:"all 0.2s",flexShrink:0}}>
-              <div style={{position:"absolute",top:2,left:sentient?12:2,width:10,height:10,borderRadius:"50%",background:sentient?C.purpleL:C.t3,transition:"all 0.2s"}}/>
+          <div onClick={()=>setSentient(!sentient)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"13px 16px",borderRadius:7,cursor:"pointer",background:sentient?C.purpleDim:C.t4,border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
+            <div><div style={{color:sentient?C.purpleL:C.t2,fontSize:14,fontWeight:sentient?600:400,...SS}}>Sentient Item</div><div style={{color:C.t3,fontSize:11,marginTop:1,...SS}}>Has its own consciousness and will</div></div>
+            <div style={{width:36,height:20,borderRadius:10,background:sentient?C.purple:"rgba(237,224,200,0.1)",border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.15)"}`,position:"relative",transition:"all 0.2s",flexShrink:0}}>
+              <div style={{position:"absolute",top:2,left:sentient?19:3,width:14,height:14,borderRadius:"50%",background:sentient?C.purpleL:C.t3,transition:"all 0.2s"}}/>
             </div>
           </div>
         </div>
       )}
-      <div><Label>Languages <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:9}}>𓂀 Ancient &nbsp;◈ Modern &nbsp;⚔ Hi-Fantasy &nbsp;☽ Dark &nbsp;✦ Sci-Fi &nbsp;⚙ Steam &nbsp;◆ Mythpunk &nbsp;✿ Solarpunk</span></Label><LanguagePicker selected={languages} onChange={setLanguages} maxLangs={tier.maxLangs}/></div>
+      <div><Label>Languages <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:11}}>𓂀 Ancient &nbsp;◈ Modern &nbsp;⚔ Hi-Fantasy &nbsp;☽ Dark &nbsp;✦ Sci-Fi &nbsp;⚙ Steam &nbsp;◆ Mythpunk &nbsp;✿ Solarpunk</span></Label><LanguagePicker selected={languages} onChange={setLanguages} maxLangs={tier.maxLangs}/></div>
       <div><Label>Aesthetic Vibe</Label><SearchableSelect value={vibe} onChange={setVibe} options={VIBES} placeholder="Search vibe…" accent={C.purpleL}/></div>
-      <div><Label>Naming Style <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:9}}>phonological feel</span></Label><div style={{display:"flex",flexWrap:"wrap"}}>{STYLES.map(s=><Chip key={s} active={style===s} onClick={()=>setStyle(s)}>{s}</Chip>)}</div></div>
+      <div><Label>Naming Style <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:11}}>phonological feel</span></Label><div style={{display:"flex",flexWrap:"wrap"}}>{STYLES.map(s=><Chip key={s} active={style===s} onClick={()=>setStyle(s)}>{s}</Chip>)}</div></div>
       <div><Label>Thematic Undertones</Label><MultiDropdown selected={themes} onChange={setThemes} options={THEMES} placeholder="Choose themes…"/></div>
       <div>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:7}}>
           <Label style={{marginBottom:0}}>Proposals: <span style={{color:C.gold,marginLeft:3}}>{count}</span></Label>
           <div style={{display:"flex",alignItems:"center",gap:8}}>
             <ComplexityDots langCount={languages.length} themeCount={themes.length} proposals={count}/>
-            <span style={{background:canAfford?C.goldDim:C.dangerDim,border:`1px solid ${canAfford?C.goldB:C.dangerB}`,borderRadius:4,padding:"2px 8px",color:canAfford?C.gold:C.danger,fontSize:10,...GS,transition:"all 0.2s"}}>{totalCost} credit{totalCost!==1?"s":""}</span>
+            <span style={{background:canAfford?C.goldDim:C.dangerDim,border:`1px solid ${canAfford?C.goldB:C.dangerB}`,borderRadius:4,padding:"4px 10px",color:canAfford?C.gold:C.danger,fontSize:13,...GS,transition:"all 0.2s"}}>{totalCost} credit{totalCost!==1?"s":""}</span>
           </div>
         </div>
         <input type="range" min={1} max={6} step={1} value={count} onChange={e=>setCount(Number(e.target.value))} style={{width:"100%",accentColor:C.purple,marginTop:2}}/>
-        <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>{[1,2,3,4,5,6].map(n=><span key={n} style={{color:n===count?C.gold:C.t3,fontSize:n===count?10:9,fontWeight:n===count?"bold":"normal",...SS,transition:"color 0.15s"}}>{n}</span>)}</div>
+        <div style={{display:"flex",justifyContent:"space-between",marginTop:8}}>{[1,2,3,4,5,6].map(n=><span key={n} style={{color:n===count?C.gold:C.t3,fontSize:n===count?10:9,fontWeight:n===count?"bold":"normal",...SS,transition:"color 0.15s"}}>{n}</span>)}</div>
       </div>
-      <button onClick={generate} disabled={loading||!canAfford} style={{width:"100%",padding:"13px",background:!canAfford?C.dangerDim:loading?C.purpleDim:`linear-gradient(135deg,${C.purpleDim},rgba(107,28,168,0.3))`,border:`1px solid ${!canAfford?C.dangerB:loading?"rgba(107,28,168,0.2)":C.purpleB}`,borderRadius:9,color:!canAfford?C.danger:loading?"rgba(192,144,240,0.35)":C.purpleL,cursor:loading||!canAfford?"not-allowed":"pointer",fontSize:12,letterSpacing:3,textTransform:"uppercase",...GS,transition:"all 0.2s"}}>
+      <button onClick={generate} disabled={loading||!canAfford} style={{width:"100%",padding:"16px",background:!canAfford?C.dangerDim:loading?C.purpleDim:`linear-gradient(135deg,${C.purpleDim},rgba(107,28,168,0.3))`,border:`1px solid ${!canAfford?C.dangerB:loading?"rgba(107,28,168,0.2)":C.purpleB}`,borderRadius:10,color:!canAfford?C.danger:loading?"rgba(192,144,240,0.35)":C.purpleL,cursor:loading||!canAfford?"not-allowed":"pointer",fontSize:15,letterSpacing:3.5,textTransform:"uppercase",...GS,transition:"all 0.2s"}}>
         {loading?"Consulting the tongues…":!canAfford?"Not enough credits":"⚗  Forge Names"}
       </button>
-      {error&&<div style={{color:C.danger,fontSize:11,textAlign:"center",...SS}}>{error}</div>}
+      {error&&<div style={{color:C.danger,fontSize:14,textAlign:"center",...SS}}>{error}</div>}
     </div>
   )
 
   const ResultsPanel = () => (
     <div>
-      {loading&&<div style={{textAlign:"center",padding:"70px 0",color:C.t3,fontSize:12,letterSpacing:2,...SS}}><div style={{fontSize:36,marginBottom:14,display:"inline-block",animation:"spin 3s linear infinite"}}>⚗</div><div>Consulting the ancient tongues…</div></div>}
-      {!loading&&results.length===0&&!history.length&&<div style={{textAlign:"center",padding:"80px 24px",color:"rgba(200,185,154,0.15)",fontSize:13,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}><div style={{fontSize:32,marginBottom:10}}>𓂀</div>Configure your filters and forge names</div>}
+      {loading&&<div style={{textAlign:"center",padding:"70px 0",color:C.t3,fontSize:15,letterSpacing:2.5,...SS}}><div style={{fontSize:44,marginBottom:14,display:"inline-block",animation:"spin 3s linear infinite"}}>⚗</div><div>Consulting the ancient tongues…</div></div>}
+      {!loading&&results.length===0&&!history.length&&<div style={{textAlign:"center",padding:"80px 24px",color:"rgba(200,185,154,0.15)",fontSize:16,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}><div style={{fontSize:40,marginBottom:10}}>𓂀</div>Configure your filters and forge names</div>}
       {!loading&&results.length>0&&(
         <>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
             <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
-              <div style={{color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS}}>{results.length} proposal{results.length!==1?"s":""} — {target}{forgingId&&<span style={{color:C.gold,marginLeft:8}}>↻ forging…</span>}</div>
-              {tier.dedup&&generatedNames.length>0&&<span style={{background:"rgba(109,184,138,0.1)",border:"1px solid rgba(109,184,138,0.28)",borderRadius:4,padding:"2px 8px",fontSize:9,color:C.success,letterSpacing:0.5,...SS}}>⊘ {generatedNames.length} excluded</span>}
+              <div style={{color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS}}>{results.length} proposal{results.length!==1?"s":""} — {target}{forgingId&&<span style={{color:C.gold,marginLeft:8}}>↻ forging…</span>}</div>
+              {tier.dedup&&generatedNames.length>0&&<span style={{background:"rgba(109,184,138,0.1)",border:"1px solid rgba(109,184,138,0.28)",borderRadius:4,padding:"2px 8px",fontSize:11,color:C.success,letterSpacing:0.5,...SS}}>⊘ {generatedNames.length} excluded</span>}
             </div>
-            <button onClick={generate} disabled={!canAfford||loading} style={{background:"transparent",border:`1px solid rgba(237,224,200,0.1)`,borderRadius:5,padding:"4px 12px",color:canAfford?C.t3:"rgba(237,224,200,0.1)",cursor:canAfford?"pointer":"not-allowed",fontSize:9,letterSpacing:1,textTransform:"uppercase",...GS}}>↺ Regenerate ({totalCost}cr)</button>
+            <button onClick={generate} disabled={!canAfford||loading} style={{background:"transparent",border:`1px solid rgba(237,224,200,0.1)`,borderRadius:5,padding:"4px 12px",color:canAfford?C.t3:"rgba(237,224,200,0.1)",cursor:canAfford?"pointer":"not-allowed",fontSize:11,letterSpacing:1.5,textTransform:"uppercase",...GS}}>↺ Regenerate ({totalCost}cr)</button>
           </div>
           {results.map((r,i)=><ResultCard key={`${r.name}-${i}`} r={r} saved={!!saved.find(s=>s.name===r.name)} canSave={canSave} onSave={toggleSave} onCopy={name=>showToast(`"${name}" copied`)} onForgeOne={forgeOne}/>)}
         </>
       )}
       {history.length>0&&(
         <div style={{marginTop:24}}>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}><div style={{flex:1,height:1,background:C.t4}}/><span style={{color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS}}>Previous Generations</span><div style={{flex:1,height:1,background:C.t4}}/></div>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}><div style={{flex:1,height:1,background:C.t4}}/><span style={{color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS}}>Previous Generations</span><div style={{flex:1,height:1,background:C.t4}}/></div>
           {history.map(b=><HistoryBatch key={b.id} batch={b} onToggle={()=>toggleHistory(b.id)}/>)}
         </div>
       )}
@@ -716,29 +716,29 @@ export default function TheSignet() {
             <Label>Rarity</Label>
             <div style={{display:"flex",flexDirection:"column",gap:5}}>
               {RARITIES.map(r=>{ const active=rarity===r.id; return(
-                <div key={r.id} onClick={()=>setRarity(r.id)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 11px",borderRadius:7,cursor:"pointer",background:active?`rgba(${hexToRgb(r.color)},0.1)`:C.t4,border:`1px solid ${active?r.color+"55":"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
-                  <div style={{width:10,height:10,borderRadius:"50%",flexShrink:0,background:active?r.color:"transparent",border:`2px solid ${r.color}`,boxShadow:active?`0 0 6px ${r.glow}`:"none",transition:"all 0.15s"}}/>
+                <div key={r.id} onClick={()=>setRarity(r.id)} style={{display:"flex",alignItems:"center",gap:10,padding:"12px 14px",borderRadius:7,cursor:"pointer",background:active?`rgba(${hexToRgb(r.color)},0.1)`:C.t4,border:`1px solid ${active?r.color+"55":"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
+                  <div style={{width:14,height:14,borderRadius:"50%",flexShrink:0,background:active?r.color:"transparent",border:`2px solid ${r.color}`,boxShadow:active?`0 0 6px ${r.glow}`:"none",transition:"all 0.15s"}}/>
                   <div style={{flex:1}}>
-                    <div style={{color:active?r.color:C.t2,fontSize:11,fontWeight:active?600:400,...SS}}>{r.label}</div>
-                    {active&&<div style={{color:C.t3,fontSize:9,marginTop:2,lineHeight:1.5,...SS}}>{r.desc}</div>}
+                    <div style={{color:active?r.color:C.t2,fontSize:14,fontWeight:active?600:400,...SS}}>{r.label}</div>
+                    {active&&<div style={{color:C.t3,fontSize:11,marginTop:2,lineHeight:1.5,...SS}}>{r.desc}</div>}
                   </div>
                 </div>
               )})}
             </div>
           </div>
-          <div onClick={()=>setSentient(!sentient)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"9px 12px",borderRadius:7,cursor:"pointer",background:sentient?C.purpleDim:C.t4,border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
+          <div onClick={()=>setSentient(!sentient)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"13px 16px",borderRadius:7,cursor:"pointer",background:sentient?C.purpleDim:C.t4,border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.08)"}`,transition:"all 0.15s"}}>
             <div>
-              <div style={{color:sentient?C.purpleL:C.t2,fontSize:11,fontWeight:sentient?600:400,...SS}}>Sentient Item</div>
-              <div style={{color:C.t3,fontSize:9,marginTop:1,...SS}}>Has its own consciousness and will</div>
+              <div style={{color:sentient?C.purpleL:C.t2,fontSize:14,fontWeight:sentient?600:400,...SS}}>Sentient Item</div>
+              <div style={{color:C.t3,fontSize:11,marginTop:1,...SS}}>Has its own consciousness and will</div>
             </div>
-            <div style={{width:28,height:16,borderRadius:8,background:sentient?C.purple:"rgba(237,224,200,0.1)",border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.15)"}`,position:"relative",transition:"all 0.2s",flexShrink:0}}>
-              <div style={{position:"absolute",top:2,left:sentient?12:2,width:10,height:10,borderRadius:"50%",background:sentient?C.purpleL:C.t3,transition:"all 0.2s"}}/>
+            <div style={{width:36,height:20,borderRadius:10,background:sentient?C.purple:"rgba(237,224,200,0.1)",border:`1px solid ${sentient?C.purpleB:"rgba(237,224,200,0.15)"}`,position:"relative",transition:"all 0.2s",flexShrink:0}}>
+              <div style={{position:"absolute",top:2,left:sentient?19:3,width:14,height:14,borderRadius:"50%",background:sentient?C.purpleL:C.t3,transition:"all 0.2s"}}/>
             </div>
           </div>
         </div>
       )}
       <div>
-        <Label>Languages <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:9}}>𓂀 Ancient &nbsp;◈ Modern &nbsp;⚔ Hi-Fantasy &nbsp;☽ Dark &nbsp;✦ Sci-Fi &nbsp;⚙ Steam &nbsp;◆ Mythpunk &nbsp;✿ Solarpunk</span></Label>
+        <Label>Languages <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:11}}>𓂀 Ancient &nbsp;◈ Modern &nbsp;⚔ Hi-Fantasy &nbsp;☽ Dark &nbsp;✦ Sci-Fi &nbsp;⚙ Steam &nbsp;◆ Mythpunk &nbsp;✿ Solarpunk</span></Label>
         <LanguagePicker selected={languages} onChange={setLanguages} maxLangs={tier.maxLangs}/>
       </div>
       <div>
@@ -746,7 +746,7 @@ export default function TheSignet() {
         <SearchableSelect value={vibe} onChange={setVibe} options={VIBES} placeholder="Search vibe…" accent={C.purpleL}/>
       </div>
       <div>
-        <Label>Naming Style <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:9}}>phonological feel</span></Label>
+        <Label>Naming Style <span style={{fontWeight:400,opacity:0.6,letterSpacing:0.5,marginLeft:6,fontSize:11}}>phonological feel</span></Label>
         <div style={{display:"flex",flexWrap:"wrap"}}>{STYLES.map(s=><Chip key={s} active={style===s} onClick={()=>setStyle(s)}>{s}</Chip>)}</div>
       </div>
       <div>
@@ -773,11 +773,11 @@ export default function TheSignet() {
               key={t.id}
               onClick={()=>setActiveTab(t.id)}
               style={{
-                flex:1, padding:"10px 4px",
+                flex:1, padding:"14px 8px",
                 background:"transparent", border:"none",
                 borderBottom:`2px solid ${activeTab===t.id?C.gold:"transparent"}`,
                 color: activeTab===t.id ? C.gold : C.t3,
-                cursor:"pointer", fontSize:10, letterSpacing:1.5,
+                cursor:"pointer", fontSize:13, letterSpacing:2,
                 textTransform:"uppercase", ...SS,
                 transition:"all 0.15s",
                 display:"flex", alignItems:"center", justifyContent:"center", gap:5,
@@ -785,7 +785,7 @@ export default function TheSignet() {
             >
               {t.label}
               {t.count !== undefined && (
-                <span style={{background:activeTab===t.id?C.goldDim:C.t4,border:`1px solid ${activeTab===t.id?C.goldB:"rgba(237,224,200,0.1)"}`,borderRadius:9,padding:"1px 6px",fontSize:9,color:activeTab===t.id?C.gold:C.t3}}>
+                <span style={{background:activeTab===t.id?C.goldDim:C.t4,border:`1px solid ${activeTab===t.id?C.goldB:"rgba(237,224,200,0.1)"}`,borderRadius:9,padding:"1px 6px",fontSize:11,color:activeTab===t.id?C.gold:C.t3}}>
                   {t.count}
                 </span>
               )}
@@ -797,25 +797,25 @@ export default function TheSignet() {
         {activeTab==="results" && (
           <div>
             {loading && (
-              <div style={{textAlign:"center",padding:"50px 0",color:C.t3,fontSize:12,letterSpacing:2,...SS}}>
-                <div style={{fontSize:36,marginBottom:14,display:"inline-block",animation:"spin 3s linear infinite"}}>⚗</div>
+              <div style={{textAlign:"center",padding:"50px 0",color:C.t3,fontSize:15,letterSpacing:2.5,...SS}}>
+                <div style={{fontSize:44,marginBottom:14,display:"inline-block",animation:"spin 3s linear infinite"}}>⚗</div>
                 <div>Consulting the ancient tongues…</div>
               </div>
             )}
             {!loading && results.length===0 && (
-              <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:13,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
-                <div style={{fontSize:32,marginBottom:10}}>𓂀</div>
+              <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:16,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
+                <div style={{fontSize:40,marginBottom:10}}>𓂀</div>
                 Configure your filters and forge names
               </div>
             )}
             {!loading && results.length>0 && (
               <>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-                  <div style={{color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS}}>
+                  <div style={{color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS}}>
                     {results.length} proposal{results.length!==1?"s":""} — {target}
                     {forgingId&&<span style={{color:C.gold,marginLeft:8}}>↻ forging…</span>}
                   </div>
-                  <button onClick={generate} disabled={!canAfford||loading} style={{background:"transparent",border:`1px solid rgba(237,224,200,0.1)`,borderRadius:5,padding:"4px 12px",color:canAfford?C.t3:"rgba(237,224,200,0.1)",cursor:canAfford?"pointer":"not-allowed",fontSize:9,letterSpacing:1,textTransform:"uppercase",...GS}}>↺ ({totalCost}cr)</button>
+                  <button onClick={generate} disabled={!canAfford||loading} style={{background:"transparent",border:`1px solid rgba(237,224,200,0.1)`,borderRadius:5,padding:"4px 12px",color:canAfford?C.t3:"rgba(237,224,200,0.1)",cursor:canAfford?"pointer":"not-allowed",fontSize:11,letterSpacing:1.5,textTransform:"uppercase",...GS}}>↺ ({totalCost}cr)</button>
                 </div>
                 {results.map((r,i)=><ResultCard key={`${r.name}-${i}`} r={r} saved={!!saved.find(s=>s.name===r.name)} canSave={canSave} onSave={r=>{toggleSave(r);}} onCopy={name=>showToast(`"${name}" copied`)} onForgeOne={forgeOne}/>)}
               </>
@@ -827,23 +827,23 @@ export default function TheSignet() {
         {activeTab==="saved" && (
           <div>
             {saved.length===0 ? (
-              <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:13,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
+              <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:16,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
                 <div style={{fontSize:28,marginBottom:10}}>☆</div>
                 No saved names yet.<br/>Star a name from your results.
               </div>
             ) : (
               <>
                 <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-                  <div style={{color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS}}>
+                  <div style={{color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS}}>
                     {saved.length}{tier.maxSaves!==Infinity?` / ${tier.maxSaves}`:""} saved
                   </div>
-                  {saved.length>0&&<button onClick={exportSaved} style={{background:"transparent",border:`1px solid ${C.goldB}`,borderRadius:5,padding:"3px 9px",color:C.gold,cursor:"pointer",fontSize:9,letterSpacing:1,...SS}}>⎘ Export all</button>}
+                  {saved.length>0&&<button onClick={exportSaved} style={{background:"transparent",border:`1px solid ${C.goldB}`,borderRadius:5,padding:"3px 9px",color:C.gold,cursor:"pointer",fontSize:11,letterSpacing:1.5,...SS}}>⎘ Export all</button>}
                 </div>
                 {saved.map((s,i)=>(
                   <ResultCard key={i} r={s} saved={true} canSave={canSave} onSave={toggleSave} onCopy={name=>showToast(`"${name}" copied`)} onForgeOne={forgeOne}/>
                 ))}
                 {tier.maxSaves!==Infinity && saved.length>=tier.maxSaves && (
-                  <div style={{textAlign:"center",padding:"16px",color:C.t3,fontSize:10,...SS,background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:8,marginTop:8}}>
+                  <div style={{textAlign:"center",padding:"16px",color:C.t3,fontSize:13,...SS,background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:8,marginTop:8}}>
                     Save limit reached. <span style={{color:C.gold,cursor:"pointer",textDecoration:"underline"}}>Upgrade to save more →</span>
                   </div>
                 )}
@@ -858,9 +858,9 @@ export default function TheSignet() {
             {historyLocked ? (
               <div style={{textAlign:"center",padding:"60px 24px",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
                 <div style={{fontSize:28,marginBottom:10,opacity:0.3}}>🕰</div>
-                <div style={{color:C.t3,fontSize:12,...GS,fontStyle:"italic",marginBottom:12}}>Generation history is not available on your plan.</div>
+                <div style={{color:C.t3,fontSize:15,...GS,fontStyle:"italic",marginBottom:12}}>Generation history is not available on your plan.</div>
                 <div style={{background:"rgba(212,174,88,0.08)",border:`1px solid rgba(212,174,88,0.2)`,borderRadius:6,padding:"6px 12px",display:"inline-block"}}>
-                  <span style={{color:C.gold,fontSize:9,letterSpacing:1,...SS}}>Keeper+ unlocks history</span>
+                  <span style={{color:C.gold,fontSize:11,letterSpacing:1.5,...SS}}>Keeper+ unlocks history</span>
                 </div>
               </div>
             ) : (() => {
@@ -872,7 +872,7 @@ export default function TheSignet() {
               })
 
               if (allNames.length === 0) return (
-                <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:13,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
+                <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:16,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
                   <div style={{fontSize:28,marginBottom:10}}>🕰</div>
                   No history yet this session.
                 </div>
@@ -884,7 +884,7 @@ export default function TheSignet() {
 
               return (
                 <div>
-                  <div style={{color:C.t3,fontSize:9,letterSpacing:2,textTransform:"uppercase",...SS,marginBottom:12}}>
+                  <div style={{color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS,marginBottom:12}}>
                     {allNames.length} name{allNames.length!==1?"s":""} this session
                   </div>
 
@@ -894,7 +894,7 @@ export default function TheSignet() {
                       onClick={()=>setSelectedHistoryName(r)}
                       style={{
                         display:"flex", alignItems:"center", justifyContent:"space-between",
-                        padding:"10px 14px", marginBottom:4, borderRadius:8,
+                        padding:"14px 18px", marginBottom:6, borderRadius:10,
                         background:C.t4, border:`1px solid transparent`,
                         cursor:"pointer", transition:"all 0.15s",
                       }}
@@ -902,22 +902,22 @@ export default function TheSignet() {
                       onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.background=C.t4;(e.currentTarget as HTMLDivElement).style.borderColor="transparent"}}
                     >
                       <div style={{display:"flex",alignItems:"center",gap:10,flex:1,minWidth:0}}>
-                        <span style={{color:C.t1,fontSize:14,fontStyle:"italic",...GS,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.name}</span>
-                        <span style={{color:C.t3,fontSize:10,flexShrink:0,...SS}}>{r.language}</span>
+                        <span style={{color:C.t1,fontSize:17,fontStyle:"italic",...GS,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.name}</span>
+                        <span style={{color:C.t3,fontSize:13,flexShrink:0,...SS}}>{r.language}</span>
                       </div>
-                      <span style={{color:C.t3,fontSize:10,flexShrink:0,marginLeft:8,...SS}}>→</span>
+                      <span style={{color:C.t3,fontSize:13,flexShrink:0,marginLeft:8,...SS}}>→</span>
                     </div>
                   ))}
 
                   {hasMore && (
                     <div style={{marginTop:12,padding:"14px 16px",background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:9,textAlign:"center"}}>
-                      <div style={{color:C.t3,fontSize:10,marginBottom:6,...SS}}>
+                      <div style={{color:C.t3,fontSize:13,marginBottom:6,...SS}}>
                         Showing {limit} of {allNames.length} names this session
                       </div>
-                      <div style={{color:C.purpleL,fontSize:11,fontStyle:"italic",...GS,marginBottom:10}}>
+                      <div style={{color:C.purpleL,fontSize:14,fontStyle:"italic",...GS,marginBottom:10}}>
                         Upgrade to keep your full history
                       </div>
-                      <button style={{background:`linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.5))`,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"6px 16px",color:C.purpleL,cursor:"pointer",fontSize:9,letterSpacing:1.5,textTransform:"uppercase",...GS}}>
+                      <button style={{background:`linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.5))`,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"6px 16px",color:C.purpleL,cursor:"pointer",fontSize:11,letterSpacing:2,textTransform:"uppercase",...GS}}>
                         Upgrade →
                       </button>
                     </div>
@@ -962,18 +962,18 @@ export default function TheSignet() {
         >
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
             <div>
-              <div style={{color:C.t1,fontSize:22,fontStyle:"italic",...GS,fontWeight:600}}>{r.name}</div>
-              <div style={{color:C.gold,fontSize:11,marginTop:3,letterSpacing:1.5,fontWeight:500,...SS}}>{r.pronunciation}</div>
+              <div style={{color:C.t1,fontSize:26,fontStyle:"italic",...GS,fontWeight:600}}>{r.name}</div>
+              <div style={{color:C.gold,fontSize:14,marginTop:3,letterSpacing:2,fontWeight:500,...SS}}>{r.pronunciation}</div>
             </div>
-            <button onClick={()=>setSelectedHistoryName(null)} style={{background:"transparent",border:"none",color:C.t3,cursor:"pointer",fontSize:20,lineHeight:1,padding:"0 4px"}} onMouseEnter={e=>(e.target as HTMLButtonElement).style.color=C.t1} onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=C.t3}>×</button>
+            <button onClick={()=>setSelectedHistoryName(null)} style={{background:"transparent",border:"none",color:C.t3,cursor:"pointer",fontSize:24,lineHeight:1,padding:"0 4px"}} onMouseEnter={e=>(e.target as HTMLButtonElement).style.color=C.t1} onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=C.t3}>×</button>
           </div>
 
           <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:7,marginBottom:12}}>
-            <span style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:4,padding:"3px 9px",fontSize:11,color:C.purpleL,letterSpacing:0.4,fontWeight:600,...SS}}>{r.language}</span>
-            <span style={{color:C.t2,fontSize:11,fontStyle:"italic",...GS}}>{r.root_words} — &ldquo;{r.meaning}&rdquo;</span>
+            <span style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:4,padding:"3px 9px",fontSize:14,color:C.purpleL,letterSpacing:0.4,fontWeight:600,...SS}}>{r.language}</span>
+            <span style={{color:C.t2,fontSize:14,fontStyle:"italic",...GS}}>{r.root_words} — &ldquo;{r.meaning}&rdquo;</span>
           </div>
 
-          <div style={{color:C.t2,fontSize:12,lineHeight:1.75,fontStyle:"italic",...GS,borderTop:`1px solid ${C.t4}`,paddingTop:12,marginBottom:16}}>
+          <div style={{color:C.t2,fontSize:15,lineHeight:1.75,fontStyle:"italic",...GS,borderTop:`1px solid ${C.t4}`,paddingTop:12,marginBottom:16}}>
             {r.resonance}
           </div>
 
@@ -986,7 +986,7 @@ export default function TheSignet() {
                 border:`1px solid ${isSaved?C.goldB:"rgba(237,224,200,0.12)"}`,
                 borderRadius:7, color:isSaved?C.gold:C.t2,
                 cursor:canSave||isSaved?"pointer":"not-allowed",
-                fontSize:11, ...GS, transition:"all 0.15s",
+                fontSize:14, ...GS, transition:"all 0.15s",
                 opacity:!canSave&&!isSaved?0.4:1,
               }}
             >
@@ -999,7 +999,7 @@ export default function TheSignet() {
                 background:C.t4,
                 border:`1px solid rgba(237,224,200,0.12)`,
                 borderRadius:7, color:C.t2,
-                cursor:"pointer", fontSize:11, ...GS, transition:"all 0.15s",
+                cursor:"pointer", fontSize:14, ...GS, transition:"all 0.15s",
               }}
               onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.goldB;(e.currentTarget as HTMLButtonElement).style.color=C.gold}}
               onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.12)";(e.currentTarget as HTMLButtonElement).style.color=C.t2}}
@@ -1015,8 +1015,8 @@ export default function TheSignet() {
   if(profileLoading) return (
     <div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",...GS}}>
       <div style={{textAlign:"center",color:C.t3}}>
-        <div style={{fontSize:36,marginBottom:14,display:"inline-block",animation:"spin 3s linear infinite"}}>⚗</div>
-        <div style={{fontSize:11,letterSpacing:2,...SS}}>Loading your atelier…</div>
+        <div style={{fontSize:44,marginBottom:14,display:"inline-block",animation:"spin 3s linear infinite"}}>⚗</div>
+        <div style={{fontSize:14,letterSpacing:2.5,...SS}}>Loading your atelier…</div>
       </div>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
@@ -1027,8 +1027,8 @@ export default function TheSignet() {
       <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:-1,backgroundImage:`radial-gradient(ellipse at 10% 50%,rgba(107,28,168,0.07) 0%,transparent 55%),radial-gradient(ellipse at 90% 20%,rgba(107,28,168,0.04) 0%,transparent 50%)`}}/>
       {!mobile&&(
         <div style={{display:"flex",minHeight:"calc(100vh - 61px)"}}>
-          <div style={{width:310,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"24px 20px",overflowY:"auto"}}><Controls/></div>
-          <div style={{flex:1,padding:"28px 30px",overflowY:"auto"}}><TabbedPanel/></div>
+          <div style={{width:380,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"28px 24px",overflowY:"auto"}}><Controls/></div>
+          <div style={{flex:1,padding:"36px 40px",overflowY:"auto"}}><TabbedPanel/></div>
         </div>
       )}
       {mobile && (
@@ -1041,7 +1041,7 @@ export default function TheSignet() {
               <SearchableSelect value={target} onChange={setTarget} options={TARGETS} placeholder="Search what to name…" accent={C.purpleL}/>
             </div>
             <div style={{flex:1}}>
-              <Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:9,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label>
+              <Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:11,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label>
               <PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets}/>
             </div>
           </div>
@@ -1049,10 +1049,10 @@ export default function TheSignet() {
           {/* Row 2: Filters & Settings — collapsible */}
           <button
             onClick={()=>setFiltersOpen(!filtersOpen)}
-            style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",background:C.t4,border:`1px solid rgba(237,224,200,0.1)`,borderRadius:8,padding:"9px 14px",color:C.t3,cursor:"pointer",fontSize:10,letterSpacing:2,textTransform:"uppercase",...SS,marginBottom:8}}
+            style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"space-between",background:C.t4,border:`1px solid rgba(237,224,200,0.1)`,borderRadius:8,padding:"12px 18px",color:C.t3,cursor:"pointer",fontSize:13,letterSpacing:2.5,textTransform:"uppercase",...SS,marginBottom:8}}
           >
             <span>⚙ Filters &amp; Settings</span>
-            <span style={{transform:filtersOpen?"rotate(180deg)":"none",transition:"transform 0.2s",fontSize:9}}>▼</span>
+            <span style={{transform:filtersOpen?"rotate(180deg)":"none",transition:"transform 0.2s",fontSize:11}}>▼</span>
           </button>
 
           {filtersOpen && (
@@ -1067,21 +1067,21 @@ export default function TheSignet() {
               <Label style={{marginBottom:0}}>Proposals: <span style={{color:C.gold,marginLeft:3}}>{count}</span></Label>
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <ComplexityDots langCount={languages.length} themeCount={themes.length} proposals={count}/>
-                <span style={{background:canAfford?C.goldDim:C.dangerDim,border:`1px solid ${canAfford?C.goldB:C.dangerB}`,borderRadius:4,padding:"2px 8px",color:canAfford?C.gold:C.danger,fontSize:10,...GS,transition:"all 0.2s"}}>{totalCost} credit{totalCost!==1?"s":""}</span>
+                <span style={{background:canAfford?C.goldDim:C.dangerDim,border:`1px solid ${canAfford?C.goldB:C.dangerB}`,borderRadius:4,padding:"4px 10px",color:canAfford?C.gold:C.danger,fontSize:13,...GS,transition:"all 0.2s"}}>{totalCost} credit{totalCost!==1?"s":""}</span>
               </div>
             </div>
             <input type="range" min={1} max={6} step={1} value={count} onChange={e=>setCount(Number(e.target.value))} style={{width:"100%",accentColor:C.purple,marginTop:2}}/>
-            <div style={{display:"flex",justifyContent:"space-between",marginTop:4}}>
+            <div style={{display:"flex",justifyContent:"space-between",marginTop:8}}>
               {[1,2,3,4,5,6].map(n=><span key={n} style={{color:n===count?C.gold:C.t3,fontSize:n===count?10:9,fontWeight:n===count?"bold":"normal",...SS,transition:"color 0.15s"}}>{n}</span>)}
             </div>
           </div>
 
           {/* Row 4: Forge Names — always visible */}
-          <button onClick={generate} disabled={loading||!canAfford} style={{width:"100%",padding:"13px",marginBottom:12,background:!canAfford?C.dangerDim:loading?C.purpleDim:`linear-gradient(135deg,${C.purpleDim},rgba(107,28,168,0.3))`,border:`1px solid ${!canAfford?C.dangerB:loading?"rgba(107,28,168,0.2)":C.purpleB}`,borderRadius:9,color:!canAfford?C.danger:loading?"rgba(192,144,240,0.35)":C.purpleL,cursor:loading||!canAfford?"not-allowed":"pointer",fontSize:12,letterSpacing:3,textTransform:"uppercase",...GS,transition:"all 0.2s"}}>
+          <button onClick={generate} disabled={loading||!canAfford} style={{width:"100%",padding:"16px",marginBottom:12,background:!canAfford?C.dangerDim:loading?C.purpleDim:`linear-gradient(135deg,${C.purpleDim},rgba(107,28,168,0.3))`,border:`1px solid ${!canAfford?C.dangerB:loading?"rgba(107,28,168,0.2)":C.purpleB}`,borderRadius:10,color:!canAfford?C.danger:loading?"rgba(192,144,240,0.35)":C.purpleL,cursor:loading||!canAfford?"not-allowed":"pointer",fontSize:15,letterSpacing:3.5,textTransform:"uppercase",...GS,transition:"all 0.2s"}}>
             {loading?"Consulting the tongues…":!canAfford?"Not enough credits":"⚗  Forge Names"}
           </button>
 
-          {error&&<div style={{color:C.danger,fontSize:11,textAlign:"center",marginBottom:12,...SS}}>{error}</div>}
+          {error&&<div style={{color:C.danger,fontSize:14,textAlign:"center",marginBottom:12,...SS}}>{error}</div>}
 
           {/* Row 5: Tabbed results panel */}
           <TabbedPanel/>
