@@ -101,10 +101,10 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
   const isInfinite = tier.monthlyCredits === 999999
 
   const Bar = ({ used, total, color }: { used: number; total: number; color: string }) => {
-    if (total === 999999) return <div style={{height:3,borderRadius:2,background:`linear-gradient(90deg,${color},${color}88)`,marginTop:4}}/>
+    if (total === 999999) return <div style={{height:4,borderRadius:2,background:`linear-gradient(90deg,${color},${color}88)`,marginTop:4}}/>
     const pct = Math.max(0, Math.min(100, ((total - used) / total) * 100))
     return (
-      <div style={{height:3,background:"rgba(237,224,200,0.08)",borderRadius:2,marginTop:4,overflow:"hidden"}}>
+      <div style={{height:4,background:"rgba(237,224,200,0.08)",borderRadius:2,marginTop:4,overflow:"hidden"}}>
         <div style={{width:`${pct}%`,height:"100%",background:color,borderRadius:2,transition:"width 0.4s"}}/>
       </div>
     )
@@ -137,18 +137,18 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
           <div style={{
             position:"absolute", top:"calc(100% + 10px)", right:0,
             background:"#1C1810", border:`1px solid ${C.goldB}`,
-            borderRadius:12, padding:"16px 18px", zIndex:1000,
-            minWidth:240, boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
+            borderRadius:14, padding:"20px 24px", zIndex:1000,
+            minWidth:280, boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
           }}>
-            <div style={{color:C.gold,fontSize:11,fontWeight:600,letterSpacing:1.5,textTransform:"uppercase",...SS,marginBottom:12}}>Credit Breakdown</div>
+            <div style={{color:C.gold,fontSize:13,fontWeight:600,letterSpacing:1.5,textTransform:"uppercase",...SS,marginBottom:12}}>Credit Breakdown</div>
 
             {/* Daily */}
             <div style={{marginBottom:12}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
-                <span style={{color:C.t3,fontSize:10,...SS}}>Daily</span>
-                <span style={{color:C.t1,fontSize:12,...GS}}>
+                <span style={{color:C.t3,fontSize:12,...SS}}>Daily</span>
+                <span style={{color:C.t1,fontSize:14,...GS}}>
                   {isInfinite ? "∞" : `${tier.dailyCredits - dailyUsed}`}
-                  <span style={{color:C.t3,fontSize:10}}> / {isInfinite ? "∞" : tier.dailyCredits}</span>
+                  <span style={{color:C.t3,fontSize:11}}> / {isInfinite ? "∞" : tier.dailyCredits}</span>
                 </span>
               </div>
               <Bar used={dailyUsed} total={tier.dailyCredits} color={C.gold}/>
@@ -157,10 +157,10 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
             {/* Monthly */}
             <div style={{marginBottom:12}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
-                <span style={{color:C.t3,fontSize:10,...SS}}>Monthly</span>
-                <span style={{color:C.t1,fontSize:12,...GS}}>
+                <span style={{color:C.t3,fontSize:12,...SS}}>Monthly</span>
+                <span style={{color:C.t1,fontSize:14,...GS}}>
                   {isInfinite ? "∞" : `${tier.monthlyCredits - monthlyUsed}`}
-                  <span style={{color:C.t3,fontSize:10}}> / {isInfinite ? "∞" : tier.monthlyCredits}</span>
+                  <span style={{color:C.t3,fontSize:11}}> / {isInfinite ? "∞" : tier.monthlyCredits}</span>
                 </span>
               </div>
               <Bar used={monthlyUsed} total={tier.monthlyCredits} color={C.purpleL}/>
@@ -169,8 +169,8 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
             {/* Rollover */}
             <div style={{paddingTop:10,borderTop:`1px solid ${C.t4}`}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
-                <span style={{color:C.t3,fontSize:10,...SS}}>Rollover pool</span>
-                <span style={{color:tier.rollover===0?C.t3:C.success,fontSize:12,...GS}}>
+                <span style={{color:C.t3,fontSize:12,...SS}}>Rollover pool</span>
+                <span style={{color:tier.rollover===0?C.t3:C.success,fontSize:14,...GS}}>
                   {isInfinite ? "∞" : rolloverPool === 0 ? "—" : `${rolloverPool} / ${tier.rollover}`}
                 </span>
               </div>
@@ -206,14 +206,14 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
           <div style={{
             position:"absolute", top:"calc(100% + 10px)", right:0,
             background:"#1C1810", border:`1px solid ${C.purpleB}`,
-            borderRadius:12, padding:"16px 18px", zIndex:1000,
-            minWidth:240, boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
+            borderRadius:14, padding:"20px 24px", zIndex:1000,
+            minWidth:300, boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
           }}>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:4}}>
-              <span style={{color:C.purpleL,fontSize:13,...GS,fontStyle:"italic",fontWeight:600}}>{tier.label}</span>
-              <span style={{color:C.t3,fontSize:11,...SS}}>{tier.price}</span>
+              <span style={{color:C.purpleL,fontSize:15,...GS,fontStyle:"italic",fontWeight:600}}>{tier.label}</span>
+              <span style={{color:C.t3,fontSize:12,...SS}}>{tier.price}</span>
             </div>
-            <div style={{height:1,background:C.t4,marginBottom:12}}/>
+            <div style={{height:1,background:C.t4,margin:"12px 0"}}/>
 
             {FEATURES.map(f => {
               const featureTierIndex = TIER_ORDER.indexOf(f.minTier)
@@ -222,38 +222,49 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
               return (
                 <div key={f.label} style={{
                   display:"flex", justifyContent:"space-between", alignItems:"center",
-                  padding:"5px 0",
+                  padding:"7px 0",
                   opacity: locked ? 0.45 : 1,
                 }}>
                   <div style={{display:"flex",alignItems:"center",gap:6}}>
                     {locked && (
                       <span style={{
-                        fontSize:8, color:C.gold, letterSpacing:0.5,
+                        fontSize:9, color:C.gold, letterSpacing:0.5,
                         background:"rgba(212,174,88,0.1)", border:`1px solid rgba(212,174,88,0.25)`,
                         borderRadius:3, padding:"1px 5px", ...SS, whiteSpace:"nowrap",
                       }}>{minTierLabel}+</span>
                     )}
                     {!locked && <span style={{color:C.success,fontSize:10}}>✓</span>}
-                    <span style={{color:locked?C.t3:C.t2,fontSize:11,...SS}}>{f.label}</span>
+                    <span style={{color:locked?C.t3:C.t2,fontSize:12,...SS}}>{f.label}</span>
                   </div>
-                  <span style={{color:locked?C.t3:C.t1,fontSize:11,...GS,fontStyle:"italic"}}>
+                  <span style={{color:locked?C.t3:C.t1,fontSize:13,...GS,fontStyle:"italic"}}>
                     {locked ? "—" : f.getValue(tier)}
                   </span>
                 </div>
               )
             })}
 
-            <div style={{marginTop:12,paddingTop:10,borderTop:`1px solid ${C.t4}`}}>
-              <button style={{
-                width:"100%", padding:"8px",
-                background:`linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.45))`,
-                border:`1px solid ${C.purpleB}`, borderRadius:6,
-                color:C.purpleL, cursor:"pointer",
-                fontSize:10, letterSpacing:2, textTransform:"uppercase", ...GS,
-              }}>
-                Upgrade plan →
-              </button>
-            </div>
+            {profile.tier !== 'author' && (
+              <div style={{marginTop:12,paddingTop:10,borderTop:`1px solid ${C.t4}`}}>
+                <button style={{
+                  width:"100%", padding:"10px",
+                  background:`linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.45))`,
+                  border:`1px solid ${C.purpleB}`, borderRadius:7,
+                  color:C.purpleL, cursor:"pointer",
+                  fontSize:11, letterSpacing:2, textTransform:"uppercase",
+                  fontFamily:"Georgia,serif",
+                }}>
+                  Upgrade plan →
+                </button>
+              </div>
+            )}
+            {profile.tier === 'author' && (
+              <div style={{marginTop:12,paddingTop:10,borderTop:`1px solid ${C.t4}`,textAlign:"center"}}>
+                <span style={{
+                  color:C.gold, fontSize:10, letterSpacing:1,
+                  fontFamily:"system-ui,sans-serif", opacity:0.7,
+                }}>✦ Maximum tier — no further upgrades</span>
+              </div>
+            )}
           </div>
         )}
       </div>

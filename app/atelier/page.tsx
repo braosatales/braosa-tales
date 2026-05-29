@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
-import Nav from '@/components/NavServer'
 import Footer from '@/components/Footer'
 
 export const metadata: Metadata = {
@@ -87,8 +86,6 @@ function SectionDivider() {
 export default function AtelierPage() {
   return (
     <main className="relative">
-      <Nav />
-
       {/* Hero */}
       <section className="px-8 pt-24 pb-10 border-b border-brand-border">
         <div className="max-w-4xl mx-auto text-center">
