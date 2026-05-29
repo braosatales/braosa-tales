@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import Link from "next/link"
 
 interface UserProfile {
   tier: string
@@ -308,16 +309,18 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
 
             {profile.tier !== 'author' && (
               <div style={{marginTop:12,paddingTop:10,borderTop:`1px solid ${C.t4}`}}>
-                <button style={{
-                  width:"100%", padding:"10px",
+                <Link href="/pricing" style={{
+                  display:"block", width:"100%", padding:"10px",
                   background:`linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.45))`,
                   border:`1px solid ${C.purpleB}`, borderRadius:7,
                   color:C.purpleL, cursor:"pointer",
                   fontSize:11, letterSpacing:2, textTransform:"uppercase",
-                  fontFamily:"Georgia,serif",
+                  fontFamily:"Georgia,serif", textAlign:"center",
+                  textDecoration:"none", boxSizing:"border-box",
+                  transition:"all 0.2s",
                 }}>
                   Upgrade plan →
-                </button>
+                </Link>
               </div>
             )}
             {profile.tier === 'author' && (

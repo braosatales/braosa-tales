@@ -670,27 +670,6 @@ export default function TheSignet() {
         {loading?"Consulting the tongues…":!canAfford?"Not enough credits":"⚗  Forge Names"}
       </button>
       {error&&<div style={{color:C.danger,fontSize:11,textAlign:"center",...SS}}>{error}</div>}
-      <div style={{background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:9,padding:14}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
-          <Label style={{marginBottom:0}}>★ Saved Names</Label>
-          <div style={{display:"flex",alignItems:"center",gap:8}}>
-            {tier.maxSaves!==Infinity&&<span style={{fontSize:9,color:!canSave?C.danger:C.t3,...SS,background:!canSave?C.dangerDim:"transparent",border:`1px solid ${!canSave?C.dangerB:"transparent"}`,borderRadius:4,padding:!canSave?"2px 6px":"0"}}>{saved.length}/{tier.maxSaves}</span>}
-            {saved.length>0&&<button onClick={exportSaved} style={{background:"transparent",border:`1px solid ${C.goldB}`,borderRadius:5,padding:"3px 9px",color:C.gold,cursor:"pointer",fontSize:9,letterSpacing:1,...SS}}>⎘ Export</button>}
-          </div>
-        </div>
-        {!canSave&&<div style={{fontSize:9,color:C.danger,marginBottom:8,...SS}}>Limit reached. <span style={{color:C.gold,cursor:"pointer",textDecoration:"underline"}}>Upgrade →</span></div>}
-        {saved.length===0?<div style={{color:C.t3,fontSize:11,...GS,fontStyle:"italic",opacity:0.6}}>No saved names yet</div>:(
-          <div style={{display:"flex",flexWrap:"wrap",gap:5}}>
-            {saved.map((s,i)=>(
-              <div key={i} style={{background:"rgba(212,174,88,0.1)",border:`1px solid ${C.goldB}`,borderRadius:5,padding:"3px 9px",display:"flex",alignItems:"center",gap:5}}>
-                <span style={{color:C.t1,fontSize:12,fontStyle:"italic",...GS}}>{s.name}</span>
-                <button onClick={()=>toggleSave(s)} style={{background:"transparent",border:"none",cursor:"pointer",color:C.t3,fontSize:13,padding:0,lineHeight:1}}>×</button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      <TierNudge/>
     </div>
   )
 
@@ -774,7 +753,6 @@ export default function TheSignet() {
         <Label>Thematic Undertones</Label>
         <MultiDropdown selected={themes} onChange={setThemes} options={THEMES} placeholder="Choose themes…"/>
       </div>
-      <TierNudge/>
     </div>
   )
 
