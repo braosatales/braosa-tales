@@ -11,7 +11,7 @@ export default async function SignetPage() {
   const { userId } = await auth()
   if (!userId) redirect('/sign-in')
   return (
-    <div style={{minHeight:"100vh", background:"#12100D"}}>
+    <div style={{minHeight:"100vh", background:"#12100D", paddingTop:"72px"}}>
       <TheSignet />
     </div>
   )

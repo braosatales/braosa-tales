@@ -1046,7 +1046,7 @@ export default function TheSignet() {
 
   return (
     <div style={{...GS,color:C.t2}}>
-      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:0,backgroundImage:`radial-gradient(ellipse at 10% 50%,rgba(107,28,168,0.07) 0%,transparent 55%),radial-gradient(ellipse at 90% 20%,rgba(107,28,168,0.04) 0%,transparent 50%)`}}/>
+      <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:-1,backgroundImage:`radial-gradient(ellipse at 10% 50%,rgba(107,28,168,0.07) 0%,transparent 55%),radial-gradient(ellipse at 90% 20%,rgba(107,28,168,0.04) 0%,transparent 50%)`}}/>
       {!mobile&&(
         <div style={{display:"flex",minHeight:"calc(100vh - 61px)"}}>
           <div style={{width:310,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"24px 20px",overflowY:"auto"}}><Controls/></div>
