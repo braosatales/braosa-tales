@@ -10,6 +10,8 @@ interface UserProfile {
   daily_reset_date: string
 }
 
+const TIER_ORDER = ["wanderer","keeper","shaper","weaver","visionary","author"]
+
 const TIERS: Record<string, {
   label: string
   price: string
@@ -23,29 +25,38 @@ const TIERS: Record<string, {
   dedup: boolean
   forgeVariants: boolean
   priorityGen: boolean
+  imageGen: boolean
 }> = {
-  wanderer:  { label:"Wanderer",   price:"Free",    monthlyCredits:100,  dailyCredits:5,  rollover:0,    maxLangs:3,         maxSaves:5,         maxPresets:1,  historyLimit:12,        dedup:false, forgeVariants:false, priorityGen:false },
-  keeper:    { label:"Keeper",     price:"$4.99",   monthlyCredits:500,  dailyCredits:10, rollover:100,  maxLangs:3,         maxSaves:20,        maxPresets:5,  historyLimit:100,       dedup:false, forgeVariants:true,  priorityGen:false },
-  shaper:    { label:"Shaper",     price:"$11.99",  monthlyCredits:1000, dailyCredits:15, rollover:300,  maxLangs:"∞",       maxSaves:"∞",       maxPresets:10, historyLimit:"∞",       dedup:true,  forgeVariants:true,  priorityGen:false },
-  weaver:    { label:"Weaver",     price:"$19.99",  monthlyCredits:2500, dailyCredits:25, rollover:500,  maxLangs:"∞",       maxSaves:"∞",       maxPresets:20, historyLimit:"∞",       dedup:true,  forgeVariants:true,  priorityGen:true  },
-  visionary: { label:"Visionary",  price:"$34.99",  monthlyCredits:5000, dailyCredits:50, rollover:1000, maxLangs:"∞",       maxSaves:"∞",       maxPresets:20, historyLimit:"∞",       dedup:true,  forgeVariants:true,  priorityGen:true  },
-  author:    { label:"The Author", price:"$999",    monthlyCredits:999999, dailyCredits:999999, rollover:999999, maxLangs:"∞", maxSaves:"∞",    maxPresets:20, historyLimit:"∞",       dedup:true,  forgeVariants:true,  priorityGen:true  },
+  wanderer:  { label:"Wanderer",   price:"Free",    monthlyCredits:100,    dailyCredits:5,      rollover:0,      maxLangs:3,   maxSaves:5,   maxPresets:1,  historyLimit:12,  dedup:false, forgeVariants:false, priorityGen:false, imageGen:false },
+  keeper:    { label:"Keeper",     price:"$4.99",   monthlyCredits:500,    dailyCredits:10,     rollover:0,      maxLangs:3,   maxSaves:20,  maxPresets:5,  historyLimit:100, dedup:false, forgeVariants:true,  priorityGen:false, imageGen:false },
+  shaper:    { label:"Shaper",     price:"$11.99",  monthlyCredits:1000,   dailyCredits:15,     rollover:0,      maxLangs:"∞", maxSaves:"∞", maxPresets:10, historyLimit:"∞", dedup:true,  forgeVariants:true,  priorityGen:false, imageGen:false },
+  weaver:    { label:"Weaver",     price:"$19.99",  monthlyCredits:2500,   dailyCredits:25,     rollover:0,      maxLangs:"∞", maxSaves:"∞", maxPresets:20, historyLimit:"∞", dedup:true,  forgeVariants:true,  priorityGen:true,  imageGen:false },
+  visionary: { label:"Visionary",  price:"$34.99",  monthlyCredits:5000,   dailyCredits:50,     rollover:0,      maxLangs:"∞", maxSaves:"∞", maxPresets:20, historyLimit:"∞", dedup:true,  forgeVariants:true,  priorityGen:true,  imageGen:true  },
+  author:    { label:"The Author", price:"$999",    monthlyCredits:999999, dailyCredits:999999, rollover:999999, maxLangs:"∞", maxSaves:"∞", maxPresets:20, historyLimit:"∞", dedup:true,  forgeVariants:true,  priorityGen:true,  imageGen:true  },
 }
 
-const TIER_ORDER = ["wanderer","keeper","shaper","weaver","visionary","author"]
+const UNLOCKED_FEATURES: {
+  label: string
+  getValue: (t: typeof TIERS[string]) => string
+}[] = [
+  { label:"Monthly credits",    getValue: t => t.monthlyCredits === 999999 ? "∞" : `${t.monthlyCredits}` },
+  { label:"Daily credits",      getValue: t => t.dailyCredits   === 999999 ? "∞" : `${t.dailyCredits}`   },
+  { label:"Languages",          getValue: t => `${t.maxLangs}`                                             },
+  { label:"Saved names",        getValue: t => `${t.maxSaves}`                                             },
+  { label:"Presets",            getValue: t => `${t.maxPresets}`                                           },
+  { label:"Generation history", getValue: t => `${t.historyLimit}`                                         },
+]
 
-const FEATURES: { label: string; minTier: string; getValue: (t: typeof TIERS[string]) => string }[] = [
-  { label: "Monthly credits",        minTier: "wanderer",  getValue: t => t.monthlyCredits === 999999 ? "∞" : `${t.monthlyCredits}` },
-  { label: "Daily credits",          minTier: "wanderer",  getValue: t => t.dailyCredits === 999999 ? "∞" : `${t.dailyCredits}` },
-  { label: "Rollover pool",          minTier: "keeper",    getValue: t => t.rollover === 999999 ? "∞" : t.rollover === 0 ? "None" : `${t.rollover}` },
-  { label: "Languages",              minTier: "wanderer",  getValue: t => `${t.maxLangs}` },
-  { label: "Unlimited languages",    minTier: "shaper",    getValue: t => typeof t.maxLangs === "string" ? "Yes" : `Up to ${t.maxLangs}` },
-  { label: "Saved names",            minTier: "wanderer",  getValue: t => `${t.maxSaves}` },
-  { label: "Presets",                minTier: "wanderer",  getValue: t => `${t.maxPresets}` },
-  { label: "Generation history",     minTier: "wanderer",  getValue: t => `${t.historyLimit}` },
-  { label: "Duplicate protection",   minTier: "shaper",    getValue: () => "Yes" },
-  { label: "Forge variants",         minTier: "keeper",    getValue: () => "Yes" },
-  { label: "Priority generation",    minTier: "weaver",    getValue: () => "Yes" },
+const GATED_FEATURES: {
+  label: string
+  minTier: string
+  getValue: (t: typeof TIERS[string]) => string
+}[] = [
+  { label:"Forge variants",       minTier:"keeper",    getValue: () => "Yes" },
+  { label:"Duplicate protection", minTier:"shaper",    getValue: () => "Yes" },
+  { label:"Priority generation",  minTier:"weaver",    getValue: () => "Yes" },
+  { label:"Image generation",     minTier:"visionary", getValue: () => "Yes" },
+  { label:"Rollover pool",        minTier:"author",    getValue: () => "Yes" },
 ]
 
 const C = {
@@ -94,11 +105,10 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
   const tier      = TIERS[profile.tier] || TIERS["wanderer"]
   const tierIndex = TIER_ORDER.indexOf(profile.tier)
 
-  const dailyUsed     = tier.dailyCredits === 999999   ? profile.daily_credits  : Math.max(0, tier.dailyCredits   - profile.daily_credits)
-  const monthlyUsed   = tier.monthlyCredits === 999999 ? profile.credits         : Math.max(0, tier.monthlyCredits - profile.credits)
-  const rolloverPool  = tier.rollover === 999999       ? "∞"                     : tier.rollover === 0 ? 0 : Math.min(tier.rollover, Math.max(0, profile.credits - tier.monthlyCredits))
+  const dailyUsed   = tier.dailyCredits === 999999   ? profile.daily_credits : Math.max(0, tier.dailyCredits   - profile.daily_credits)
+  const monthlyUsed = tier.monthlyCredits === 999999 ? profile.credits        : Math.max(0, tier.monthlyCredits - profile.credits)
 
-  const isInfinite = tier.monthlyCredits === 999999
+  const isInfinite = tier.monthlyCredits === 999999 || tier.dailyCredits === 999999
 
   const Bar = ({ used, total, color }: { used: number; total: number; color: string }) => {
     if (total === 999999) return <div style={{height:4,borderRadius:2,background:`linear-gradient(90deg,${color},${color}88)`,marginTop:4}}/>
@@ -127,9 +137,19 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
           onMouseEnter={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(212,174,88,0.22)"}
           onMouseLeave={e=>(e.currentTarget as HTMLDivElement).style.background="rgba(212,174,88,0.12)"}
         >
-          <span style={{color:"rgba(212,174,88,0.6)",fontSize:10,letterSpacing:2,fontWeight:600,fontFamily:"Cinzel, serif"}}>CREDITS</span>
-          <span style={{color:"#D4AE58",fontSize:15,fontFamily:"Cinzel, serif",fontWeight:700}}>
-            {isInfinite ? "∞" : profile.credits.toLocaleString()}
+          <span style={{
+            color:"rgba(212,174,88,0.6)",
+            fontSize:10, letterSpacing:2, fontWeight:600,
+            fontFamily:"Cinzel, serif",
+          }}>CREDITS</span>
+          <span style={{
+            color:"#D4AE58",
+            fontSize:15, fontFamily:"Cinzel, serif", fontWeight:700,
+          }}>
+            {isInfinite
+              ? "∞"
+              : (profile.credits + profile.daily_credits).toLocaleString()
+            }
           </span>
         </div>
 
@@ -170,13 +190,30 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
             <div style={{paddingTop:10,borderTop:`1px solid ${C.t4}`}}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline"}}>
                 <span style={{color:C.t3,fontSize:12,...SS}}>Rollover pool</span>
-                <span style={{color:tier.rollover===0?C.t3:C.success,fontSize:14,...GS}}>
-                  {isInfinite ? "∞" : rolloverPool === 0 ? "—" : `${rolloverPool} / ${tier.rollover}`}
+                <span style={{
+                  color: profile.tier === 'author' ? C.success : C.t3,
+                  fontSize:14,...GS
+                }}>
+                  {profile.tier === 'author' ? "∞" : "—"}
                 </span>
               </div>
-              {tier.rollover === 0 && (
-                <div style={{color:C.t3,fontSize:9,marginTop:4,...SS}}>
-                  Keeper+ unlocks rollover credits
+              {profile.tier !== 'author' && (
+                <div style={{
+                  marginTop:6, display:"flex", alignItems:"center", gap:6,
+                  background:"rgba(212,174,88,0.06)",
+                  border:"1px solid rgba(212,174,88,0.18)",
+                  borderRadius:6, padding:"5px 10px",
+                }}>
+                  <span style={{
+                    fontSize:9, color:C.gold, letterSpacing:0.5,
+                    background:"rgba(212,174,88,0.1)",
+                    border:"1px solid rgba(212,174,88,0.25)",
+                    borderRadius:3, padding:"1px 5px", ...SS, whiteSpace:"nowrap",
+                    flexShrink:0,
+                  }}>The Author+</span>
+                  <span style={{color:C.t3,fontSize:10,...SS}}>
+                    Unused credits roll over permanently
+                  </span>
                 </div>
               )}
             </div>
@@ -213,35 +250,61 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
               <span style={{color:C.purpleL,fontSize:15,...GS,fontStyle:"italic",fontWeight:600}}>{tier.label}</span>
               <span style={{color:C.t3,fontSize:12,...SS}}>{tier.price}</span>
             </div>
-            <div style={{height:1,background:C.t4,margin:"12px 0"}}/>
 
-            {FEATURES.map(f => {
-              const featureTierIndex = TIER_ORDER.indexOf(f.minTier)
-              const locked = featureTierIndex > tierIndex
-              const minTierLabel = TIERS[f.minTier]?.label || f.minTier
-              return (
-                <div key={f.label} style={{
-                  display:"flex", justifyContent:"space-between", alignItems:"center",
-                  padding:"7px 0",
-                  opacity: locked ? 0.45 : 1,
-                }}>
-                  <div style={{display:"flex",alignItems:"center",gap:6}}>
-                    {locked && (
-                      <span style={{
-                        fontSize:9, color:C.gold, letterSpacing:0.5,
-                        background:"rgba(212,174,88,0.1)", border:`1px solid rgba(212,174,88,0.25)`,
-                        borderRadius:3, padding:"1px 5px", ...SS, whiteSpace:"nowrap",
-                      }}>{minTierLabel}+</span>
-                    )}
-                    {!locked && <span style={{color:C.success,fontSize:10}}>✓</span>}
-                    <span style={{color:locked?C.t3:C.t2,fontSize:12,...SS}}>{f.label}</span>
-                  </div>
-                  <span style={{color:locked?C.t3:C.t1,fontSize:13,...GS,fontStyle:"italic"}}>
-                    {locked ? "—" : f.getValue(tier)}
-                  </span>
+            {/* Divider after tier name */}
+            <div style={{height:1,background:C.t4,marginBottom:14}}/>
+
+            {/* Unlocked features — always at top */}
+            {UNLOCKED_FEATURES.map(f => (
+              <div key={f.label} style={{
+                display:"flex", justifyContent:"space-between", alignItems:"center",
+                padding:"7px 0",
+              }}>
+                <div style={{display:"flex",alignItems:"center",gap:6}}>
+                  <span style={{color:C.success,fontSize:10}}>✓</span>
+                  <span style={{color:C.t2,fontSize:12,...SS}}>{f.label}</span>
                 </div>
-              )
-            })}
+                <span style={{color:C.t1,fontSize:13,...GS,fontStyle:"italic"}}>
+                  {f.getValue(tier)}
+                </span>
+              </div>
+            ))}
+
+            {/* Divider before gated features */}
+            <div style={{height:1,background:C.t4,margin:"10px 0"}}/>
+
+            {/* Gated features — unlocked ones first, locked at bottom */}
+            {(() => {
+              const unlocked = GATED_FEATURES.filter(f => TIER_ORDER.indexOf(f.minTier) <= tierIndex)
+              const locked   = GATED_FEATURES.filter(f => TIER_ORDER.indexOf(f.minTier) >  tierIndex)
+              return [...unlocked, ...locked].map(f => {
+                const isLocked = TIER_ORDER.indexOf(f.minTier) > tierIndex
+                const minTierLabel = TIERS[f.minTier]?.label || f.minTier
+                return (
+                  <div key={f.label} style={{
+                    display:"flex", justifyContent:"space-between", alignItems:"center",
+                    padding:"7px 0", opacity: isLocked ? 0.45 : 1,
+                  }}>
+                    <div style={{display:"flex",alignItems:"center",gap:6}}>
+                      {isLocked ? (
+                        <span style={{
+                          fontSize:9, color:C.gold, letterSpacing:0.5,
+                          background:"rgba(212,174,88,0.1)",
+                          border:"1px solid rgba(212,174,88,0.25)",
+                          borderRadius:3, padding:"1px 5px", ...SS, whiteSpace:"nowrap",
+                        }}>{minTierLabel}+</span>
+                      ) : (
+                        <span style={{color:C.success,fontSize:10}}>✓</span>
+                      )}
+                      <span style={{color:isLocked?C.t3:C.t2,fontSize:12,...SS}}>{f.label}</span>
+                    </div>
+                    <span style={{color:isLocked?C.t3:C.t1,fontSize:13,...GS,fontStyle:"italic"}}>
+                      {isLocked ? "—" : f.getValue(tier)}
+                    </span>
+                  </div>
+                )
+              })
+            })()}
 
             {profile.tier !== 'author' && (
               <div style={{marginTop:12,paddingTop:10,borderTop:`1px solid ${C.t4}`}}>
