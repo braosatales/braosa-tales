@@ -916,58 +916,42 @@ export default function TheSignet() {
                         key={i}
                         onClick={()=>setSelectedHistoryName(s)}
                         style={{
-                          background:C.card2,
-                          border:`1px solid ${C.border}`,
-                          borderRadius:10, padding:"14px 16px",
-                          marginBottom:8, transition:"border-color 0.2s,background 0.2s",
-                          cursor:"pointer",
+                          display:"flex", alignItems:"center",
+                          padding:"8px 12px", marginBottom:3,
+                          borderRadius:7, background:C.t4,
+                          border:"1px solid transparent",
+                          cursor:"pointer", transition:"all 0.15s",
                         }}
                         onMouseEnter={e=>{
-                          (e.currentTarget as HTMLDivElement).style.borderColor=C.purpleB
-                          ;(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.05)"
+                          (e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.08)"
+                          ;(e.currentTarget as HTMLDivElement).style.borderColor=C.purpleB
                         }}
                         onMouseLeave={e=>{
-                          (e.currentTarget as HTMLDivElement).style.borderColor=C.border
-                          ;(e.currentTarget as HTMLDivElement).style.background=C.card2
+                          (e.currentTarget as HTMLDivElement).style.background=C.t4
+                          ;(e.currentTarget as HTMLDivElement).style.borderColor="transparent"
                         }}
                       >
-                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
-                          <div style={{flex:1,minWidth:0}}>
-                            <div style={{color:C.t1,fontSize:20,fontStyle:"italic",...GS,fontWeight:600,letterSpacing:0.5}}>
-                              {s.name}
-                            </div>
-                            <div style={{color:C.gold,fontSize:12,marginTop:3,letterSpacing:1.5,fontWeight:500,...SS}}>
-                              {s.pronunciation}
-                            </div>
-                          </div>
-                          <button
-                            onClick={e=>{e.stopPropagation();toggleSave(s)}}
-                            style={{
-                              background:"transparent",border:"none",
-                              cursor:"pointer",fontSize:20,color:C.gold,
-                              padding:"2px 4px",flexShrink:0,lineHeight:1,marginLeft:8,
-                            }}
-                          >★</button>
-                        </div>
-
-                        <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:7,marginBottom:8}}>
+                        <div style={{flex:1,minWidth:0,display:"flex",alignItems:"center",gap:10}}>
                           <span style={{
-                            background:C.purpleDim, border:`1px solid ${C.purpleB}`,
-                            borderRadius:4, padding:"3px 9px",
-                            fontSize:12, color:C.purpleL, fontWeight:600, ...SS,
+                            color:C.t1, fontSize:14, fontStyle:"italic", ...GS,
+                            fontWeight:600, flexShrink:0,
+                            overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
+                            maxWidth:"45%",
+                          }}>{s.name}</span>
+                          <span style={{
+                            color:C.t3, fontSize:11, flexShrink:0, ...SS,
+                            overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
                           }}>{s.language}</span>
-                          <span style={{color:C.t2,fontSize:12,fontStyle:"italic",...GS}}>
-                            {s.root_words} — &ldquo;{s.meaning}&rdquo;
-                          </span>
                         </div>
-
-                        <div style={{
-                          color:C.t2, fontSize:12, lineHeight:1.7,
-                          fontStyle:"italic", ...GS,
-                          borderTop:`1px solid ${C.t4}`, paddingTop:8,
-                        }}>
-                          {s.resonance}
-                        </div>
+                        <button
+                          onClick={e=>{e.stopPropagation();toggleSave(s)}}
+                          style={{
+                            background:"transparent", border:"none",
+                            cursor:"pointer", fontSize:16, color:C.gold,
+                            padding:"0 6px", flexShrink:0, lineHeight:1,
+                          }}
+                        >★</button>
+                        <span style={{color:C.t3,fontSize:13,flexShrink:0,...SS}}>→</span>
                       </div>
                     ))}
                   </div>
