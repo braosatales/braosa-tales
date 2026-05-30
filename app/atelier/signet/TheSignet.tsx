@@ -230,7 +230,7 @@ const SS = {fontFamily:"system-ui,sans-serif"} as React.CSSProperties
 const GS = {fontFamily:"Georgia,serif"} as React.CSSProperties
 
 interface Lang { id: string; label: string; note?: string; category: string }
-interface NameResult { id?: string; name: string; pronunciation: string; language: string; root_words: string; meaning: string; resonance: string; forged?: boolean; target?: string }
+interface NameResult { id?: string; name: string; pronunciation: string; language: string; root_words: string; meaning: string; resonance: string; forged?: boolean; target?: string; saved_at?: string }
 interface HistoryBatchType { id: number; ts: number; open: boolean; target: string; langs: string; results: NameResult[] }
 interface PresetType { id: string; name: string; settings: { archetype: string; languages: Lang[]; vibe: string; style: string; themes: string[]; count: number } }
 interface DbHistoryEntry {
@@ -1010,7 +1010,11 @@ export default function TheSignet() {
                 ? saved
                 : saved.filter(s => getTargetGroup((s as NameResult & {target?:string}).target || "") === savedFilter)
 
-              filtered = [...filtered].sort((a, b) => {
+              const sortedFiltered = [...filtered].sort((a, b) => {
+                const aTime = a.saved_at ? new Date(a.saved_at).getTime() : 0
+                const bTime = b.saved_at ? new Date(b.saved_at).getTime() : 0
+                if (savedSort === "newest") return bTime - aTime
+                if (savedSort === "oldest") return aTime - bTime
                 if (savedSort === "az") return a.name.localeCompare(b.name)
                 if (savedSort === "za") return b.name.localeCompare(a.name)
                 return 0
@@ -1024,7 +1028,7 @@ export default function TheSignet() {
                     sortValue={savedSort}
                     onSortChange={val=>setSavedSort(val as "newest"|"oldest"|"az"|"za")}
                     onExport={exportSaved}
-                    count={filtered.length}
+                    count={sortedFiltered.length}
                     filterOptions={["all", ...Array.from(new Set(saved.map(s=>getTargetGroup((s as NameResult & {target?:string}).target||""))))]}
                   />
                   {tier.maxSaves!==Infinity&&(
@@ -1034,7 +1038,7 @@ export default function TheSignet() {
                   )}
 
                   <div>
-                    {filtered.map((s, i) => (
+                    {sortedFiltered.map((s, i) => (
                       <div
                         key={i}
                         onClick={()=>setSelectedHistoryName(s)}
