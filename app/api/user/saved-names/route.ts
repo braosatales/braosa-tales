@@ -26,12 +26,12 @@ export async function POST(req: NextRequest) {
   const user = await getUserByClerkId(userId)
   if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
-  const { name, pronunciation, language, root_words, meaning, resonance } = await req.json()
+  const { name, pronunciation, language, root_words, meaning, resonance, target } = await req.json()
 
   const supabase = createServerSupabase()
   const { data, error } = await supabase
     .from('saved_names')
-    .insert({ user_id: user.id, name, pronunciation, language, root_words, meaning, resonance })
+    .insert({ user_id: user.id, name, pronunciation, language, root_words, meaning, resonance, target: target || 'Unknown' })
     .select()
     .single()
 

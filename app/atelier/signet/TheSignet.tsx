@@ -138,6 +138,57 @@ const VIBES = ["Ancient Historic Fantasy","Dark & Mythic","Sacred & Divine","Cor
 const STYLES = ["Mixed","Harsh & Guttural","Flowing & Melodic","Short & Punchy","Long & Ceremonial","Whispered & Soft","Click & Percussive","Sibilant & Hissing"]
 const ARCHETYPES = ["None","Nordic / Germanic","Arabian / Persian","East Asian","African Tribal","Mediterranean / Roman","Celtic / Druidic","Slavic","South Asian","Mesoamerican","Polynesian","East African","Norse Seafarer","Central Asian Nomad","Greco-Byzantine"]
 const TARGETS = ["World / Planet","Continent","Kingdom / Nation","City / Settlement","Mountain / Range","River / Body of Water","Forest / Wilderness","Realm / Dimension","Afterlife / Purgatory","Heaven / Divine Realm","Hell / Dark Realm","Space Station / Ship","Character (Male)","Character (Female)","Character (Neutral)","Organization / Faction","Ancient Order","Deity / God","Creature / Species","Item / Object","Artifact / Relic","Era / Age","Concept / Ideology","Magic System","Technology / Device","Clan / House","Planet / Moon","Star System"]
+
+const TARGET_ICONS: Record<string, string> = {
+  "World / Planet":          "🌍",
+  "Continent":               "🗺",
+  "Kingdom / Nation":        "⚜️",
+  "City / Settlement":       "🏰",
+  "Mountain / Range":        "⛰",
+  "River / Body of Water":   "🌊",
+  "Forest / Wilderness":     "🌲",
+  "Realm / Dimension":       "🌀",
+  "Afterlife / Purgatory":   "💀",
+  "Heaven / Divine Realm":   "✨",
+  "Hell / Dark Realm":       "🔥",
+  "Space Station / Ship":    "🚀",
+  "Character (Male)":        "⚔️",
+  "Character (Female)":      "🗡",
+  "Character (Neutral)":     "🎭",
+  "Organization / Faction":  "🏛",
+  "Ancient Order":           "📜",
+  "Deity / God":             "☀️",
+  "Creature / Species":      "🐉",
+  "Item / Object":           "💎",
+  "Artifact / Relic":        "🔮",
+  "Era / Age":               "⏳",
+  "Concept / Ideology":      "💭",
+  "Magic System":            "🌟",
+  "Technology / Device":     "⚙️",
+  "Clan / House":            "🛡",
+  "Planet / Moon":           "🪐",
+  "Star System":             "🌌",
+}
+
+const getTargetIcon = (target: string) => TARGET_ICONS[target] || "✦"
+
+const TARGET_GROUPS: Record<string, string[]> = {
+  "Places":    ["World / Planet","Continent","Kingdom / Nation","City / Settlement","Mountain / Range","River / Body of Water","Forest / Wilderness","Realm / Dimension","Afterlife / Purgatory","Heaven / Divine Realm","Hell / Dark Realm","Space Station / Ship","Planet / Moon","Star System"],
+  "Characters":["Character (Male)","Character (Female)","Character (Neutral)"],
+  "Groups":    ["Organization / Faction","Ancient Order","Clan / House"],
+  "Divine":    ["Deity / God"],
+  "Creatures": ["Creature / Species"],
+  "Items":     ["Item / Object","Artifact / Relic"],
+  "Abstract":  ["Era / Age","Concept / Ideology","Magic System","Technology / Device"],
+}
+
+const getTargetGroup = (target: string): string => {
+  for (const [group, targets] of Object.entries(TARGET_GROUPS)) {
+    if (targets.includes(target)) return group
+  }
+  return "Other"
+}
+
 const THEMES = ["Redemption","Corruption & Fall","Restoration","Sacrifice","Ancient Power","Rebirth","Judgment","Lost Glory","Forbidden Knowledge","The Threshold","Covenant","Exile & Return","Light & Shadow","The Wound","Sovereignty","First Contact","Machine Uprising","Ecological Collapse","The Undying","Chosen Path"]
 const CHAR_TARGETS = ["Character (Male)","Character (Female)","Character (Neutral)"]
 const ITEM_TARGETS = ["Artifact / Relic","Item / Object"]
@@ -179,7 +230,7 @@ const SS = {fontFamily:"system-ui,sans-serif"} as React.CSSProperties
 const GS = {fontFamily:"Georgia,serif"} as React.CSSProperties
 
 interface Lang { id: string; label: string; note?: string; category: string }
-interface NameResult { id?: string; name: string; pronunciation: string; language: string; root_words: string; meaning: string; resonance: string; forged?: boolean }
+interface NameResult { id?: string; name: string; pronunciation: string; language: string; root_words: string; meaning: string; resonance: string; forged?: boolean; target?: string }
 interface HistoryBatchType { id: number; ts: number; open: boolean; target: string; langs: string; results: NameResult[] }
 interface PresetType { id: string; name: string; settings: { archetype: string; languages: Lang[]; vibe: string; style: string; themes: string[]; count: number } }
 interface DbHistoryEntry {
@@ -506,6 +557,8 @@ export default function TheSignet() {
   const [savedFilter,    setSavedFilter]    = useState<string>("all")
   const [savedSort,      setSavedSort]      = useState<"newest"|"oldest"|"az"|"za">("newest")
   const [confirmUnsave,  setConfirmUnsave]  = useState<NameResult|null>(null)
+  const [historyFilter,  setHistoryFilter]  = useState<string>("all")
+  const [historySort,    setHistorySort]    = useState<"newest"|"oldest"|"az"|"za">("newest")
 
   const tier = TIERS[tierKey] || TIERS["wanderer"]
 
@@ -565,7 +618,7 @@ export default function TheSignet() {
       return
     }
     if (canSave) {
-      const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(r)})
+      const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...r, target: r.target || target})})
       const data = await res.json()
       setSaved(p=>[...p,{...r,id:data.id}]); showToast(`"${r.name}" saved ★`)
     } else { showToast("Save limit reached — upgrade for more") }
@@ -782,6 +835,101 @@ export default function TheSignet() {
     </div>
   )
 
+  const HistorySavedControls = ({
+    filterValue, onFilterChange,
+    sortValue, onSortChange,
+    onExport, count, filterOptions,
+  }: {
+    filterValue: string
+    onFilterChange: (v: string) => void
+    sortValue: string
+    onSortChange: (v: string) => void
+    onExport: () => void
+    count: number
+    filterOptions: string[]
+  }) => (
+    <div style={{marginBottom:12}}>
+      <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:10}}>
+        {/* Filter */}
+        <div title="Filter by type" style={{display:"flex",alignItems:"center",gap:mobile?0:6,flex:1}}>
+          {!mobile && <span style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,flexShrink:0}}>TYPE</span>}
+          <div style={{position:"relative",flex:1}}>
+            {mobile && (
+              <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:14,pointerEvents:"none",zIndex:1}}>🏷</span>
+            )}
+            <select
+              value={filterValue}
+              onChange={e=>onFilterChange(e.target.value)}
+              style={{
+                width:"100%",
+                background:C.t4,
+                border:`1px solid rgba(237,224,200,0.12)`,
+                borderRadius:7,
+                padding: mobile ? "8px 10px 8px 32px" : "8px 10px",
+                color:C.t1, fontSize:13, ...GS,
+                outline:"none", cursor:"pointer",
+                appearance:"none",
+              }}
+            >
+              {filterOptions.map(t=>(
+                <option key={t} value={t}>{t === "all" ? (mobile ? "All" : "All types") : t}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+        {/* Sort */}
+        <div title="Sort" style={{display:"flex",alignItems:"center",gap:mobile?0:6,flex:1}}>
+          {!mobile && <span style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,flexShrink:0}}>SORT</span>}
+          <div style={{position:"relative",flex:1}}>
+            {mobile && (
+              <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:14,pointerEvents:"none",zIndex:1}}>↕️</span>
+            )}
+            <select
+              value={sortValue}
+              onChange={e=>onSortChange(e.target.value)}
+              style={{
+                width:"100%",
+                background:C.t4,
+                border:`1px solid rgba(237,224,200,0.12)`,
+                borderRadius:7,
+                padding: mobile ? "8px 10px 8px 32px" : "8px 10px",
+                color:C.t1, fontSize:13, ...GS,
+                outline:"none", cursor:"pointer",
+                appearance:"none",
+              }}
+            >
+              <option value="newest">{mobile ? "New" : "Newest first"}</option>
+              <option value="oldest">{mobile ? "Old" : "Oldest first"}</option>
+              <option value="az">A → Z</option>
+              <option value="za">Z → A</option>
+            </select>
+          </div>
+        </div>
+        {/* Export */}
+        <button
+          onClick={onExport}
+          title="Export all"
+          style={{
+            background:"transparent",
+            border:`1px solid ${C.goldB}`,
+            borderRadius:7,
+            padding: mobile ? "8px 10px" : "8px 14px",
+            color:C.gold, cursor:"pointer",
+            fontSize: mobile ? 16 : 13,
+            ...GS, flexShrink:0,
+            whiteSpace:"nowrap",
+          }}
+        >
+          {mobile ? "⎘" : "⎘ Export"}
+        </button>
+      </div>
+      {/* Count */}
+      <div style={{color:C.t3,fontSize:11,letterSpacing:1,...SS}}>
+        {count} name{count!==1?"s":""}
+      </div>
+    </div>
+  )
+
   const TabbedPanel = () => {
     const tabs: {id:"results"|"saved"|"history"; label:string; count?:number}[] = [
       { id:"results",  label:"Results",  count: results.length > 0 ? results.length : undefined },
@@ -858,11 +1006,9 @@ export default function TheSignet() {
                 No saved names yet.<br/>Star a name from your results.
               </div>
             ) : (() => {
-              const targets = ["all", ...Array.from(new Set(saved.map(s => (s as NameResult & {batchTarget?:string}).batchTarget || "Unknown")))]
-
               let filtered = savedFilter === "all"
                 ? saved
-                : saved.filter(s => ((s as NameResult & {batchTarget?:string}).batchTarget || "Unknown") === savedFilter)
+                : saved.filter(s => getTargetGroup((s as NameResult & {target?:string}).target || "") === savedFilter)
 
               filtered = [...filtered].sort((a, b) => {
                 if (savedSort === "az") return a.name.localeCompare(b.name)
@@ -872,43 +1018,20 @@ export default function TheSignet() {
 
               return (
                 <div>
-                  <div style={{display:"flex",gap:8,marginBottom:14,flexWrap:"wrap",alignItems:"center"}}>
-                    <div style={{display:"flex",alignItems:"center",gap:6,flex:1,minWidth:120}}>
-                      <span style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,flexShrink:0}}>TYPE</span>
-                      <select
-                        value={savedFilter}
-                        onChange={e=>setSavedFilter(e.target.value)}
-                        style={{flex:1,background:C.t4,border:`1px solid rgba(237,224,200,0.12)`,borderRadius:7,padding:"7px 10px",color:C.t1,fontSize:13,...GS,outline:"none",cursor:"pointer"}}
-                      >
-                        {targets.map(t=>(
-                          <option key={t} value={t}>{t === "all" ? "All types" : t}</option>
-                        ))}
-                      </select>
+                  <HistorySavedControls
+                    filterValue={savedFilter}
+                    onFilterChange={setSavedFilter}
+                    sortValue={savedSort}
+                    onSortChange={val=>setSavedSort(val as "newest"|"oldest"|"az"|"za")}
+                    onExport={exportSaved}
+                    count={filtered.length}
+                    filterOptions={["all", ...Array.from(new Set(saved.map(s=>getTargetGroup((s as NameResult & {target?:string}).target||""))))]}
+                  />
+                  {tier.maxSaves!==Infinity&&(
+                    <div style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,marginBottom:10,marginTop:-6}}>
+                      {saved.length}/{tier.maxSaves} saved
                     </div>
-                    <div style={{display:"flex",alignItems:"center",gap:6,flex:1,minWidth:120}}>
-                      <span style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,flexShrink:0}}>SORT</span>
-                      <select
-                        value={savedSort}
-                        onChange={e=>setSavedSort(e.target.value as "newest"|"oldest"|"az"|"za")}
-                        style={{flex:1,background:C.t4,border:`1px solid rgba(237,224,200,0.12)`,borderRadius:7,padding:"7px 10px",color:C.t1,fontSize:13,...GS,outline:"none",cursor:"pointer"}}
-                      >
-                        <option value="newest">Newest first</option>
-                        <option value="oldest">Oldest first</option>
-                        <option value="az">A → Z</option>
-                        <option value="za">Z → A</option>
-                      </select>
-                    </div>
-                    {saved.length > 0 && (
-                      <button onClick={exportSaved} style={{background:"transparent",border:`1px solid ${C.goldB}`,borderRadius:7,padding:"7px 12px",color:C.gold,cursor:"pointer",fontSize:13,...GS,flexShrink:0}}>
-                        ⎘ Export all
-                      </button>
-                    )}
-                  </div>
-
-                  <div style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,marginBottom:10}}>
-                    {filtered.length} name{filtered.length!==1?"s":""}
-                    {tier.maxSaves!==Infinity?` · ${saved.length}/${tier.maxSaves} saved`:""}
-                  </div>
+                  )}
 
                   <div>
                     {filtered.map((s, i) => (
@@ -932,11 +1055,14 @@ export default function TheSignet() {
                         }}
                       >
                         <div style={{flex:1,minWidth:0,display:"flex",alignItems:"center",gap:10}}>
+                          <span style={{fontSize:16,flexShrink:0,width:22,textAlign:"center",lineHeight:1}}>
+                            {getTargetIcon((s as NameResult & {target?:string}).target || "")}
+                          </span>
                           <span style={{
                             color:C.t1, fontSize:14, fontStyle:"italic", ...GS,
                             fontWeight:600, flexShrink:0,
                             overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
-                            maxWidth:"45%",
+                            maxWidth:"40%",
                           }}>{s.name}</span>
                           <span style={{
                             color:C.t3, fontSize:11, flexShrink:0, ...SS,
@@ -945,11 +1071,7 @@ export default function TheSignet() {
                         </div>
                         <button
                           onClick={e=>{e.stopPropagation();toggleSave(s)}}
-                          style={{
-                            background:"transparent", border:"none",
-                            cursor:"pointer", fontSize:16, color:C.gold,
-                            padding:"0 6px", flexShrink:0, lineHeight:1,
-                          }}
+                          style={{background:"transparent",border:"none",cursor:"pointer",fontSize:16,color:C.gold,padding:"0 6px",flexShrink:0,lineHeight:1}}
                         >★</button>
                         <span style={{color:C.t3,fontSize:13,flexShrink:0,...SS}}>→</span>
                       </div>
@@ -1006,15 +1128,38 @@ export default function TheSignet() {
                 </div>
               )
 
-              const limit = tier.historyLimit === Infinity ? allNames.length : tier.historyLimit as number
-              const visible = allNames.slice(0, limit)
-              const hasMore = allNames.length > limit
+              const filteredNames = historyFilter === "all"
+                ? allNames
+                : allNames.filter(n => getTargetGroup(n.batchTarget || "") === historyFilter)
+
+              const sortedNames = [...filteredNames].sort((a, b) => {
+                if (historySort === "az") return a.name.localeCompare(b.name)
+                if (historySort === "za") return b.name.localeCompare(a.name)
+                if (historySort === "oldest") return a.batchTs - b.batchTs
+                return b.batchTs - a.batchTs
+              })
+
+              const limit = tier.historyLimit === Infinity ? sortedNames.length : tier.historyLimit as number
+              const visible = sortedNames.slice(0, limit)
+              const hasMore = sortedNames.length > limit
 
               return (
                 <div>
-                  <div style={{color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS,marginBottom:12}}>
-                    {allNames.length} name{allNames.length!==1?"s":""} this session
-                  </div>
+                  <HistorySavedControls
+                    filterValue={historyFilter}
+                    onFilterChange={setHistoryFilter}
+                    sortValue={historySort}
+                    onSortChange={val=>setHistorySort(val as "newest"|"oldest"|"az"|"za")}
+                    onExport={()=>{
+                      const text = sortedNames.map(n =>
+                        `${n.name} (${n.pronunciation}) — ${n.language} · ${n.root_words}: "${n.meaning}"\n${n.resonance}`
+                      ).join("\n\n")
+                      navigator.clipboard.writeText(text)
+                      showToast(`${sortedNames.length} names copied`)
+                    }}
+                    count={sortedNames.length}
+                    filterOptions={["all", ...Array.from(new Set(allNames.map(n=>getTargetGroup(n.batchTarget||""))))]}
+                  />
 
                   {visible.map((r, i) => (
                     <div
@@ -1037,25 +1182,28 @@ export default function TheSignet() {
                       }}
                     >
                       <div style={{flex:1,minWidth:0,display:"flex",alignItems:"center",gap:10}}>
+                        <span style={{fontSize:16,flexShrink:0,width:22,textAlign:"center",lineHeight:1}}>
+                          {getTargetIcon(r.batchTarget || "")}
+                        </span>
                         <span style={{
                           color:C.t1, fontSize:14, fontStyle:"italic", ...GS,
                           fontWeight:600, flexShrink:0,
                           overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
-                          maxWidth:"45%",
+                          maxWidth:"40%",
                         }}>{r.name}</span>
                         <span style={{
                           color:C.t3, fontSize:11, flexShrink:0, ...SS,
                           overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
                         }}>{r.language}</span>
                       </div>
-                      <span style={{color:C.t3,fontSize:13,flexShrink:0,marginLeft:6,...SS}}>→</span>
+                      <span style={{color:C.t3,fontSize:13,flexShrink:0,...SS}}>→</span>
                     </div>
                   ))}
 
                   {hasMore && (
                     <div style={{marginTop:12,padding:"14px 16px",background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:9,textAlign:"center"}}>
                       <div style={{color:C.t3,fontSize:13,marginBottom:6,...SS}}>
-                        Showing {limit} of {allNames.length} names this session
+                        Showing {limit} of {sortedNames.length} names
                       </div>
                       <div style={{color:C.purpleL,fontSize:14,fontStyle:"italic",...GS,marginBottom:10}}>
                         Upgrade to keep your full history
@@ -1122,7 +1270,10 @@ export default function TheSignet() {
 
           <div style={{display:"flex",gap:8}}>
             <button
-              onClick={()=>toggleSave(r)}
+              onClick={()=>{
+                const nameWithTarget = {...r, target: (r as NameResult & {batchTarget?:string}).batchTarget || r.target || target}
+                toggleSave(nameWithTarget)
+              }}
               style={{
                 flex:1, padding:"9px",
                 background:isSaved?C.goldDim:C.t4,
