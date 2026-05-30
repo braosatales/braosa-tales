@@ -505,6 +505,7 @@ export default function TheSignet() {
   const [dbHistory,      setDbHistory]      = useState<DbHistoryEntry[]>([])
   const [savedFilter,    setSavedFilter]    = useState<string>("all")
   const [savedSort,      setSavedSort]      = useState<"newest"|"oldest"|"az"|"za">("newest")
+  const [confirmUnsave,  setConfirmUnsave]  = useState<NameResult|null>(null)
 
   const tier = TIERS[tierKey] || TIERS["wanderer"]
 
@@ -560,13 +561,22 @@ export default function TheSignet() {
   const toggleSave = async (r: NameResult) => {
     const existing = saved.find(s=>s.name===r.name)
     if (existing) {
-      setSaved(p=>p.filter(s=>s.name!==r.name)); showToast(`"${r.name}" removed`)
-      if (existing.id) await fetch(`/api/user/saved-names?id=${existing.id}`,{method:"DELETE"})
-    } else if (canSave) {
+      setConfirmUnsave(r)
+      return
+    }
+    if (canSave) {
       const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(r)})
       const data = await res.json()
       setSaved(p=>[...p,{...r,id:data.id}]); showToast(`"${r.name}" saved ★`)
     } else { showToast("Save limit reached — upgrade for more") }
+  }
+  const doUnsave = async (r: NameResult) => {
+    const existing = saved.find(s=>s.name===r.name)
+    if (!existing) return
+    setSaved(p=>p.filter(s=>s.name!==r.name))
+    showToast(`"${r.name}" removed`)
+    if (existing.id) await fetch(`/api/user/saved-names?id=${existing.id}`,{method:"DELETE"})
+    setConfirmUnsave(null)
   }
   const exportSaved = () => {
     if(!saved.length)return
@@ -900,30 +910,64 @@ export default function TheSignet() {
                     {tier.maxSaves!==Infinity?` · ${saved.length}/${tier.maxSaves} saved`:""}
                   </div>
 
-                  <div style={{display:"flex",flexDirection:"column",gap:3}}>
-                    {filtered.map((s,i) => (
+                  <div>
+                    {filtered.map((s, i) => (
                       <div
                         key={i}
-                        style={{
-                          display:"flex", alignItems:"center",
-                          padding:"10px 14px", borderRadius:8,
-                          background:C.t4,
-                          border:"1px solid transparent",
-                          transition:"all 0.15s", cursor:"pointer",
-                        }}
-                        onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.08)";(e.currentTarget as HTMLDivElement).style.borderColor=C.purpleB}}
-                        onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.background=C.t4;(e.currentTarget as HTMLDivElement).style.borderColor="transparent"}}
                         onClick={()=>setSelectedHistoryName(s)}
+                        style={{
+                          background:C.card2,
+                          border:`1px solid ${C.border}`,
+                          borderRadius:10, padding:"14px 16px",
+                          marginBottom:8, transition:"border-color 0.2s,background 0.2s",
+                          cursor:"pointer",
+                        }}
+                        onMouseEnter={e=>{
+                          (e.currentTarget as HTMLDivElement).style.borderColor=C.purpleB
+                          ;(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.05)"
+                        }}
+                        onMouseLeave={e=>{
+                          (e.currentTarget as HTMLDivElement).style.borderColor=C.border
+                          ;(e.currentTarget as HTMLDivElement).style.background=C.card2
+                        }}
                       >
-                        <div style={{flex:1,minWidth:0,display:"flex",alignItems:"center",gap:12}}>
-                          <span style={{color:C.t1,fontSize:15,fontStyle:"italic",...GS,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.name}</span>
-                          <span style={{color:C.t3,fontSize:11,flexShrink:0,...SS}}>{s.language}</span>
-                          <span style={{color:"rgba(237,224,200,0.2)",fontSize:11,flexShrink:0,...GS,fontStyle:"italic",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>"{s.meaning}"</span>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
+                          <div style={{flex:1,minWidth:0}}>
+                            <div style={{color:C.t1,fontSize:20,fontStyle:"italic",...GS,fontWeight:600,letterSpacing:0.5}}>
+                              {s.name}
+                            </div>
+                            <div style={{color:C.gold,fontSize:12,marginTop:3,letterSpacing:1.5,fontWeight:500,...SS}}>
+                              {s.pronunciation}
+                            </div>
+                          </div>
+                          <button
+                            onClick={e=>{e.stopPropagation();toggleSave(s)}}
+                            style={{
+                              background:"transparent",border:"none",
+                              cursor:"pointer",fontSize:20,color:C.gold,
+                              padding:"2px 4px",flexShrink:0,lineHeight:1,marginLeft:8,
+                            }}
+                          >★</button>
                         </div>
-                        <button
-                          onClick={e=>{e.stopPropagation();toggleSave(s)}}
-                          style={{background:"transparent",border:"none",cursor:"pointer",color:C.gold,fontSize:16,padding:"0 4px",flexShrink:0,lineHeight:1}}
-                        >★</button>
+
+                        <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:7,marginBottom:8}}>
+                          <span style={{
+                            background:C.purpleDim, border:`1px solid ${C.purpleB}`,
+                            borderRadius:4, padding:"3px 9px",
+                            fontSize:12, color:C.purpleL, fontWeight:600, ...SS,
+                          }}>{s.language}</span>
+                          <span style={{color:C.t2,fontSize:12,fontStyle:"italic",...GS}}>
+                            {s.root_words} — &ldquo;{s.meaning}&rdquo;
+                          </span>
+                        </div>
+
+                        <div style={{
+                          color:C.t2, fontSize:12, lineHeight:1.7,
+                          fontStyle:"italic", ...GS,
+                          borderTop:`1px solid ${C.t4}`, paddingTop:8,
+                        }}>
+                          {s.resonance}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -993,19 +1037,34 @@ export default function TheSignet() {
                       key={i}
                       onClick={()=>setSelectedHistoryName(r)}
                       style={{
-                        display:"flex", alignItems:"center", justifyContent:"space-between",
-                        padding:"14px 18px", marginBottom:6, borderRadius:10,
-                        background:C.t4, border:`1px solid transparent`,
+                        display:"flex", alignItems:"center",
+                        padding:"8px 12px", marginBottom:3,
+                        borderRadius:7, background:C.t4,
+                        border:"1px solid transparent",
                         cursor:"pointer", transition:"all 0.15s",
                       }}
-                      onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.08)";(e.currentTarget as HTMLDivElement).style.borderColor=C.purpleB}}
-                      onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.background=C.t4;(e.currentTarget as HTMLDivElement).style.borderColor="transparent"}}
+                      onMouseEnter={e=>{
+                        (e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.08)"
+                        ;(e.currentTarget as HTMLDivElement).style.borderColor=C.purpleB
+                      }}
+                      onMouseLeave={e=>{
+                        (e.currentTarget as HTMLDivElement).style.background=C.t4
+                        ;(e.currentTarget as HTMLDivElement).style.borderColor="transparent"
+                      }}
                     >
-                      <div style={{display:"flex",alignItems:"center",gap:10,flex:1,minWidth:0}}>
-                        <span style={{color:C.t1,fontSize:17,fontStyle:"italic",...GS,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{r.name}</span>
-                        <span style={{color:C.t3,fontSize:13,flexShrink:0,...SS}}>{r.language}</span>
+                      <div style={{flex:1,minWidth:0,display:"flex",alignItems:"center",gap:10}}>
+                        <span style={{
+                          color:C.t1, fontSize:14, fontStyle:"italic", ...GS,
+                          fontWeight:600, flexShrink:0,
+                          overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
+                          maxWidth:"45%",
+                        }}>{r.name}</span>
+                        <span style={{
+                          color:C.t3, fontSize:11, flexShrink:0, ...SS,
+                          overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap",
+                        }}>{r.language}</span>
                       </div>
-                      <span style={{color:C.t3,fontSize:13,flexShrink:0,marginLeft:8,...SS}}>→</span>
+                      <span style={{color:C.t3,fontSize:13,flexShrink:0,marginLeft:6,...SS}}>→</span>
                     </div>
                   ))}
 
@@ -1079,7 +1138,7 @@ export default function TheSignet() {
 
           <div style={{display:"flex",gap:8}}>
             <button
-              onClick={()=>{ toggleSave(r); showToast(isSaved?`"${r.name}" removed`:`"${r.name}" saved ★`) }}
+              onClick={()=>toggleSave(r)}
               style={{
                 flex:1, padding:"9px",
                 background:isSaved?C.goldDim:C.t4,
@@ -1105,6 +1164,67 @@ export default function TheSignet() {
               onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.12)";(e.currentTarget as HTMLButtonElement).style.color=C.t2}}
             >
               ⎘ Copy
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const ConfirmUnsaveModal = () => {
+    if (!confirmUnsave) return null
+    const r = confirmUnsave
+    return (
+      <div
+        onClick={()=>setConfirmUnsave(null)}
+        style={{
+          position:"fixed", inset:0, zIndex:600,
+          background:"rgba(12,10,9,0.85)",
+          display:"flex", alignItems:"center", justifyContent:"center",
+          padding:20,
+        }}
+      >
+        <div
+          onClick={e=>e.stopPropagation()}
+          style={{
+            background:"#1C1810",
+            border:`1px solid ${C.dangerB}`,
+            borderRadius:14, padding:"24px 24px 20px",
+            width:"100%", maxWidth:360,
+            boxShadow:"0 32px 80px rgba(0,0,0,0.8)",
+          }}
+        >
+          <div style={{color:C.t1,fontSize:18,fontStyle:"italic",...GS,fontWeight:600,marginBottom:6}}>
+            {r.name}
+          </div>
+          <div style={{color:C.t3,fontSize:13,...SS,marginBottom:20,lineHeight:1.6}}>
+            Remove this name from your saved collection?
+            You can find it again in History.
+          </div>
+          <div style={{display:"flex",gap:10}}>
+            <button
+              onClick={()=>setConfirmUnsave(null)}
+              style={{
+                flex:1, padding:"11px",
+                background:C.t4,
+                border:`1px solid rgba(237,224,200,0.12)`,
+                borderRadius:8, color:C.t2,
+                cursor:"pointer", fontSize:14, ...GS,
+              }}
+            >
+              Keep it
+            </button>
+            <button
+              onClick={()=>doUnsave(r)}
+              style={{
+                flex:1, padding:"11px",
+                background:C.dangerDim,
+                border:`1px solid ${C.dangerB}`,
+                borderRadius:8, color:C.danger,
+                cursor:"pointer", fontSize:14, ...GS,
+              }}
+            >
+              Remove ★
             </button>
           </div>
         </div>
@@ -1188,6 +1308,7 @@ export default function TheSignet() {
         </div>
       )}
       <Toast message={toast}/>
+      <ConfirmUnsaveModal/>
       <HistoryNameModal/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}} ::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-thumb{background:${C.purpleB};border-radius:2px;} input[type=range]{cursor:pointer;}`}</style>
     </div>
