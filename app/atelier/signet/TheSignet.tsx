@@ -172,20 +172,68 @@ const TARGET_ICONS: Record<string, string> = {
 
 const getTargetIcon = (target: string) => TARGET_ICONS[target] || "✦"
 
+const GROUP_ICONS: Record<string, string> = {
+  "Places":     "🗺",
+  "Characters": "⚔️",
+  "Groups":     "🏛",
+  "Divine":     "☀️",
+  "Creatures":  "🐉",
+  "Items":      "💎",
+  "Abstract":   "💭",
+  "Other":      "✦",
+}
+
 const TARGET_GROUPS: Record<string, string[]> = {
-  "Places":    ["World / Planet","Continent","Kingdom / Nation","City / Settlement","Mountain / Range","River / Body of Water","Forest / Wilderness","Realm / Dimension","Afterlife / Purgatory","Heaven / Divine Realm","Hell / Dark Realm","Space Station / Ship","Planet / Moon","Star System"],
-  "Characters":["Character (Male)","Character (Female)","Character (Neutral)"],
-  "Groups":    ["Organization / Faction","Ancient Order","Clan / House"],
-  "Divine":    ["Deity / God"],
-  "Creatures": ["Creature / Species"],
-  "Items":     ["Item / Object","Artifact / Relic"],
-  "Abstract":  ["Era / Age","Concept / Ideology","Magic System","Technology / Device"],
+  "Places": [
+    "World / Planet",
+    "Continent",
+    "Kingdom / Nation",
+    "City / Settlement",
+    "Mountain / Range",
+    "River / Body of Water",
+    "Forest / Wilderness",
+    "Realm / Dimension",
+    "Afterlife / Purgatory",
+    "Heaven / Divine Realm",
+    "Hell / Dark Realm",
+    "Space Station / Ship",
+    "Planet / Moon",
+    "Star System",
+  ],
+  "Characters": [
+    "Character (Male)",
+    "Character (Female)",
+    "Character (Neutral)",
+  ],
+  "Groups": [
+    "Organization / Faction",
+    "Ancient Order",
+    "Clan / House",
+  ],
+  "Divine": [
+    "Deity / God",
+  ],
+  "Creatures": [
+    "Creature / Species",
+  ],
+  "Items": [
+    "Item / Object",
+    "Artifact / Relic",
+  ],
+  "Abstract": [
+    "Era / Age",
+    "Concept / Ideology",
+    "Magic System",
+    "Technology / Device",
+  ],
 }
 
 const getTargetGroup = (target: string): string => {
+  if (!target) return "Other"
   for (const [group, targets] of Object.entries(TARGET_GROUPS)) {
     if (targets.includes(target)) return group
   }
+  console.warn("Unmatched target group:", JSON.stringify(target))
   return "Other"
 }
 
@@ -927,7 +975,10 @@ export default function TheSignet() {
               >
                 {filterOptions.map(t=>(
                   <option key={t} value={t}>
-                    {t === "all" ? "All types" : t}
+                    {t === "all"
+                      ? "All types"
+                      : `${GROUP_ICONS[t] || "✦"} ${t}`
+                    }
                   </option>
                 ))}
               </select>
@@ -1027,7 +1078,11 @@ export default function TheSignet() {
           {tabs.map(t => (
             <button
               key={t.id}
-              onClick={()=>setActiveTab(t.id)}
+              onClick={()=>{
+                setActiveTab(t.id)
+                if (t.id === "history") setHistoryFilter("all")
+                if (t.id === "saved")   setSavedFilter("all")
+              }}
               style={{
                 flex:1, padding:"14px 8px",
                 background:"transparent", border:"none",
@@ -1124,7 +1179,17 @@ export default function TheSignet() {
                     onSortChange={val=>setSavedSort(val as "newest"|"oldest"|"az"|"za")}
                     onExport={exportSaved}
                     count={sortedFiltered.length}
-                    filterOptions={["all", ...Array.from(new Set(saved.map(s=>getTargetGroup((s as NameResult & {target?:string}).target||""))))]}
+                    filterOptions={[
+                      "all",
+                      ...Array.from(
+                        new Set(
+                          saved.map(s => getTargetGroup(
+                            (s as NameResult & {target?:string}).target || ""
+                          ))
+                        )
+                      ).filter(g => g !== "Other"),
+                      ...(saved.some(s => getTargetGroup((s as NameResult & {target?:string}).target || "") === "Other") ? ["Other"] : []),
+                    ]}
                   />
                   {tier.maxSaves!==Infinity&&(
                     <div style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,marginBottom:10,marginTop:-6}}>
@@ -1240,8 +1305,8 @@ export default function TheSignet() {
               })
 
               const limit = tier.historyLimit === Infinity
-                ? allNames.length
-                : Math.min(tier.historyLimit as number, allNames.length)
+                ? sortedNames.length
+                : Math.min(tier.historyLimit as number, sortedNames.length)
               const visible = sortedNames.slice(0, limit)
               const hasMore = sortedNames.length > limit
 
@@ -1260,7 +1325,13 @@ export default function TheSignet() {
                       showToast(`${sortedNames.length} names copied`)
                     }}
                     count={sortedNames.length}
-                    filterOptions={["all", ...Array.from(new Set(allNames.map(n=>getTargetGroup(n.batchTarget||""))))]}
+                    filterOptions={[
+                      "all",
+                      ...Array.from(
+                        new Set(allNames.map(n => getTargetGroup(n.batchTarget || "")))
+                      ).filter(g => g !== "Other"),
+                      ...(allNames.some(n => getTargetGroup(n.batchTarget || "") === "Other") ? ["Other"] : []),
+                    ]}
                   />
 
                   {visible.map((r, i) => (
