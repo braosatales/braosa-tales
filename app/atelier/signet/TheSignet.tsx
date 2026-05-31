@@ -559,6 +559,7 @@ export default function TheSignet() {
   const [confirmUnsave,  setConfirmUnsave]  = useState<NameResult|null>(null)
   const [historyFilter,  setHistoryFilter]  = useState<string>("all")
   const [historySort,    setHistorySort]    = useState<"newest"|"oldest"|"az"|"za">("newest")
+  const [concept,        setConcept]        = useState("")
 
   const tier = TIERS[tierKey] || TIERS["wanderer"]
 
@@ -648,7 +649,7 @@ export default function TheSignet() {
     const refNote   = ref?`\nStyle reference: evoke a similar feel to "${ref.name}" (${ref.language}) but produce a distinct new name.`:""
     const dedupNote = tier.dedup&&generatedNames.length>0?`\n\nCritical: do NOT generate any of these previously seen names: ${generatedNames.slice(-150).join(", ")}`:""
     const itemNote  = isItemTarget?`\nItem type: ${itemType}\nRarity: ${RARITIES.find(r=>r.id===rarity)?.label||rarity}\nNaming guidance: ${RARITY_NAMING_GUIDE[rarity]||""}${sentient?"\nThis item is SENTIENT — name it like a character name, something the item calls itself.":""}`:""
-    return `You are a master linguist and worldbuilder specializing in fantasy nomenclature.\n\nGenerate exactly ${n} name proposal${n>1?"s":""} for: "${target}"\nLanguages to draw from: ${langNames}\nAesthetic vibe: ${vibe}\nPhonological style: ${style}${isCharTarget&&archetype!=="None"?`\nCultural archetype: ${archetype}`:""}${itemNote}\nThematic undertones: ${themes.join(", ")||"None"}${refNote}${dedupNote}\n\nRules:\n- Each name must feel grounded, polished, non-generic\n- Mix single-language and blended names across the set\n- Every name must have a distinctly different rhythm and length\n- For item names: the rarity should be FELT in the name\n\nReturn ONLY a valid JSON array, no extra text:\n[{"name":"","pronunciation":"phonetic e.g. sha-LEM","language":"","root_words":"","meaning":"","resonance":""}]`
+    return `You are a master linguist and worldbuilder specializing in fantasy nomenclature.\n\nGenerate exactly ${n} name proposal${n>1?"s":""} for: "${target}"\nLanguages to draw from: ${langNames}\nAesthetic vibe: ${vibe}\nPhonological style: ${style}${isCharTarget&&archetype!=="None"?`\nCultural archetype: ${archetype}`:""}${itemNote}\nThematic undertones: ${themes.join(", ")||"None"}${concept.trim() ? `\nCore concept to embody: "${concept.trim()}" — the names should feel rooted in this idea without being literal translations of it.` : ""}${refNote}${dedupNote}\n\nRules:\n- Each name must feel grounded, polished, non-generic\n- Mix single-language and blended names across the set\n- Every name must have a distinctly different rhythm and length\n- For item names: the rarity should be FELT in the name\n\nReturn ONLY a valid JSON array, no extra text:\n[{"name":"","pronunciation":"phonetic e.g. sha-LEM","language":"","root_words":"","meaning":"","resonance":""}]`
   }
 
   const generate = async () => {
@@ -705,6 +706,32 @@ export default function TheSignet() {
       <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
         <div style={{flex:"0 0 42%"}}><Label>Naming</Label><SearchableSelect value={target} onChange={setTarget} options={TARGETS} placeholder="Search what to name…" accent={C.purpleL}/></div>
         <div style={{flex:1}}><Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:11,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label><PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets}/></div>
+      </div>
+      <div>
+        <Label>The Concept <span style={{
+          fontWeight:400, opacity:0.55, fontSize:9,
+          marginLeft:6, letterSpacing:0.5,
+          fontFamily:"system-ui,sans-serif",
+        }}>optional — guides the generation</span></Label>
+        <textarea
+          value={concept}
+          onChange={e=>setConcept(e.target.value)}
+          placeholder="e.g. a river of eternal death… a fortress built on betrayal…"
+          rows={2}
+          style={{
+            width:"100%", boxSizing:"border-box",
+            background:"rgba(237,224,200,0.05)",
+            border:`1px solid rgba(237,224,200,0.12)`,
+            borderRadius:8, padding:"11px 14px",
+            color:"#F2E8D5", fontSize:14,
+            fontFamily:"Georgia,serif", fontStyle:"italic",
+            outline:"none", resize:"none",
+            lineHeight:1.6,
+            transition:"border-color 0.2s",
+          }}
+          onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(107,28,168,0.45)"}
+          onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
+        />
       </div>
       <div style={{height:1,background:C.t4}}/>
       {isCharTarget&&<div><Label>Cultural Archetype</Label><SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES} placeholder="Search archetype…" accent={C.purpleL}/></div>}
@@ -779,6 +806,32 @@ export default function TheSignet() {
 
   const MobileFilters = () => (
     <div style={{display:"flex",flexDirection:"column",gap:20}}>
+      <div>
+        <Label>The Concept <span style={{
+          fontWeight:400, opacity:0.55, fontSize:9,
+          marginLeft:6, letterSpacing:0.5,
+          fontFamily:"system-ui,sans-serif",
+        }}>optional — guides the generation</span></Label>
+        <textarea
+          value={concept}
+          onChange={e=>setConcept(e.target.value)}
+          placeholder="e.g. a river of eternal death… a fortress built on betrayal…"
+          rows={2}
+          style={{
+            width:"100%", boxSizing:"border-box",
+            background:"rgba(237,224,200,0.05)",
+            border:`1px solid rgba(237,224,200,0.12)`,
+            borderRadius:8, padding:"11px 14px",
+            color:"#F2E8D5", fontSize:14,
+            fontFamily:"Georgia,serif", fontStyle:"italic",
+            outline:"none", resize:"none",
+            lineHeight:1.6,
+            transition:"border-color 0.2s",
+          }}
+          onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(107,28,168,0.45)"}
+          onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
+        />
+      </div>
       {isCharTarget && (
         <div>
           <Label>Cultural Archetype</Label>
@@ -1372,12 +1425,55 @@ export default function TheSignet() {
   }
 
   if(profileLoading) return (
-    <div style={{minHeight:"100vh",background:C.bg,display:"flex",alignItems:"center",justifyContent:"center",...GS}}>
-      <div style={{textAlign:"center",color:C.t3}}>
-        <div style={{fontSize:44,marginBottom:14,display:"inline-block",animation:"spin 3s linear infinite"}}>⚗</div>
-        <div style={{fontSize:14,letterSpacing:2.5,...SS}}>Loading your atelier…</div>
+    <div style={{
+      minHeight:"100vh", background:"#12100D",
+      display:"flex", flexDirection:"column",
+      alignItems:"center", justifyContent:"center",
+      gap:32, padding:40,
+    }}>
+      <div style={{
+        fontSize:52, opacity:0.8,
+        animation:"pulse 2s ease-in-out infinite",
+        fontFamily:"serif",
+      }}>⚗</div>
+
+      <div style={{textAlign:"center"}}>
+        <div style={{
+          color:"#F2E8D5", fontSize:18,
+          fontFamily:"Cinzel, serif",
+          letterSpacing:3, marginBottom:6,
+        }}>The Signet</div>
+        <div style={{
+          color:"#8A7A65", fontSize:12,
+          letterSpacing:2, textTransform:"uppercase",
+          fontFamily:"system-ui,sans-serif",
+        }}>Loading your atelier…</div>
       </div>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+
+      <div style={{
+        width:180, height:2,
+        background:"rgba(237,224,200,0.08)",
+        borderRadius:2, overflow:"hidden",
+      }}>
+        <div style={{
+          height:"100%",
+          background:"linear-gradient(90deg, #6B1CA8, #D4AE58, #6B1CA8)",
+          backgroundSize:"200% 100%",
+          borderRadius:2,
+          animation:"shimmer 1.8s ease-in-out infinite",
+        }}/>
+      </div>
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity:0.7; transform:scale(1); }
+          50% { opacity:1; transform:scale(1.06); }
+        }
+        @keyframes shimmer {
+          0% { background-position:200% 0; }
+          100% { background-position:-200% 0; }
+        }
+      `}</style>
     </div>
   )
 
