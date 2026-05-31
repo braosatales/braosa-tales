@@ -1431,11 +1431,11 @@ export default function TheSignet() {
       alignItems:"center", justifyContent:"center",
       gap:32, padding:40,
     }}>
-      <div style={{
-        fontSize:52, opacity:0.8,
-        animation:"pulse 2s ease-in-out infinite",
-        fontFamily:"serif",
-      }}>⚗</div>
+      <img
+        src="/icons/atelier/48/10 The Signet.svg"
+        alt="The Signet"
+        style={{width:72,height:72,objectFit:"contain",opacity:0.9,animation:"pulse 2s ease-in-out infinite"}}
+      />
 
       <div style={{textAlign:"center"}}>
         <div style={{
