@@ -781,7 +781,25 @@ export default function TheSignet() {
 
   const ResultsPanel = () => (
     <div>
-      {loading&&<div style={{textAlign:"center",padding:"70px 0",color:C.t3,fontSize:15,letterSpacing:2.5,...SS}}><div style={{fontSize:44,marginBottom:14,display:"inline-block",animation:"spin 3s linear infinite"}}>⚗</div><div>Consulting the ancient tongues…</div></div>}
+      {loading&&(
+        <div style={{textAlign:"center",padding:"70px 0",color:"#8A7A65",fontFamily:"system-ui,sans-serif"}}>
+          <img
+            src="/icons/atelier/48/10 The Signet.svg"
+            alt=""
+            style={{
+              width:52, height:52,
+              objectFit:"contain",
+              marginBottom:18,
+              display:"block",
+              marginLeft:"auto",
+              marginRight:"auto",
+              animation:"pulse 2s ease-in-out infinite",
+              filter:"brightness(0.7)",
+            }}
+          />
+          <div style={{fontSize:12,letterSpacing:2,textTransform:"uppercase"}}>Consulting the ancient tongues…</div>
+        </div>
+      )}
       {!loading&&results.length===0&&!history.length&&<div style={{textAlign:"center",padding:"80px 24px",color:"rgba(200,185,154,0.15)",fontSize:16,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}><div style={{fontSize:40,marginBottom:10}}>𓂀</div>Configure your filters and forge names</div>}
       {!loading&&results.length>0&&(
         <>
@@ -874,88 +892,125 @@ export default function TheSignet() {
     onExport: () => void
     count: number
     filterOptions: string[]
-  }) => (
-    <div style={{marginBottom:12}}>
-      <div style={{display:"flex",gap:6,alignItems:"center",marginBottom:10}}>
-        {/* Filter */}
-        <div title="Filter by type" style={{display:"flex",alignItems:"center",gap:mobile?0:6,flex:1}}>
-          {!mobile && <span style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,flexShrink:0}}>TYPE</span>}
-          <div style={{position:"relative",flex:1}}>
-            {mobile && (
-              <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:14,pointerEvents:"none",zIndex:1}}>🏷</span>
-            )}
-            <select
-              value={filterValue}
-              onChange={e=>onFilterChange(e.target.value)}
+  }) => {
+    const selectStyle: React.CSSProperties = {
+      background: "rgba(237,224,200,0.05)",
+      border: "1px solid rgba(237,224,200,0.12)",
+      borderRadius: 7,
+      padding: "8px 12px",
+      color: "#C8B99A",
+      fontSize: 13,
+      fontFamily: "Georgia,serif",
+      outline: "none",
+      cursor: "pointer",
+      appearance: "none" as const,
+      WebkitAppearance: "none" as const,
+      width: "100%",
+    }
+
+    return (
+      <div style={{marginBottom:14}}>
+        <div style={{display:"flex",gap:8,alignItems:"stretch",marginBottom:10}}>
+
+          {/* Filter */}
+          <div style={{flex:1,display:"flex",flexDirection:"column",gap:4}}>
+            <span style={{
+              color:"#8A7A65", fontSize:10,
+              letterSpacing:2, textTransform:"uppercase",
+              fontFamily:"system-ui,sans-serif",
+            }}>Filter</span>
+            <div style={{position:"relative"}}>
+              <select
+                value={filterValue}
+                onChange={e=>onFilterChange(e.target.value)}
+                style={selectStyle}
+              >
+                {filterOptions.map(t=>(
+                  <option key={t} value={t}>
+                    {t === "all" ? "All types" : t}
+                  </option>
+                ))}
+              </select>
+              <span style={{
+                position:"absolute", right:10, top:"50%",
+                transform:"translateY(-50%)",
+                color:"#8A7A65", fontSize:9,
+                pointerEvents:"none",
+              }}>▼</span>
+            </div>
+          </div>
+
+          {/* Sort */}
+          <div style={{flex:1,display:"flex",flexDirection:"column",gap:4}}>
+            <span style={{
+              color:"#8A7A65", fontSize:10,
+              letterSpacing:2, textTransform:"uppercase",
+              fontFamily:"system-ui,sans-serif",
+            }}>Sort</span>
+            <div style={{position:"relative"}}>
+              <select
+                value={sortValue}
+                onChange={e=>onSortChange(e.target.value)}
+                style={selectStyle}
+              >
+                <option value="newest">Newest first</option>
+                <option value="oldest">Oldest first</option>
+                <option value="az">A → Z</option>
+                <option value="za">Z → A</option>
+              </select>
+              <span style={{
+                position:"absolute", right:10, top:"50%",
+                transform:"translateY(-50%)",
+                color:"#8A7A65", fontSize:9,
+                pointerEvents:"none",
+              }}>▼</span>
+            </div>
+          </div>
+
+          {/* Export */}
+          <div style={{display:"flex",flexDirection:"column",gap:4}}>
+            <span style={{
+              color:"#8A7A65", fontSize:10,
+              letterSpacing:2, textTransform:"uppercase",
+              fontFamily:"system-ui,sans-serif",
+            }}>Export</span>
+            <button
+              onClick={onExport}
+              title="Copy all to clipboard"
               style={{
-                width:"100%",
-                background:C.t4,
-                border:`1px solid rgba(237,224,200,0.12)`,
+                background:"transparent",
+                border:"1px solid rgba(212,174,88,0.32)",
                 borderRadius:7,
-                padding: mobile ? "8px 10px 8px 32px" : "8px 10px",
-                color:C.t1, fontSize:13, ...GS,
-                outline:"none", cursor:"pointer",
-                appearance:"none",
+                padding:"8px 14px",
+                color:"#D4AE58",
+                cursor:"pointer",
+                fontSize:13,
+                fontFamily:"Georgia,serif",
+                whiteSpace:"nowrap",
+                height:"100%",
+                transition:"all 0.15s",
               }}
-            >
-              {filterOptions.map(t=>(
-                <option key={t} value={t}>{t === "all" ? (mobile ? "All" : "All types") : t}</option>
-              ))}
-            </select>
+              onMouseEnter={e=>{
+                (e.currentTarget as HTMLButtonElement).style.background="rgba(212,174,88,0.1)"
+              }}
+              onMouseLeave={e=>{
+                (e.currentTarget as HTMLButtonElement).style.background="transparent"
+              }}
+            >⎘ Copy</button>
           </div>
         </div>
-        {/* Sort */}
-        <div title="Sort" style={{display:"flex",alignItems:"center",gap:mobile?0:6,flex:1}}>
-          {!mobile && <span style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,flexShrink:0}}>SORT</span>}
-          <div style={{position:"relative",flex:1}}>
-            {mobile && (
-              <span style={{position:"absolute",left:10,top:"50%",transform:"translateY(-50%)",fontSize:14,pointerEvents:"none",zIndex:1}}>↕️</span>
-            )}
-            <select
-              value={sortValue}
-              onChange={e=>onSortChange(e.target.value)}
-              style={{
-                width:"100%",
-                background:C.t4,
-                border:`1px solid rgba(237,224,200,0.12)`,
-                borderRadius:7,
-                padding: mobile ? "8px 10px 8px 32px" : "8px 10px",
-                color:C.t1, fontSize:13, ...GS,
-                outline:"none", cursor:"pointer",
-                appearance:"none",
-              }}
-            >
-              <option value="newest">{mobile ? "New" : "Newest first"}</option>
-              <option value="oldest">{mobile ? "Old" : "Oldest first"}</option>
-              <option value="az">A → Z</option>
-              <option value="za">Z → A</option>
-            </select>
-          </div>
+
+        {/* Count */}
+        <div style={{
+          color:"#8A7A65", fontSize:11,
+          letterSpacing:1.5, textTransform:"uppercase",
+          fontFamily:"system-ui,sans-serif",
+        }}>
+          {count} name{count!==1?"s":""}
         </div>
-        {/* Export */}
-        <button
-          onClick={onExport}
-          title="Export all"
-          style={{
-            background:"transparent",
-            border:`1px solid ${C.goldB}`,
-            borderRadius:7,
-            padding: mobile ? "8px 10px" : "8px 14px",
-            color:C.gold, cursor:"pointer",
-            fontSize: mobile ? 16 : 13,
-            ...GS, flexShrink:0,
-            whiteSpace:"nowrap",
-          }}
-        >
-          {mobile ? "⎘" : "⎘ Export"}
-        </button>
       </div>
-      {/* Count */}
-      <div style={{color:C.t3,fontSize:11,letterSpacing:1,...SS}}>
-        {count} name{count!==1?"s":""}
-      </div>
-    </div>
-  )
+    )
+  }
 
   const TabbedPanel = () => {
     const tabs: {id:"results"|"saved"|"history"; label:string; count?:number}[] = [
@@ -963,7 +1018,7 @@ export default function TheSignet() {
       { id:"saved",    label:"Saved",    count: saved.length > 0 ? saved.length : undefined },
       { id:"history",  label:"History",  count: history.length > 0 ? history.length : undefined },
     ]
-    const historyLocked = tier.historyLimit === 0
+    const historyLocked = false
 
     return (
       <div>
@@ -998,9 +1053,22 @@ export default function TheSignet() {
         {activeTab==="results" && (
           <div>
             {loading && (
-              <div style={{textAlign:"center",padding:"50px 0",color:C.t3,fontSize:15,letterSpacing:2.5,...SS}}>
-                <div style={{fontSize:44,marginBottom:14,display:"inline-block",animation:"spin 3s linear infinite"}}>⚗</div>
-                <div>Consulting the ancient tongues…</div>
+              <div style={{textAlign:"center",padding:"70px 0",color:"#8A7A65",fontFamily:"system-ui,sans-serif"}}>
+                <img
+                  src="/icons/atelier/48/10 The Signet.svg"
+                  alt=""
+                  style={{
+                    width:52, height:52,
+                    objectFit:"contain",
+                    marginBottom:18,
+                    display:"block",
+                    marginLeft:"auto",
+                    marginRight:"auto",
+                    animation:"pulse 2s ease-in-out infinite",
+                    filter:"brightness(0.7)",
+                  }}
+                />
+                <div style={{fontSize:12,letterSpacing:2,textTransform:"uppercase"}}>Consulting the ancient tongues…</div>
               </div>
             )}
             {!loading && results.length===0 && (
@@ -1164,13 +1232,16 @@ export default function TheSignet() {
                 : allNames.filter(n => getTargetGroup(n.batchTarget || "") === historyFilter)
 
               const sortedNames = [...filteredNames].sort((a, b) => {
-                if (historySort === "az") return a.name.localeCompare(b.name)
-                if (historySort === "za") return b.name.localeCompare(a.name)
+                if (historySort === "az")     return a.name.localeCompare(b.name)
+                if (historySort === "za")     return b.name.localeCompare(a.name)
                 if (historySort === "oldest") return a.batchTs - b.batchTs
+                if (historySort === "newest") return b.batchTs - a.batchTs
                 return b.batchTs - a.batchTs
               })
 
-              const limit = tier.historyLimit === Infinity ? sortedNames.length : tier.historyLimit as number
+              const limit = tier.historyLimit === Infinity
+                ? allNames.length
+                : Math.min(tier.historyLimit as number, allNames.length)
               const visible = sortedNames.slice(0, limit)
               const hasMore = sortedNames.length > limit
 
@@ -1547,7 +1618,7 @@ export default function TheSignet() {
       <Toast message={toast}/>
       <ConfirmUnsaveModal/>
       <HistoryNameModal/>
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}} ::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-thumb{background:${C.purpleB};border-radius:2px;} input[type=range]{cursor:pointer;}`}</style>
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}} @keyframes pulse{0%,100%{opacity:0.7;transform:scale(1)} 50%{opacity:1;transform:scale(1.06)}} ::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-thumb{background:${C.purpleB};border-radius:2px;} input[type=range]{cursor:pointer;}`}</style>
     </div>
   )
 }
