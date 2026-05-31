@@ -806,32 +806,6 @@ export default function TheSignet() {
 
   const MobileFilters = () => (
     <div style={{display:"flex",flexDirection:"column",gap:20}}>
-      <div>
-        <Label>The Concept <span style={{
-          fontWeight:400, opacity:0.55, fontSize:9,
-          marginLeft:6, letterSpacing:0.5,
-          fontFamily:"system-ui,sans-serif",
-        }}>optional — guides the generation</span></Label>
-        <textarea
-          value={concept}
-          onChange={e=>setConcept(e.target.value)}
-          placeholder="e.g. a river of eternal death… a fortress built on betrayal…"
-          rows={2}
-          style={{
-            width:"100%", boxSizing:"border-box",
-            background:"rgba(237,224,200,0.05)",
-            border:`1px solid rgba(237,224,200,0.12)`,
-            borderRadius:8, padding:"11px 14px",
-            color:"#F2E8D5", fontSize:14,
-            fontFamily:"Georgia,serif", fontStyle:"italic",
-            outline:"none", resize:"none",
-            lineHeight:1.6,
-            transition:"border-color 0.2s",
-          }}
-          onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(107,28,168,0.45)"}
-          onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
-        />
-      </div>
       {isCharTarget && (
         <div>
           <Label>Cultural Archetype</Label>
@@ -1499,6 +1473,34 @@ export default function TheSignet() {
               <Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:11,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label>
               <PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets}/>
             </div>
+          </div>
+
+          {/* Row 1b: Concept */}
+          <div style={{marginBottom:8}}>
+            <Label>The Concept <span style={{
+              fontWeight:400, opacity:0.55, fontSize:9,
+              marginLeft:6, letterSpacing:0.5,
+              fontFamily:"system-ui,sans-serif",
+            }}>optional</span></Label>
+            <textarea
+              value={concept}
+              onChange={e=>setConcept(e.target.value)}
+              placeholder="e.g. a river of eternal death…"
+              rows={2}
+              style={{
+                width:"100%", boxSizing:"border-box",
+                background:"rgba(237,224,200,0.05)",
+                border:`1px solid rgba(237,224,200,0.12)`,
+                borderRadius:8, padding:"11px 14px",
+                color:"#F2E8D5", fontSize:14,
+                fontFamily:"Georgia,serif", fontStyle:"italic",
+                outline:"none", resize:"none",
+                lineHeight:1.6,
+                transition:"border-color 0.2s",
+              }}
+              onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(107,28,168,0.45)"}
+              onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
+            />
           </div>
 
           {/* Row 2: Filters & Settings — collapsible */}
