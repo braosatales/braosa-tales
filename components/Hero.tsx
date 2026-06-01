@@ -21,7 +21,7 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center px-8 py-10 md:py-20">
+      <div className="relative z-10 flex flex-col items-center px-8 pt-[calc(64px+1.5rem)] pb-10 md:py-20">
 
         <div className="mb-5">
           <TypewriterHero />
@@ -63,7 +63,7 @@ export default function Hero() {
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-brand-bg to-transparent z-10" />
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 opacity-40">
+      <div className="hidden sm:flex flex-col items-center gap-2 opacity-40 absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
         <span className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment">Scroll</span>
         <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24" className="text-brand-parchment animate-bounce">
           <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />

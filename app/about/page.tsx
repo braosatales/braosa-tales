@@ -9,7 +9,7 @@ export default function AboutPage() {
       <Nav />
 
       {/* Hero */}
-      <section className="px-8 pt-24 pb-14 text-center border-b border-brand-border">
+      <section className="px-8 pt-[calc(64px+1.5rem)] md:pt-24 pb-8 md:pb-14 text-center border-b border-brand-border">
         <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
           The Lorekeeper
         </h1>
@@ -24,8 +24,8 @@ export default function AboutPage() {
       </section>
 
       {/* Portrait + Intro */}
-      <section className="px-8 py-20 border-b border-brand-border">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-12 items-start">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
+        <div className="max-w-4xl mx-auto flex flex-col md:flex-row gap-6 md:gap-12 items-start">
 
           {/* Portrait */}
           <div className="w-full md:w-64 shrink-0">
@@ -54,7 +54,7 @@ export default function AboutPage() {
       </section>
 
       {/* How It All Began */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-3xl mx-auto">
           <div className="dark-card">
             <p className="section-label mb-2">Origin</p>
@@ -77,13 +77,13 @@ export default function AboutPage() {
       </section>
 
       {/* What Is Braosa Tales */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-3xl mx-auto">
           <p className="section-label mb-3">The Brand</p>
           <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-4 leading-tight">
             What Is Braosa Tales?
           </h2>
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-4 mb-4 md:mb-8">
             <div className="h-px w-16 bg-brand-gold-400/30" />
             <span className="text-brand-gold-400/50 text-xs">✦</span>
           </div>
@@ -103,16 +103,16 @@ export default function AboutPage() {
       </section>
 
       {/* A Bit More */}
-      <section className="px-8 py-20">
+      <section className="px-8 py-10 md:py-20">
         <div className="max-w-3xl mx-auto">
           <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-4 leading-tight">
             A Bit More
           </h2>
-          <div className="flex items-center gap-4 mb-8">
+          <div className="flex items-center gap-4 mb-4 md:mb-8">
             <div className="h-px w-16 bg-brand-gold-400/30" />
             <span className="text-brand-gold-400/50 text-xs">✦</span>
           </div>
-          <div className="dark-card mb-10">
+          <div className="dark-card mb-5 md:mb-10">
             <p className="font-fell text-brand-muted leading-loose">
               When not at the table, John manages construction teams in Portugal — coordinating the kind of complex, moving-parts work that turns out to be surprisingly good training for running campaigns. He&apos;s married, father of three, a committed Tolkien obsessive (The Silmarillion is the correct answer), and has been known to use genuinely terrible accents for NPCs.
             </p>

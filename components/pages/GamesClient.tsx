@@ -40,7 +40,7 @@ export default function GamesClient() {
       <Nav />
 
       {/* Hero */}
-      <section className="px-8 pt-24 pb-14 text-center border-b border-brand-border">
+      <section className="px-8 pt-[calc(64px+1.5rem)] md:pt-24 pb-8 md:pb-14 text-center border-b border-brand-border">
         <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
           The Table
         </h1>
@@ -55,13 +55,13 @@ export default function GamesClient() {
       </section>
 
       {/* Waitlist */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-md mx-auto text-center">
           <p className="section-label">Join the Waitlist</p>
           <h2 className="font-cinzel font-bold text-brand-parchment text-2xl mb-2">
             Claim your seat at the table
           </h2>
-          <p className="font-fell text-brand-muted mb-8 leading-relaxed">
+          <p className="font-fell text-brand-muted mb-4 md:mb-8 leading-relaxed">
             Campaigns fill fast. Get early access before seats open to the public.
           </p>
           {success ? (
@@ -96,13 +96,13 @@ export default function GamesClient() {
       </section>
 
       {/* Watch a Session */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-6xl mx-auto">
           <p className="section-label mb-4">Watch a Session</p>
           <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-4 leading-tight">
             See how the world plays
           </h2>
-          <p className="font-fell text-brand-muted leading-loose max-w-xl mb-10">
+          <p className="font-fell text-brand-muted leading-loose max-w-xl mb-5 md:mb-10">
             Session recordings capture the chaos, the decisions, and the moments that
             become canon. Watch before you apply — know what kind of table this is.
           </p>
@@ -119,8 +119,8 @@ export default function GamesClient() {
       </section>
 
       {/* VTT Vision */}
-      <section className="px-8 py-20 border-b border-brand-border">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-16 items-start">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-8 md:gap-16 items-start">
           <div className="flex-1">
             <p className="section-label">The VTT Vision</p>
             <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-4 leading-tight">

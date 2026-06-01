@@ -36,7 +36,7 @@ export default function BlogPage() {
       <Nav />
 
       {/* Hero */}
-      <section className="px-8 pt-40 pb-24 text-center border-b border-brand-border">
+      <section className="px-8 pt-[calc(64px+1.5rem)] md:pt-40 pb-12 md:pb-24 text-center border-b border-brand-border">
         <p className="section-label">The Blog</p>
         <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
           The Chronicle
@@ -52,10 +52,10 @@ export default function BlogPage() {
       </section>
 
       {/* Post grid */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-6xl mx-auto">
-          <p className="section-label mb-8">Recent Posts</p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <p className="section-label mb-4 md:mb-8">Recent Posts</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
             {posts.map((post) => (
               <article key={post.title} className="dark-card flex flex-col gap-3">
                 <div className="flex items-center justify-between">
@@ -80,11 +80,11 @@ export default function BlogPage() {
       </section>
 
       {/* Newsletter */}
-      <section className="px-8 py-20 border-t border-brand-border text-center">
+      <section className="px-8 py-10 md:py-20 border-t border-brand-border text-center">
         <div className="max-w-md mx-auto">
           <p className="section-label">Stay in the loop</p>
           <h2 className="font-cinzel font-bold text-brand-parchment text-2xl mb-2">Join the Chronicle</h2>
-          <p className="font-fell italic text-brand-muted mb-8 leading-relaxed">
+          <p className="font-fell italic text-brand-muted mb-4 md:mb-8 leading-relaxed">
             New tools, new stories, new sessions. No noise.
           </p>
           <div className="flex flex-col sm:flex-row gap-2">

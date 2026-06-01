@@ -223,7 +223,7 @@ export default function PricingPage() {
       <Nav />
 
       {/* Hero */}
-      <section className="px-8 pt-24 pb-14 text-center border-b border-brand-border">
+      <section className="px-8 pt-[calc(64px+1.5rem)] md:pt-24 pb-8 md:pb-14 text-center border-b border-brand-border">
         <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
           Choose Your Path
         </h1>
@@ -238,7 +238,7 @@ export default function PricingPage() {
       </section>
 
       {/* Tier Cards */}
-      <section className="px-8 pt-2 pb-20 border-b border-brand-border">
+      <section className="px-8 pt-2 pb-10 md:pb-20 border-b border-brand-border">
         <div className="flex justify-center mb-5">
           <div
             className="relative flex items-center rounded-full border border-[#D4AE58] overflow-hidden"
@@ -267,7 +267,7 @@ export default function PricingPage() {
             </button>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6">
           {tiers.map((tier) => (
             <div
               key={tier.name}
@@ -326,12 +326,12 @@ export default function PricingPage() {
       </section>
 
       {/* Credit System Explainer */}
-      <section className="bg-brand-card px-8 py-20 border-b border-brand-border">
+      <section className="bg-brand-card px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-5xl mx-auto">
-          <h2 className="font-cinzel font-black text-brand-parchment text-3xl text-center mb-10">
+          <h2 className="font-cinzel font-black text-brand-parchment text-3xl text-center mb-5 md:mb-10">
             How Credits Work
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-8">
             {creditTiers.map((ct) => (
               <div key={ct.label} className="dark-card">
                 <div className="flex gap-1.5 mb-4">
@@ -352,9 +352,9 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-3xl mx-auto">
-          <h2 className="font-cinzel font-black text-brand-parchment text-3xl text-center mb-10">
+          <h2 className="font-cinzel font-black text-brand-parchment text-3xl text-center mb-5 md:mb-10">
             Questions
           </h2>
           <div className="flex flex-col gap-2">

@@ -15,7 +15,7 @@ export default function StoriesPage() {
       <Nav />
 
       {/* Hero */}
-      <section className="px-8 pt-24 pb-14 text-center border-b border-brand-border">
+      <section className="px-8 pt-[calc(64px+1.5rem)] md:pt-24 pb-8 md:pb-14 text-center border-b border-brand-border">
         <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
           The Library
         </h1>
@@ -30,10 +30,10 @@ export default function StoriesPage() {
       </section>
 
       {/* Featured Release */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-6xl mx-auto">
           <p className="section-label mb-6">Featured Release</p>
-          <div className="flex flex-col md:flex-row gap-10 items-start">
+          <div className="flex flex-col md:flex-row gap-5 md:gap-10 items-start">
             <div className="dark-card flex-shrink-0 w-full md:w-56 h-80 flex flex-col items-center justify-center gap-3">
               <span className="text-brand-gold-400/40 text-5xl">📖</span>
               <p className="font-cinzel text-xs tracking-widest uppercase text-brand-muted">Cover Reveal Soon</p>
@@ -66,9 +66,9 @@ export default function StoriesPage() {
       </section>
 
       {/* World Wiki */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-16 items-start">
+          <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
             <div className="flex-1">
               <p className="section-label">The World Wiki</p>
               <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-4 leading-tight">
@@ -83,7 +83,7 @@ export default function StoriesPage() {
                 histories, and pantheons. If you&apos;re running a campaign set in this world,
                 everything your players need to get oriented is here.
               </p>
-              <p className="font-fell text-brand-muted leading-loose mb-8">
+              <p className="font-fell text-brand-muted leading-loose mb-4 md:mb-8">
                 Some lore is open. Some is locked — it&apos;ll spoil things that haven&apos;t
                 happened at your table yet. That&apos;s by design.
               </p>
@@ -110,13 +110,13 @@ export default function StoriesPage() {
       </section>
 
       {/* Shop Section */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-6xl mx-auto">
           <p className="section-label mb-4">The Shop</p>
           <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-4 leading-tight">
             Own a piece of the world
           </h2>
-          <p className="font-fell text-brand-muted leading-loose max-w-xl mb-10">
+          <p className="font-fell text-brand-muted leading-loose max-w-xl mb-5 md:mb-10">
             Books, maps, and lore documents — direct from the author. No platform cut.
             When the shop opens, everything sold here supports the world being built.
           </p>

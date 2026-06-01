@@ -87,7 +87,7 @@ export default function AtelierPage() {
   return (
     <main className="relative">
       {/* Hero */}
-      <section className="px-8 pt-24 pb-10 border-b border-brand-border">
+      <section className="px-8 pt-[calc(64px+1.5rem)] md:pt-24 pb-6 md:pb-10 border-b border-brand-border">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
             The Atelier
@@ -104,9 +104,9 @@ export default function AtelierPage() {
       </section>
 
       {/* Wing I — Workshop */}
-      <section className="px-8 py-20 border-b border-brand-border">
+      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-12">
+          <div className="mb-6 md:mb-12">
             <p className="section-label">Wing I</p>
             <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-3 leading-tight">
               The Workshop
@@ -126,9 +126,9 @@ export default function AtelierPage() {
       </section>
 
       {/* Wing II — Generators */}
-      <section className="px-8 py-20">
+      <section className="px-8 py-10 md:py-20">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-12">
+          <div className="mb-6 md:mb-12">
             <p className="section-label">Wing II</p>
             <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-3 leading-tight">
               The Generators
