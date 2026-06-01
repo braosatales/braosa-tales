@@ -26,17 +26,43 @@ export async function POST(req: NextRequest) {
   const user = await getUserByClerkId(userId)
   if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
-  const { name, settings } = await req.json()
+  const { name, settings, favourite } = await req.json()
 
   const supabase = createServerSupabase()
   const { data, error } = await supabase
     .from('presets')
-    .insert({ user_id: user.id, name, settings })
+    .insert({ user_id: user.id, name, settings, favourite: favourite || false })
     .select()
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data)
+}
+
+export async function PATCH(req: NextRequest) {
+  const { userId } = await auth()
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const user = await getUserByClerkId(userId)
+  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
+
+  const { id, favourite } = await req.json()
+  const supabase = createServerSupabase()
+
+  await supabase
+    .from('presets')
+    .update({ favourite: false })
+    .eq('user_id', user.id)
+
+  if (favourite) {
+    await supabase
+      .from('presets')
+      .update({ favourite: true })
+      .eq('id', id)
+      .eq('user_id', user.id)
+  }
+
+  return NextResponse.json({ success: true })
 }
 
 export async function DELETE(req: NextRequest) {

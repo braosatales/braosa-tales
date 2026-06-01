@@ -280,7 +280,7 @@ const GS = {fontFamily:"Georgia,serif"} as React.CSSProperties
 interface Lang { id: string; label: string; note?: string; category: string }
 interface NameResult { id?: string; name: string; pronunciation: string; language: string; root_words: string; meaning: string; resonance: string; forged?: boolean; target?: string; saved_at?: string }
 interface HistoryBatchType { id: number; ts: number; open: boolean; target: string; langs: string; results: NameResult[] }
-interface PresetType { id: string; name: string; settings: { archetype: string; languages: Lang[]; vibe: string; style: string; themes: string[]; count: number } }
+interface PresetType { id: string; name: string; favourite?: boolean; settings: { archetype: string; languages: Lang[]; vibe: string; style: string; themes: string[]; count: number } }
 interface DbHistoryEntry {
   id: string
   target: string
@@ -464,7 +464,16 @@ function MultiDropdown({ selected, onChange, options, placeholder="Select…" }:
   )
 }
 
-function PresetDropdown({ presets, activeId, onLoad, onSave, onDelete, maxPresets }: { presets: PresetType[]; activeId: string|null; onLoad: (p: PresetType) => void; onSave: (name: string) => void; onDelete: (id: string) => void; maxPresets: number }) {
+function PresetDropdown({ presets, activeId, onLoad, onSave, onDelete, maxPresets, favouriteId, onToggleFavourite }: {
+  presets: PresetType[]
+  activeId: string|null
+  onLoad: (p: PresetType) => void
+  onSave: (name: string) => void
+  onDelete: (id: string) => void
+  maxPresets: number
+  favouriteId: string|null
+  onToggleFavourite: (id: string, current: boolean) => void
+}) {
   const [open, setOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [newName, setNewName] = useState("")
@@ -491,9 +500,21 @@ function PresetDropdown({ presets, activeId, onLoad, onSave, onDelete, maxPreset
                     <span style={{color:p.id===activeId?C.purpleL:C.t1,fontSize:16,...GS,fontStyle:"italic",fontWeight:p.id===activeId?600:400}}>{p.name}</span>
                     <span style={{color:C.t3,fontSize:13,marginLeft:8,...SS}}>{p.settings.languages.slice(0,2).map(l=>l.label).join(", ")}{p.settings.languages.length>2?` +${p.settings.languages.length-2}`:""} · {p.settings.vibe.split(" ")[0]}</span>
                   </div>
+                  <button
+                    onClick={e=>{e.stopPropagation(); onToggleFavourite(p.id, p.id===favouriteId)}}
+                    title={p.id===favouriteId ? "Remove as default" : "Set as default preset"}
+                    style={{background:"transparent",border:"none",cursor:"pointer",fontSize:14,color:p.id===favouriteId?"#D4AE58":"rgba(237,224,200,0.2)",padding:"0 4px",flexShrink:0,lineHeight:1,transition:"color 0.15s"}}
+                    onMouseEnter={e=>(e.target as HTMLButtonElement).style.color="#D4AE58"}
+                    onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=p.id===favouriteId?"#D4AE58":"rgba(237,224,200,0.2)"}
+                  >★</button>
                   <button onClick={e=>{e.stopPropagation();onDelete(p.id)}} style={{background:"transparent",border:"none",cursor:"pointer",color:C.t3,fontSize:16,padding:"0 6px",lineHeight:1,transition:"color 0.15s",flexShrink:0}} onMouseEnter={e=>(e.target as HTMLButtonElement).style.color=C.danger} onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=C.t3}>×</button>
                 </div>
               ))}
+            </div>
+          )}
+          {favouriteId && (
+            <div style={{padding:"6px 14px",borderTop:`1px solid ${C.t4}`,color:C.t3,fontSize:9,letterSpacing:1,fontFamily:"system-ui,sans-serif"}}>
+              ★ Starred preset loads automatically on open
             </div>
           )}
           <div style={{borderTop:`1px solid ${C.t4}`,padding:"10px"}}>
@@ -574,10 +595,7 @@ export default function TheSignet() {
   const [profileLoading, setProfileLoading] = useState(true)
   const [tierKey,        setTierKey]        = useState("wanderer")
   const [credits,        setCredits]        = useState(0)
-  const [languages,      setLanguages]      = useState<Lang[]>([
-    {id:"hebrew",  label:"Hebrew",   note:"Biblical",    category:"ancient"},
-    {id:"sumerian",label:"Sumerian", note:"Mesopotamia", category:"ancient"},
-  ])
+  const [languages,      setLanguages]      = useState<Lang[]>([])
   const [vibe,           setVibe]           = useState("Ancient Historic Fantasy")
   const [style,          setStyle]          = useState("Mixed")
   const [archetype,      setArchetype]      = useState("None")
@@ -585,7 +603,7 @@ export default function TheSignet() {
   const [rarity,         setRarity]         = useState("uncommon")
   const [sentient,       setSentient]       = useState(false)
   const [target,         setTarget]         = useState("World / Planet")
-  const [themes,         setThemes]         = useState(["Redemption","Restoration"])
+  const [themes,         setThemes]         = useState<string[]>([])
   const [count,          setCount]          = useState(3)
   const [results,        setResults]        = useState<NameResult[]>([])
   const [history,        setHistory]        = useState<HistoryBatchType[]>([])
@@ -599,6 +617,7 @@ export default function TheSignet() {
   const [generatedNames, setGeneratedNames] = useState<string[]>([])
   const [presets,        setPresets]        = useState<PresetType[]>([])
   const [activePreset,   setActivePreset]   = useState<string|null>(null)
+  const [favouritePresetId, setFavouritePresetId] = useState<string|null>(null)
   const [activeTab,      setActiveTab]      = useState<"results"|"saved"|"history">("results")
   const [selectedHistoryName, setSelectedHistoryName] = useState<NameResult|null>(null)
   const [dbHistory,      setDbHistory]      = useState<DbHistoryEntry[]>([])
@@ -633,7 +652,26 @@ export default function TheSignet() {
         if (profile.tier) setTierKey(profile.tier)
         if (profile.credits !== undefined) setCredits(profile.credits)
         if (Array.isArray(savedData)) setSaved(savedData)
-        if (Array.isArray(presetsData)) setPresets(presetsData.map((p: {id:string;name:string;settings:PresetType["settings"]})=>({id:p.id,name:p.name,settings:p.settings})))
+        if (Array.isArray(presetsData) && presetsData.length > 0) {
+          const mapped = presetsData.map((p: {id:string;name:string;favourite?:boolean;settings:PresetType["settings"]}) =>
+            ({id:p.id, name:p.name, favourite:p.favourite||false, settings:p.settings}))
+          setPresets(mapped)
+
+          const fav = mapped.find(p => p.favourite)
+          if (fav) {
+            setFavouritePresetId(fav.id)
+            setActivePreset(fav.id)
+            const s = fav.settings
+            setArchetype(s.archetype)
+            setLanguages(s.languages)
+            setVibe(s.vibe)
+            setStyle(s.style)
+            setThemes(s.themes)
+            setCount(s.count)
+          }
+        } else if (Array.isArray(presetsData)) {
+          setPresets([])
+        }
         if (Array.isArray(historyData)) setDbHistory(historyData)
       } catch(e) { console.error("Failed to load profile",e) }
       finally { setProfileLoading(false) }
@@ -663,7 +701,19 @@ export default function TheSignet() {
   }
   const deletePreset = async (id: string) => {
     setPresets(p=>p.filter(x=>x.id!==id)); if(activePreset===id)setActivePreset(null)
+    if(favouritePresetId===id)setFavouritePresetId(null)
     showToast("Preset deleted"); await fetch(`/api/user/presets?id=${id}`,{method:"DELETE"})
+  }
+  const toggleFavouritePreset = async (id: string, isCurrent: boolean) => {
+    const newFav = isCurrent ? null : id
+    setFavouritePresetId(newFav)
+    setPresets(prev => prev.map(p => ({...p, favourite: p.id === newFav})))
+    await fetch("/api/user/presets", {
+      method: "PATCH",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ id, favourite: !isCurrent }),
+    })
+    showToast(isCurrent ? "Default preset removed" : "★ Set as default preset")
   }
   const toggleSave = async (r: NameResult) => {
     const existing = saved.find(s=>s.name===r.name)
@@ -758,7 +808,7 @@ export default function TheSignet() {
     <div style={{display:"flex",flexDirection:"column",gap:20}}>
       <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
         <div style={{flex:"0 0 42%"}}><Label>Naming</Label><SearchableSelect value={target} onChange={setTarget} options={TARGETS} placeholder="Search what to name…" accent={C.purpleL}/></div>
-        <div style={{flex:1}}><Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:11,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label><PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets}/></div>
+        <div style={{flex:1}}><Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:11,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label><PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets} favouriteId={favouritePresetId} onToggleFavourite={toggleFavouritePreset}/></div>
       </div>
       <div>
         <Label>The Concept <span style={{
@@ -1814,7 +1864,7 @@ export default function TheSignet() {
             </div>
             <div style={{flex:1}}>
               <Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:11,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label>
-              <PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets}/>
+              <PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets} favouriteId={favouritePresetId} onToggleFavourite={toggleFavouritePreset}/>
             </div>
           </div>
 
