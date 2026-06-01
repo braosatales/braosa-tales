@@ -713,7 +713,7 @@ export default function TheSignet() {
     try {
       const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:1400,messages:[{role:"user",content:buildPrompt(count,null)}],creditsToUse:totalCost,target,languages,vibe,themes,style})})
       const data = await res.json()
-      if(data.creditsRemaining!==undefined)setCredits(data.creditsRemaining)
+      if(data.creditsRemaining!==undefined){setCredits(data.creditsRemaining);window.dispatchEvent(new CustomEvent("braosa:credits-updated",{detail:{credits:data.creditsRemaining}}))}
       const text = (data.content||[]).map((b:{text?:string})=>b.text||"").join("")
       const parsed: NameResult[] = JSON.parse(text.replace(/```json|```/g,"").trim())
       setResults(parsed); setGeneratedNames(prev=>[...prev,...parsed.map(r=>r.name)])
@@ -727,7 +727,7 @@ export default function TheSignet() {
     try {
       const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:400,messages:[{role:"user",content:buildPrompt(1,ref)}],creditsToUse:1,target,languages,vibe,themes,style})})
       const data = await res.json()
-      if(data.creditsRemaining!==undefined)setCredits(data.creditsRemaining)
+      if(data.creditsRemaining!==undefined){setCredits(data.creditsRemaining);window.dispatchEvent(new CustomEvent("braosa:credits-updated",{detail:{credits:data.creditsRemaining}}))}
       const text = (data.content||[]).map((b:{text?:string})=>b.text||"").join("")
       const [newName]: NameResult[] = JSON.parse(text.replace(/```json|```/g,"").trim())
       setResults(p=>[{...newName,forged:true},...p]); setGeneratedNames(prev=>[...prev,newName.name])

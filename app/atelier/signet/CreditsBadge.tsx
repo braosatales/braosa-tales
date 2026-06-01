@@ -93,6 +93,17 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
   }, [initialProfile])
 
   useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail
+      if (detail?.credits !== undefined) {
+        setProfile(prev => prev ? { ...prev, credits: detail.credits } : prev)
+      }
+    }
+    window.addEventListener("braosa:credits-updated", handler)
+    return () => window.removeEventListener("braosa:credits-updated", handler)
+  }, [])
+
+  useEffect(() => {
     const h = (e: MouseEvent) => {
       if (creditsRef.current && !creditsRef.current.contains(e.target as Node)) setShowCredits(false)
       if (tierRef.current    && !tierRef.current.contains(e.target as Node))    setShowTier(false)
