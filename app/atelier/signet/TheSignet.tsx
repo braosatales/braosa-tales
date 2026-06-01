@@ -608,6 +608,11 @@ export default function TheSignet() {
   const [historyFilter,  setHistoryFilter]  = useState<string>("all")
   const [historySort,    setHistorySort]    = useState<"newest"|"oldest"|"az"|"za">("newest")
   const [concept,        setConcept]        = useState("")
+  const [feedbackOpen,   setFeedbackOpen]   = useState(false)
+  const [feedbackType,   setFeedbackType]   = useState<"bug"|"feature"|"other">("bug")
+  const [feedbackText,   setFeedbackText]   = useState("")
+  const [feedbackSending, setFeedbackSending] = useState(false)
+  const [feedbackSent,   setFeedbackSent]   = useState(false)
 
   const tier = TIERS[tierKey] || TIERS["wanderer"]
 
@@ -1540,6 +1545,202 @@ export default function TheSignet() {
     )
   }
 
+  const FeedbackButton = () => {
+    const submit = async () => {
+      if (!feedbackText.trim()) return
+      setFeedbackSending(true)
+      try {
+        await fetch("/api/feedback", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({
+            type: feedbackType,
+            message: feedbackText,
+            context: `Signet — target:${target}, tier:${tierKey}`,
+          })
+        })
+        setFeedbackSent(true)
+        setFeedbackText("")
+        setTimeout(() => {
+          setFeedbackSent(false)
+          setFeedbackOpen(false)
+        }, 2000)
+      } catch {
+        showToast("Failed to send — try again")
+      } finally {
+        setFeedbackSending(false)
+      }
+    }
+
+    const TYPE_OPTIONS: {id:"bug"|"feature"|"other"; label:string; icon:string}[] = [
+      { id:"bug",     label:"Bug report",      icon:"⚑" },
+      { id:"feature", label:"Feature request", icon:"✦" },
+      { id:"other",   label:"Other",           icon:"✎" },
+    ]
+
+    return (
+      <>
+        {/* Popup */}
+        {feedbackOpen && (
+          <div style={{
+            position:"fixed",
+            bottom: mobile ? 80 : 90,
+            right: mobile ? 16 : 28,
+            zIndex:900,
+            width: mobile ? "calc(100vw - 32px)" : 340,
+            background:"#1C1810",
+            border:`1px solid ${C.purpleB}`,
+            borderRadius:14,
+            padding:"20px 20px 16px",
+            boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
+          }}>
+
+            {feedbackSent ? (
+              <div style={{textAlign:"center",padding:"24px 0"}}>
+                <div style={{fontSize:32,marginBottom:12}}>✦</div>
+                <div style={{color:C.gold,fontSize:15,...GS,fontStyle:"italic",marginBottom:6}}>
+                  Received. Thank you.
+                </div>
+                <div style={{color:C.t3,fontSize:12,...SS}}>
+                  Your feedback shapes what comes next.
+                </div>
+              </div>
+            ) : (
+              <>
+                {/* Header */}
+                <div style={{
+                  display:"flex", justifyContent:"space-between",
+                  alignItems:"center", marginBottom:16,
+                }}>
+                  <div style={{color:C.t1,fontSize:14,fontFamily:"Cinzel,serif",letterSpacing:1}}>
+                    Send Feedback
+                  </div>
+                  <button
+                    onClick={()=>setFeedbackOpen(false)}
+                    style={{background:"transparent",border:"none",color:C.t3,cursor:"pointer",fontSize:18,lineHeight:1,padding:"0 2px"}}
+                    onMouseEnter={e=>(e.target as HTMLButtonElement).style.color=C.t1}
+                    onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=C.t3}
+                  >×</button>
+                </div>
+
+                {/* Type selector */}
+                <div style={{display:"flex",gap:6,marginBottom:14}}>
+                  {TYPE_OPTIONS.map(t => (
+                    <button
+                      key={t.id}
+                      onClick={()=>setFeedbackType(t.id)}
+                      style={{
+                        flex:1, padding:"7px 4px",
+                        background: feedbackType===t.id ? C.purpleDim : C.t4,
+                        border: `1px solid ${feedbackType===t.id ? C.purpleB : "rgba(237,224,200,0.08)"}`,
+                        borderRadius:7, cursor:"pointer",
+                        transition:"all 0.15s",
+                        display:"flex", flexDirection:"column",
+                        alignItems:"center", gap:4,
+                      }}
+                    >
+                      <span style={{fontSize:14}}>{t.icon}</span>
+                      <span style={{
+                        color: feedbackType===t.id ? C.purpleL : C.t3,
+                        fontSize:10, letterSpacing:0.5,
+                        fontFamily:"system-ui,sans-serif",
+                        textTransform:"uppercase",
+                      }}>{t.label.split(" ")[0]}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Message */}
+                <textarea
+                  value={feedbackText}
+                  onChange={e=>setFeedbackText(e.target.value)}
+                  placeholder={
+                    feedbackType==="bug"
+                      ? "What happened? What did you expect?"
+                      : feedbackType==="feature"
+                      ? "What would you like to see built?"
+                      : "Tell us anything…"
+                  }
+                  rows={4}
+                  style={{
+                    width:"100%", boxSizing:"border-box",
+                    background:"rgba(237,224,200,0.04)",
+                    border:`1px solid rgba(237,224,200,0.12)`,
+                    borderRadius:8, padding:"11px 14px",
+                    color:C.t1, fontSize:14,
+                    fontFamily:"Georgia,serif", fontStyle:"italic",
+                    outline:"none", resize:"none",
+                    lineHeight:1.6, marginBottom:12,
+                    transition:"border-color 0.2s",
+                  }}
+                  onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor=C.purpleB}
+                  onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
+                />
+
+                {/* Submit */}
+                <button
+                  onClick={submit}
+                  disabled={!feedbackText.trim()||feedbackSending}
+                  style={{
+                    width:"100%", padding:"11px",
+                    background: !feedbackText.trim()
+                      ? C.t4
+                      : `linear-gradient(135deg,${C.purpleDim},rgba(107,28,168,0.35))`,
+                    border:`1px solid ${!feedbackText.trim()?"rgba(237,224,200,0.08)":C.purpleB}`,
+                    borderRadius:8, cursor: !feedbackText.trim()?"not-allowed":"pointer",
+                    color: !feedbackText.trim() ? C.t3 : C.purpleL,
+                    fontSize:12, letterSpacing:2, textTransform:"uppercase",
+                    fontFamily:"Georgia,serif", transition:"all 0.2s",
+                  }}
+                >
+                  {feedbackSending ? "Sending…" : "Send"}
+                </button>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Floating button */}
+        <button
+          onClick={()=>setFeedbackOpen(!feedbackOpen)}
+          title="Send feedback"
+          style={{
+            position:"fixed",
+            bottom: mobile ? 20 : 28,
+            right: mobile ? 16 : 28,
+            zIndex:900,
+            width:48, height:48,
+            borderRadius:"50%",
+            background: feedbackOpen
+              ? `linear-gradient(135deg,rgba(107,28,168,0.6),rgba(107,28,168,0.8))`
+              : `linear-gradient(135deg,rgba(107,28,168,0.25),rgba(107,28,168,0.4))`,
+            border:`1px solid ${feedbackOpen ? C.purpleL : C.purpleB}`,
+            cursor:"pointer",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            boxShadow: feedbackOpen
+              ? `0 0 0 4px rgba(107,28,168,0.15), 0 8px 32px rgba(0,0,0,0.6)`
+              : `0 4px 20px rgba(0,0,0,0.5)`,
+            transition:"all 0.2s",
+            color: C.purpleL,
+            fontSize:18,
+          }}
+          onMouseEnter={e=>{
+            if (!feedbackOpen)
+              (e.currentTarget as HTMLButtonElement).style.background=
+                "linear-gradient(135deg,rgba(107,28,168,0.4),rgba(107,28,168,0.6))"
+          }}
+          onMouseLeave={e=>{
+            if (!feedbackOpen)
+              (e.currentTarget as HTMLButtonElement).style.background=
+                "linear-gradient(135deg,rgba(107,28,168,0.25),rgba(107,28,168,0.4))"
+          }}
+        >
+          {feedbackOpen ? "×" : "✎"}
+        </button>
+      </>
+    )
+  }
+
   if(profileLoading) return (
     <div style={{
       minHeight:"100vh", background:"#12100D",
@@ -1687,6 +1888,7 @@ export default function TheSignet() {
         </div>
       )}
       <Toast message={toast}/>
+      <FeedbackButton/>
       <ConfirmUnsaveModal/>
       <HistoryNameModal/>
       <style>{`@keyframes spin{to{transform:rotate(360deg)}} @keyframes pulse{0%,100%{opacity:0.7;transform:scale(1)} 50%{opacity:1;transform:scale(1.06)}} ::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-thumb{background:${C.purpleB};border-radius:2px;} input[type=range]{cursor:pointer;}`}</style>
