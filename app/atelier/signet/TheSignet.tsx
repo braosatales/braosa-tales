@@ -716,7 +716,7 @@ export default function TheSignet() {
       if(data.creditsRemaining!==undefined){setCredits(data.creditsRemaining);window.dispatchEvent(new CustomEvent("braosa:credits-updated",{detail:{credits:data.creditsRemaining}}))}
       const text = (data.content||[]).map((b:{text?:string})=>b.text||"").join("")
       const parsed: NameResult[] = JSON.parse(text.replace(/```json|```/g,"").trim())
-      setResults(parsed); setGeneratedNames(prev=>[...prev,...parsed.map(r=>r.name)])
+      setResults(parsed.map((r: NameResult) => ({...r, target}))); setGeneratedNames(prev=>[...prev,...parsed.map(r=>r.name)])
     } catch { setError("Something went wrong — try again.") }
     finally { setLoading(false) }
   }
@@ -730,7 +730,7 @@ export default function TheSignet() {
       if(data.creditsRemaining!==undefined){setCredits(data.creditsRemaining);window.dispatchEvent(new CustomEvent("braosa:credits-updated",{detail:{credits:data.creditsRemaining}}))}
       const text = (data.content||[]).map((b:{text?:string})=>b.text||"").join("")
       const [newName]: NameResult[] = JSON.parse(text.replace(/```json|```/g,"").trim())
-      setResults(p=>[{...newName,forged:true},...p]); setGeneratedNames(prev=>[...prev,newName.name])
+      setResults(p=>[{...newName,forged:true,target},...p]); setGeneratedNames(prev=>[...prev,newName.name])
       showToast(`Forged "${newName.name}"`)
     } catch { showToast("Forge failed — try again") }
     finally { setForgingId(null) }
