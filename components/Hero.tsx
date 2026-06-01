@@ -4,7 +4,7 @@ import TypewriterHero from '@/components/ui/TypewriterHero'
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
+    <section className="relative min-h-[75vh] md:min-h-screen flex flex-col items-center justify-center text-center overflow-hidden">
       
       {/* World map background */}
       <div className="absolute inset-0 z-0">
@@ -21,7 +21,7 @@ export default function Hero() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center px-8 py-20">
+      <div className="relative z-10 flex flex-col items-center px-8 py-10 md:py-20">
 
         <div className="mb-5">
           <TypewriterHero />

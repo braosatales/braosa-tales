@@ -36,7 +36,7 @@ const pillars = [
 
 export default function Pillars() {
   return (
-    <section className="px-8 py-20 grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+    <section className="px-8 pt-6 pb-10 md:pt-16 md:pb-20 grid md:grid-cols-3 gap-3 md:gap-6 max-w-6xl mx-auto">
       {pillars.map((p) => (
         <div key={p.label} className={`dark-card border-t-2 ${p.accent}`}>
           <div className={p.iconColor}>

@@ -33,7 +33,7 @@ export default function Newsletter() {
   }
 
   return (
-    <section className="px-8 py-20 border-t border-brand-border text-center">
+    <section className="px-8 py-10 md:py-20 border-t border-brand-border text-center">
       <div className="max-w-md mx-auto">
         <p className="section-label">Stay in the loop</p>
         <h2 className="font-cinzel font-bold text-brand-parchment text-2xl mb-2">Join the Chronicle</h2>

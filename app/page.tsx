@@ -19,7 +19,7 @@ export default function Home() {
       <Newsletter />
 
       {/* The Keeper's Life */}
-      <section className="py-20 px-6 border-t border-brand-border">
+      <section className="py-10 md:py-20 px-6 border-t border-brand-border">
         <div className="max-w-5xl mx-auto">
           {/* Label */}
           <p className="section-label text-center mb-4">BEYOND THE TABLE</p>
@@ -35,14 +35,14 @@ export default function Home() {
           </p>
 
           {/* Ornamental divider */}
-          <div className="flex items-center justify-center gap-3 mb-12">
+          <div className="flex items-center justify-center gap-3 mb-6 md:mb-12">
             <div className="h-px w-16 bg-brand-gold-400 opacity-40" />
             <span className="text-brand-gold-400 text-sm">✦</span>
             <div className="h-px w-16 bg-brand-gold-400 opacity-40" />
           </div>
 
           {/* Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
             {/* Waypoint */}
             <div className="relative rounded-xl p-6 flex flex-col gap-3"
                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,174,88,0.15)' }}>

@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function GamesSection() {
   return (
-    <section className="px-8 py-20 border-t border-brand-border">
+    <section className="px-8 py-10 md:py-20 border-t border-brand-border">
       <div className="max-w-6xl mx-auto">
         <div className="relative overflow-hidden rounded-sm border border-brand-purple-800/50 bg-gradient-to-br from-brand-purple-900/40 to-brand-bg p-12 text-center">
 

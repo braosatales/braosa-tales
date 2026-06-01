@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 export default function StoriesSection() {
   return (
-    <section className="px-8 py-20 border-t border-brand-border">
+    <section className="px-8 py-10 md:py-20 border-t border-brand-border">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-16 items-start">
 
         <div className="flex-1">
