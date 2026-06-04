@@ -4,7 +4,7 @@ import TheSignet from './TheSignet'
 
 export const metadata = {
   title: "The Signet — Name Generator | Braosa's Atelier",
-  description: 'AI-powered name generator for characters, locations, factions, and artifacts. Draw from 100+ real and constructed languages.',
+  description: "AI-powered name generator for characters, locations, factions and artifacts. Draw from 100+ real and constructed languages. Now in Alpha.",
 }
 
 export default async function SignetPage() {

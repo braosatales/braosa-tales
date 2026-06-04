@@ -622,10 +622,76 @@ function ResultCard({ r, saved, canSave, onSave, onCopy, onForgeOne, isHistory }
           <div style={{color:C.t1,fontSize:28,fontStyle:"italic",...GS,letterSpacing:0.5,fontWeight:600}}>{r.name}</div>
           <div style={{color:C.gold,fontSize:14,marginTop:3,letterSpacing:2,fontWeight:500,...SS}}>{r.pronunciation}</div>
         </div>
-        <div style={{display:"flex",gap:4,flexShrink:0,marginLeft:10,alignItems:"center"}}>
-          <button onClick={()=>speak(r.pronunciation||r.name)} style={{background:"transparent",border:"none",cursor:"pointer",fontSize:17,color:C.t3,padding:"3px 5px",transition:"color 0.15s"}} onMouseEnter={e=>(e.target as HTMLButtonElement).style.color=C.t1} onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=C.t3}>🔊</button>
-          <button onClick={doCopy} style={{background:copying?C.goldDim:"transparent",border:`1px solid ${copying?C.goldB:"transparent"}`,borderRadius:6,cursor:"pointer",fontSize:14,color:copying?C.gold:C.t3,padding:"5px 10px",transition:"all 0.15s",...SS}}>{copying?"✓":"⎘"}</button>
-          {!isHistory&&<button onClick={()=>(saved||canSave)&&onSave(r)} style={{background:"transparent",border:"none",cursor:saved||canSave?"pointer":"not-allowed",fontSize:18,color:saved?C.gold:"rgba(237,224,200,0.18)",padding:"2px 4px",transition:"color 0.2s",opacity:!saved&&!canSave?0.35:1}}>{saved?"★":"☆"}</button>}
+        <div style={{display:"flex",gap:6,flexShrink:0,marginLeft:10,alignItems:"center"}}>
+          <button
+            onClick={()=>speak(r.pronunciation||r.name)}
+            title="Hear pronunciation"
+            style={{
+              background:"transparent",
+              border:`1px solid rgba(237,224,200,0.1)`,
+              borderRadius:6, cursor:"pointer",
+              fontSize:11, color:C.t3,
+              padding:"5px 9px",
+              fontFamily:"system-ui,sans-serif",
+              letterSpacing:0.5,
+              transition:"all 0.15s",
+            }}
+            onMouseEnter={e=>{
+              (e.currentTarget as HTMLButtonElement).style.borderColor=C.purpleB
+              ;(e.currentTarget as HTMLButtonElement).style.color=C.purpleL
+            }}
+            onMouseLeave={e=>{
+              (e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.1)"
+              ;(e.currentTarget as HTMLButtonElement).style.color=C.t3
+            }}
+          >▶ Hear</button>
+          <button
+            onClick={doCopy}
+            title="Copy name"
+            style={{
+              background: copying ? C.goldDim : "transparent",
+              border:`1px solid ${copying ? C.goldB : "rgba(237,224,200,0.1)"}`,
+              borderRadius:6, cursor:"pointer",
+              fontSize:11,
+              color: copying ? C.gold : C.t3,
+              padding:"5px 9px",
+              fontFamily:"system-ui,sans-serif",
+              transition:"all 0.15s",
+            }}
+            onMouseEnter={e=>{
+              if (!copying) {
+                (e.currentTarget as HTMLButtonElement).style.borderColor=C.goldB
+                ;(e.currentTarget as HTMLButtonElement).style.color=C.gold
+              }
+            }}
+            onMouseLeave={e=>{
+              if (!copying) {
+                (e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.1)"
+                ;(e.currentTarget as HTMLButtonElement).style.color=C.t3
+              }
+            }}
+          >{copying ? "✓ Copied" : "⎘ Copy"}</button>
+          {!isHistory&&<button
+            onClick={()=>(saved||canSave)&&onSave(r)}
+            title={saved?"Unsave":"Save"}
+            style={{
+              background: saved ? C.goldDim : "transparent",
+              border:`1px solid ${saved ? C.goldB : "rgba(237,224,200,0.1)"}`,
+              borderRadius:6, cursor:saved||canSave?"pointer":"not-allowed",
+              fontSize:14, color:saved?C.gold:"rgba(237,224,200,0.3)",
+              padding:"4px 8px",
+              transition:"all 0.2s",
+              opacity:!saved&&!canSave?0.35:1,
+            }}
+            onMouseEnter={e=>{
+              if (!saved && canSave)
+                (e.currentTarget as HTMLButtonElement).style.borderColor=C.goldB
+            }}
+            onMouseLeave={e=>{
+              if (!saved)
+                (e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.1)"
+            }}
+          >{saved?"★":"☆"}</button>}
         </div>
       </div>
       <div style={{display:"flex",alignItems:"center",flexWrap:"wrap",gap:7,margin:"9px 0 8px"}}>
@@ -941,7 +1007,7 @@ export default function TheSignet() {
   const Controls = () => (
     <div style={{display:"flex",flexDirection:"column",gap:20}}>
       <div style={{display:"flex",gap:10,alignItems:"flex-start"}}>
-        <div style={{flex:"0 0 42%"}}><Label>Naming</Label><SearchableSelect value={target} onChange={setTarget} options={TARGETS} placeholder="Search what to name…" accent={C.purpleL}/></div>
+        <div style={{flex:"0 0 52%"}}><Label>Naming</Label><SearchableSelect value={target} onChange={setTarget} options={TARGETS} placeholder="Search what to name…" accent={C.purpleL}/></div>
         <div style={{flex:1}}><Label>Preset <span style={{fontWeight:400,opacity:0.65,fontSize:11,marginLeft:4}}>{presets.length}/{tier.maxPresets}</span></Label><PresetDropdown presets={presets} activeId={activePreset} onLoad={loadPreset} onSave={savePreset} onDelete={deletePreset} maxPresets={tier.maxPresets} favouriteId={favouritePresetId} onToggleFavourite={toggleFavouritePreset}/></div>
       </div>
       <div>
@@ -989,7 +1055,35 @@ export default function TheSignet() {
           </div>
         </div>
         <input type="range" min={1} max={6} step={1} value={count} onChange={e=>setCount(Number(e.target.value))} style={{width:"100%",accentColor:C.purple,marginTop:2}}/>
-        <div style={{display:"flex",justifyContent:"space-between",marginTop:8}}>{[1,2,3,4,5,6].map(n=><span key={n} style={{color:n===count?C.gold:C.t3,fontSize:n===count?10:9,fontWeight:n===count?"bold":"normal",...SS,transition:"color 0.15s"}}>{n}</span>)}</div>
+        <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
+          {[1,2,3,4,5,6].map(n=>(
+            <button
+              key={n}
+              onClick={()=>setCount(n)}
+              style={{
+                background:"transparent",
+                border:"none",
+                cursor:"pointer",
+                padding:"4px 6px",
+                borderRadius:4,
+                color: n===count ? C.gold : C.t3,
+                fontSize: n===count ? 13 : 12,
+                fontWeight: n===count ? "bold" : "normal",
+                fontFamily:"system-ui,sans-serif",
+                transition:"all 0.15s",
+                minWidth:28, textAlign:"center" as const,
+              }}
+              onMouseEnter={e=>{
+                if (n!==count)
+                  (e.currentTarget as HTMLButtonElement).style.color=C.t1
+              }}
+              onMouseLeave={e=>{
+                if (n!==count)
+                  (e.currentTarget as HTMLButtonElement).style.color=C.t3
+              }}
+            >{n}</button>
+          ))}
+        </div>
       </div>
       <button onClick={generate} disabled={loading||!canAfford} style={{width:"100%",padding:"16px",background:!canAfford?C.dangerDim:loading?C.purpleDim:`linear-gradient(135deg,${C.purpleDim},rgba(107,28,168,0.3))`,border:`1px solid ${!canAfford?C.dangerB:loading?"rgba(107,28,168,0.2)":C.purpleB}`,borderRadius:10,color:!canAfford?C.danger:loading?"rgba(192,144,240,0.35)":C.purpleL,cursor:loading||!canAfford?"not-allowed":"pointer",fontSize:15,letterSpacing:3.5,textTransform:"uppercase",...GS,transition:"all 0.2s"}}>
         {loading?"Consulting the tongues…":!canAfford?"Not enough credits":"⚗  Forge Names"}
@@ -2062,7 +2156,7 @@ export default function TheSignet() {
 
           {/* Row 1: Naming + Preset — always visible */}
           <div style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:12}}>
-            <div style={{flex:"0 0 42%"}}>
+            <div style={{flex:"0 0 50%"}}>
               <Label>Naming</Label>
               <SearchableSelect value={target} onChange={setTarget} options={TARGETS} placeholder="Search what to name…" accent={C.purpleL}/>
             </div>
@@ -2107,8 +2201,34 @@ export default function TheSignet() {
               </div>
             </div>
             <input type="range" min={1} max={6} step={1} value={count} onChange={e=>setCount(Number(e.target.value))} style={{width:"100%",accentColor:C.purple,marginTop:2}}/>
-            <div style={{display:"flex",justifyContent:"space-between",marginTop:8}}>
-              {[1,2,3,4,5,6].map(n=><span key={n} style={{color:n===count?C.gold:C.t3,fontSize:n===count?10:9,fontWeight:n===count?"bold":"normal",...SS,transition:"color 0.15s"}}>{n}</span>)}
+            <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
+              {[1,2,3,4,5,6].map(n=>(
+                <button
+                  key={n}
+                  onClick={()=>setCount(n)}
+                  style={{
+                    background:"transparent",
+                    border:"none",
+                    cursor:"pointer",
+                    padding:"4px 6px",
+                    borderRadius:4,
+                    color: n===count ? C.gold : C.t3,
+                    fontSize: n===count ? 13 : 12,
+                    fontWeight: n===count ? "bold" : "normal",
+                    fontFamily:"system-ui,sans-serif",
+                    transition:"all 0.15s",
+                    minWidth:28, textAlign:"center" as const,
+                  }}
+                  onMouseEnter={e=>{
+                    if (n!==count)
+                      (e.currentTarget as HTMLButtonElement).style.color=C.t1
+                  }}
+                  onMouseLeave={e=>{
+                    if (n!==count)
+                      (e.currentTarget as HTMLButtonElement).style.color=C.t3
+                  }}
+                >{n}</button>
+              ))}
             </div>
           </div>
 
