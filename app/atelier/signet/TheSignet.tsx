@@ -395,7 +395,7 @@ function LanguagePicker({ selected, onChange, maxLangs }: { selected: Lang[]; on
       {open&&(
         <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:0,zIndex:300,background:"#1C1810",border:`1px solid ${C.purpleB}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
           <div style={{padding:"10px 10px 0"}}><input autoFocus placeholder="Search all languages…" value={search} onChange={e=>setSearch(e.target.value)} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:15,...GS,outline:"none"}}/></div>
-          {atLimit&&<div style={{margin:"8px 10px 0",padding:"6px 10px",background:C.dangerDim,border:`1px solid ${C.dangerB}`,borderRadius:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:C.danger,fontSize:13,...SS}}>Language limit reached.</span><span style={{color:C.gold,fontSize:13,cursor:"pointer",...SS}}>Upgrade →</span></div>}
+          {atLimit&&<div style={{margin:"8px 10px 0",padding:"6px 10px",background:C.dangerDim,border:`1px solid ${C.dangerB}`,borderRadius:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:C.danger,fontSize:13,...SS}}>Language limit reached.</span><span onClick={()=>window.location.href="/pricing"} style={{color:C.gold,fontSize:13,cursor:"pointer",textDecoration:"underline",...SS}}>Upgrade →</span></div>}
           <div style={{display:"flex",maxHeight:320}}>
             {!search&&(
               <div style={{width:150,flexShrink:0,borderRight:`1px solid ${C.t4}`,overflowY:"auto",padding:"8px 0"}}>
@@ -518,7 +518,7 @@ function PresetDropdown({ presets, activeId, onLoad, onSave, onDelete, maxPreset
             </div>
           )}
           <div style={{borderTop:`1px solid ${C.t4}`,padding:"10px"}}>
-            {!canAdd?<div style={{color:C.t3,fontSize:13,textAlign:"center",...SS}}>Preset limit reached ({maxPresets}). <span style={{color:C.gold,cursor:"pointer"}}>Upgrade →</span></div>:saving?(
+            {!canAdd?<div style={{color:C.t3,fontSize:13,textAlign:"center",...SS}}>Preset limit reached ({maxPresets}). <span onClick={()=>window.location.href="/pricing"} style={{color:C.gold,cursor:"pointer",textDecoration:"underline"}}>Upgrade →</span></div>:saving?(
               <div style={{display:"flex",gap:6}}>
                 <input autoFocus placeholder="Preset name…" value={newName} onChange={e=>setNewName(e.target.value)} onKeyDown={e=>e.key==="Enter"&&doSave()} style={{flex:1,background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:6,padding:"7px 10px",color:C.t1,fontSize:15,...GS,outline:"none"}}/>
                 <button onClick={doSave} disabled={!newName.trim()} style={{background:C.purpleDim,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"7px 12px",color:C.purpleL,cursor:newName.trim()?"pointer":"not-allowed",fontSize:14,...GS}}>Save</button>
@@ -590,6 +590,63 @@ function HistoryBatch({ batch, onToggle }: { batch: HistoryBatchType; onToggle: 
     </div>
   )
 }
+
+const ConceptTextarea = ({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (v: string) => void
+}) => (
+  <textarea
+    value={value}
+    onChange={e => onChange(e.target.value)}
+    placeholder="e.g. a river of eternal death… a fortress built on betrayal…"
+    rows={2}
+    style={{
+      width:"100%", boxSizing:"border-box" as const,
+      background:"rgba(237,224,200,0.05)",
+      border:"1px solid rgba(237,224,200,0.12)",
+      borderRadius:8, padding:"11px 14px",
+      color:"#F2E8D5", fontSize:14,
+      fontFamily:"Georgia,serif", fontStyle:"italic",
+      outline:"none", resize:"none" as const,
+      lineHeight:1.6, transition:"border-color 0.2s",
+    }}
+    onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(107,28,168,0.45)"}
+    onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
+  />
+)
+
+const FeedbackTextarea = ({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: string
+  onChange: (v: string) => void
+  placeholder: string
+}) => (
+  <textarea
+    value={value}
+    onChange={e => onChange(e.target.value)}
+    placeholder={placeholder}
+    rows={4}
+    style={{
+      width:"100%", boxSizing:"border-box" as const,
+      background:"rgba(237,224,200,0.04)",
+      border:"1px solid rgba(237,224,200,0.12)",
+      borderRadius:8, padding:"11px 14px",
+      color:"#F2E8D5", fontSize:14,
+      fontFamily:"Georgia,serif", fontStyle:"italic",
+      outline:"none", resize:"none" as const,
+      lineHeight:1.6, marginBottom:12,
+      transition:"border-color 0.2s",
+    }}
+    onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(107,28,168,0.45)"}
+    onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
+  />
+)
 
 export default function TheSignet() {
   const [profileLoading, setProfileLoading] = useState(true)
@@ -799,7 +856,7 @@ export default function TheSignet() {
           <div style={{color:C.t3,fontSize:11,...SS}}>{n.sub}</div>
         </div>
         <div style={{color:C.t2,fontSize:13,lineHeight:1.65,marginBottom:10,...SS}}>{n.desc}</div>
-        <button style={{width:"100%",padding:"8px",background:"linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.45))",border:`1px solid ${C.purpleB}`,borderRadius:6,color:C.purpleL,cursor:"pointer",fontSize:13,letterSpacing:2.5,textTransform:"uppercase",...GS}}>Upgrade →</button>
+        <button onClick={()=>window.location.href="/pricing"} style={{width:"100%",padding:"8px",background:"linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.45))",border:`1px solid ${C.purpleB}`,borderRadius:6,color:C.purpleL,cursor:"pointer",fontSize:13,letterSpacing:2.5,textTransform:"uppercase",...GS}}>Upgrade →</button>
       </div>
     )
   }
@@ -816,25 +873,7 @@ export default function TheSignet() {
           marginLeft:6, letterSpacing:0.5,
           fontFamily:"system-ui,sans-serif",
         }}>optional — guides the generation</span></Label>
-        <textarea
-          value={concept}
-          onChange={e=>setConcept(e.target.value)}
-          placeholder="e.g. a river of eternal death… a fortress built on betrayal…"
-          rows={2}
-          style={{
-            width:"100%", boxSizing:"border-box",
-            background:"rgba(237,224,200,0.05)",
-            border:`1px solid rgba(237,224,200,0.12)`,
-            borderRadius:8, padding:"11px 14px",
-            color:"#F2E8D5", fontSize:14,
-            fontFamily:"Georgia,serif", fontStyle:"italic",
-            outline:"none", resize:"none",
-            lineHeight:1.6,
-            transition:"border-color 0.2s",
-          }}
-          onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(107,28,168,0.45)"}
-          onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
-        />
+        <ConceptTextarea value={concept} onChange={setConcept}/>
       </div>
       <div style={{height:1,background:C.t4}}/>
       {isCharTarget&&<div><Label>Cultural Archetype</Label><SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES} placeholder="Search archetype…" accent={C.purpleL}/></div>}
@@ -1216,13 +1255,13 @@ export default function TheSignet() {
                 : saved.filter(s => getTargetGroup((s as NameResult & {target?:string}).target || "") === savedFilter)
 
               const sortedFiltered = [...filtered].sort((a, b) => {
-                const aTime = a.saved_at ? new Date(a.saved_at).getTime() : 0
-                const bTime = b.saved_at ? new Date(b.saved_at).getTime() : 0
+                const aTime = (a as any).saved_at ? new Date((a as any).saved_at).getTime() : 0
+                const bTime = (b as any).saved_at ? new Date((b as any).saved_at).getTime() : 0
                 if (savedSort === "newest") return bTime - aTime
                 if (savedSort === "oldest") return aTime - bTime
                 if (savedSort === "az") return a.name.localeCompare(b.name)
                 if (savedSort === "za") return b.name.localeCompare(a.name)
-                return 0
+                return bTime - aTime
               })
 
               return (
@@ -1299,7 +1338,7 @@ export default function TheSignet() {
 
                   {tier.maxSaves!==Infinity && saved.length>=tier.maxSaves && (
                     <div style={{textAlign:"center",padding:"14px",color:C.t3,fontSize:13,...SS,background:C.goldDim,border:`1px solid ${C.goldB}`,borderRadius:8,marginTop:10}}>
-                      Save limit reached. <span style={{color:C.gold,cursor:"pointer",textDecoration:"underline"}}>Upgrade →</span>
+                      Save limit reached. <span onClick={()=>window.location.href="/pricing"} style={{color:C.gold,cursor:"pointer",textDecoration:"underline"}}>Upgrade →</span>
                     </div>
                   )}
                 </div>
@@ -1436,7 +1475,7 @@ export default function TheSignet() {
                       <div style={{color:C.purpleL,fontSize:14,fontStyle:"italic",...GS,marginBottom:10}}>
                         Upgrade to keep your full history
                       </div>
-                      <button style={{background:`linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.5))`,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"6px 16px",color:C.purpleL,cursor:"pointer",fontSize:11,letterSpacing:2,textTransform:"uppercase",...GS}}>
+                      <button onClick={()=>window.location.href="/pricing"} style={{background:`linear-gradient(135deg,rgba(107,28,168,0.3),rgba(107,28,168,0.5))`,border:`1px solid ${C.purpleB}`,borderRadius:6,padding:"6px 16px",color:C.purpleL,cursor:"pointer",fontSize:11,letterSpacing:2,textTransform:"uppercase",...GS}}>
                         Upgrade →
                       </button>
                     </div>
@@ -1701,9 +1740,9 @@ export default function TheSignet() {
                 </div>
 
                 {/* Message */}
-                <textarea
+                <FeedbackTextarea
                   value={feedbackText}
-                  onChange={e=>setFeedbackText(e.target.value)}
+                  onChange={setFeedbackText}
                   placeholder={
                     feedbackType==="bug"
                       ? "What happened? What did you expect?"
@@ -1711,20 +1750,6 @@ export default function TheSignet() {
                       ? "What would you like to see built?"
                       : "Tell us anything…"
                   }
-                  rows={4}
-                  style={{
-                    width:"100%", boxSizing:"border-box",
-                    background:"rgba(237,224,200,0.04)",
-                    border:`1px solid rgba(237,224,200,0.12)`,
-                    borderRadius:8, padding:"11px 14px",
-                    color:C.t1, fontSize:14,
-                    fontFamily:"Georgia,serif", fontStyle:"italic",
-                    outline:"none", resize:"none",
-                    lineHeight:1.6, marginBottom:12,
-                    transition:"border-color 0.2s",
-                  }}
-                  onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor=C.purpleB}
-                  onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
                 />
 
                 {/* Submit */}
@@ -1875,25 +1900,7 @@ export default function TheSignet() {
               marginLeft:6, letterSpacing:0.5,
               fontFamily:"system-ui,sans-serif",
             }}>optional</span></Label>
-            <textarea
-              value={concept}
-              onChange={e=>setConcept(e.target.value)}
-              placeholder="e.g. a river of eternal death…"
-              rows={2}
-              style={{
-                width:"100%", boxSizing:"border-box",
-                background:"rgba(237,224,200,0.05)",
-                border:`1px solid rgba(237,224,200,0.12)`,
-                borderRadius:8, padding:"11px 14px",
-                color:"#F2E8D5", fontSize:14,
-                fontFamily:"Georgia,serif", fontStyle:"italic",
-                outline:"none", resize:"none",
-                lineHeight:1.6,
-                transition:"border-color 0.2s",
-              }}
-              onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(107,28,168,0.45)"}
-              onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
-            />
+            <ConceptTextarea value={concept} onChange={setConcept}/>
           </div>
 
           {/* Row 2: Filters & Settings — collapsible */}
