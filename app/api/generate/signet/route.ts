@@ -11,7 +11,8 @@ export async function POST(req: NextRequest) {
 
   const user = await getUserByClerkId(userId)
   if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
-  if (user.credits < creditsToUse) return NextResponse.json({ error: 'Insufficient credits' }, { status: 402 })
+  const totalAvailable = (user.credits || 0) + (user.daily_credits || 0)
+  if (totalAvailable < creditsToUse) return NextResponse.json({ error: 'Insufficient credits' }, { status: 402 })
 
   const supabase = createServerSupabase()
 
@@ -35,11 +36,22 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Generation failed', detail: data }, { status: 500 })
   }
 
+  // Spend daily credits first, then monthly
+  const dailyAvailable  = user.daily_credits || 0
+  const dailyToSpend    = Math.min(creditsToUse, dailyAvailable)
+  const monthlyToSpend  = creditsToUse - dailyToSpend
+
+  const newDaily   = dailyAvailable - dailyToSpend
+  const newMonthly = (user.credits || 0) - monthlyToSpend
+
   const { data: updatedUser } = await supabase
     .from('users')
-    .update({ credits: user.credits - creditsToUse })
+    .update({
+      daily_credits: newDaily,
+      credits: newMonthly,
+    })
     .eq('id', user.id)
-    .select('credits')
+    .select('daily_credits, credits')
     .single()
 
   const text = (data.content || []).map((b: { text?: string }) => b.text || '').join('')
@@ -61,6 +73,8 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({
     ...data,
-    creditsRemaining: updatedUser?.credits ?? user.credits - creditsToUse,
+    creditsRemaining: (updatedUser?.daily_credits || 0) + (updatedUser?.credits || 0),
+    dailyRemaining:   updatedUser?.daily_credits || 0,
+    monthlyRemaining: updatedUser?.credits || 0,
   })
 }

@@ -173,7 +173,9 @@ const TARGET_ICONS: Record<string, string> = {
 const getTargetIcon = (target: string) => TARGET_ICONS[target] || "✦"
 
 const GROUP_ICONS: Record<string, string> = {
-  "Places":     "🗺",
+  "Worlds":     "🌍",
+  "Places":     "🏰",
+  "Afterlives": "💀",
   "Characters": "⚔️",
   "Groups":     "🏛",
   "Divine":     "☀️",
@@ -184,48 +186,15 @@ const GROUP_ICONS: Record<string, string> = {
 }
 
 const TARGET_GROUPS: Record<string, string[]> = {
-  "Places": [
-    "World / Planet",
-    "Continent",
-    "Kingdom / Nation",
-    "City / Settlement",
-    "Mountain / Range",
-    "River / Body of Water",
-    "Forest / Wilderness",
-    "Realm / Dimension",
-    "Afterlife / Purgatory",
-    "Heaven / Divine Realm",
-    "Hell / Dark Realm",
-    "Space Station / Ship",
-    "Planet / Moon",
-    "Star System",
-  ],
-  "Characters": [
-    "Character (Male)",
-    "Character (Female)",
-    "Character (Neutral)",
-  ],
-  "Groups": [
-    "Organization / Faction",
-    "Ancient Order",
-    "Clan / House",
-  ],
-  "Divine": [
-    "Deity / God",
-  ],
-  "Creatures": [
-    "Creature / Species",
-  ],
-  "Items": [
-    "Item / Object",
-    "Artifact / Relic",
-  ],
-  "Abstract": [
-    "Era / Age",
-    "Concept / Ideology",
-    "Magic System",
-    "Technology / Device",
-  ],
+  "Worlds":       ["World / Planet","Continent","Realm / Dimension","Planet / Moon","Star System"],
+  "Places":       ["Kingdom / Nation","City / Settlement","Mountain / Range","River / Body of Water","Forest / Wilderness","Space Station / Ship"],
+  "Afterlives":   ["Afterlife / Purgatory","Heaven / Divine Realm","Hell / Dark Realm"],
+  "Characters":   ["Character (Male)","Character (Female)","Character (Neutral)"],
+  "Groups":       ["Organization / Faction","Ancient Order","Clan / House"],
+  "Divine":       ["Deity / God"],
+  "Creatures":    ["Creature / Species"],
+  "Items":        ["Item / Object","Artifact / Relic"],
+  "Abstract":     ["Era / Age","Concept / Ideology","Magic System","Technology / Device"],
 }
 
 const getTargetGroup = (target: string): string => {
@@ -371,7 +340,7 @@ function SearchableSelect({ value, onChange, options, placeholder="Search…", a
         <span style={{color:C.t3,fontSize:11,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:8,flexShrink:0}}>▼</span>
       </div>
       {open&&(
-        <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:0,zIndex:300,background:"#1C1810",border:`1px solid ${acb}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
+        <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:"auto",zIndex:300,minWidth:"max(100%, 280px)",background:"#1C1810",border:`1px solid ${acb}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
           <div style={{padding:"10px 10px 8px",borderBottom:`1px solid ${C.t4}`}}>
             <input ref={inputRef} placeholder={placeholder} value={search} onChange={e=>setSearch(e.target.value)} onKeyDown={e=>{ if(e.key==="Enter"&&flat.length>0){select(flat[0]);setOpen(false)} if(e.key==="Escape"){setOpen(false);setSearch("")} }} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:15,...GS,outline:"none"}}/>
             {search&&<div style={{color:C.t3,fontSize:11,letterSpacing:2.5,textTransform:"uppercase",...SS,marginTop:6}}>{flat.length} result{flat.length!==1?"s":""}{flat.length>0&&<span style={{marginLeft:8,fontStyle:"italic"}}>↵ to pick first</span>}</div>}
@@ -411,7 +380,7 @@ function LanguagePicker({ selected, onChange, maxLangs }: { selected: Lang[]; on
         <span style={{color:C.t3,fontSize:11,flexShrink:0,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:6}}>▼</span>
       </div>
       {open&&(
-        <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:0,zIndex:300,background:"#1C1810",border:`1px solid ${C.purpleB}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
+        <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:0,zIndex:300,minWidth:360,background:"#1C1810",border:`1px solid ${C.purpleB}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
           <div style={{padding:"10px 10px 0"}}><input autoFocus placeholder="Search all languages…" value={search} onChange={e=>setSearch(e.target.value)} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:15,...GS,outline:"none"}}/></div>
           {atLimit&&<div style={{margin:"8px 10px 0",padding:"6px 10px",background:C.dangerDim,border:`1px solid ${C.dangerB}`,borderRadius:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:C.danger,fontSize:13,...SS}}>Language limit reached.</span><span onClick={()=>window.location.href="/pricing"} style={{color:C.gold,fontSize:13,cursor:"pointer",textDecoration:"underline",...SS}}>Upgrade →</span></div>}
           <div style={{display:"flex",maxHeight:320}}>
@@ -1779,6 +1748,17 @@ export default function TheSignet() {
 
     return (
       <>
+        {feedbackOpen && mobile && (
+          <div
+            onClick={()=>setFeedbackOpen(false)}
+            style={{
+              position:"fixed", inset:0, zIndex:898,
+              background:"rgba(12,10,9,0.75)",
+              backdropFilter:"blur(4px)",
+              WebkitBackdropFilter:"blur(4px)",
+            } as React.CSSProperties}
+          />
+        )}
         {/* Popup */}
         {feedbackOpen && (
           <div style={{
@@ -1897,8 +1877,8 @@ export default function TheSignet() {
             width:48, height:48,
             borderRadius:"50%",
             background: feedbackOpen
-              ? `linear-gradient(135deg,rgba(107,28,168,0.6),rgba(107,28,168,0.8))`
-              : `linear-gradient(135deg,rgba(107,28,168,0.25),rgba(107,28,168,0.4))`,
+              ? `linear-gradient(135deg,#5a1690,#7B2AC0)`
+              : `linear-gradient(135deg,#4a1280,#6B1CA8)`,
             border:`1px solid ${feedbackOpen ? C.purpleL : C.purpleB}`,
             cursor:"pointer",
             display:"flex", alignItems:"center", justifyContent:"center",
@@ -1912,12 +1892,12 @@ export default function TheSignet() {
           onMouseEnter={e=>{
             if (!feedbackOpen)
               (e.currentTarget as HTMLButtonElement).style.background=
-                "linear-gradient(135deg,rgba(107,28,168,0.4),rgba(107,28,168,0.6))"
+                "linear-gradient(135deg,#5a1690,#7B2AC0)"
           }}
           onMouseLeave={e=>{
             if (!feedbackOpen)
               (e.currentTarget as HTMLButtonElement).style.background=
-                "linear-gradient(135deg,rgba(107,28,168,0.25),rgba(107,28,168,0.4))"
+                "linear-gradient(135deg,#4a1280,#6B1CA8)"
           }}
         >
           {feedbackOpen ? "×" : "✎"}

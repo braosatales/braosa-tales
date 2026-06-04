@@ -84,8 +84,15 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
   const [profile, setProfile]         = useState<UserProfile | null>(initialProfile ?? null)
   const [showCredits, setShowCredits] = useState(false)
   const [showTier, setShowTier]       = useState(false)
+  const [isMobile, setIsMobile]       = useState(false)
   const creditsRef = useRef<HTMLDivElement>(null)
   const tierRef    = useRef<HTMLDivElement>(null)
+
+  useEffect(()=>{
+    const c = () => setIsMobile(window.innerWidth < 768)
+    c(); window.addEventListener("resize", c)
+    return () => window.removeEventListener("resize", c)
+  }, [])
 
   useEffect(() => {
     if (initialProfile) return
@@ -135,6 +142,16 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
   return (
     <div style={{display:"flex",alignItems:"center",gap:10,flexWrap:"wrap",justifyContent:"center"}}>
 
+      {isMobile && (showCredits || showTier) && (
+        <div
+          onClick={()=>{ setShowCredits(false); setShowTier(false) }}
+          style={{
+            position:"fixed", inset:0, zIndex:999,
+            background:"rgba(12,10,9,0.7)",
+          }}
+        />
+      )}
+
       {/* Credits pill */}
       <div ref={creditsRef} style={{position:"relative"}}>
         <div
@@ -167,12 +184,26 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
 
         {showCredits && (
           <div style={{
-            position:"absolute", top:"calc(100% + 10px)", right:0,
+            position: isMobile ? "fixed" : "absolute",
+            top: isMobile ? "50%" : "calc(100% + 10px)",
+            left: isMobile ? "50%" : undefined,
+            right: isMobile ? undefined : 0,
+            transform: isMobile ? "translateX(-50%) translateY(-50%)" : undefined,
+            width: isMobile ? "calc(100vw - 40px)" : undefined,
+            maxWidth: isMobile ? 360 : undefined,
             background:"#1C1810", border:`1px solid ${C.goldB}`,
             borderRadius:14, padding:"20px 24px", zIndex:1000,
             minWidth:280, boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
           }}>
-            <div style={{color:C.gold,fontSize:13,fontWeight:600,letterSpacing:1.5,textTransform:"uppercase",...SS,marginBottom:12}}>Credit Breakdown</div>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+              <div style={{color:C.gold,fontSize:13,fontWeight:600,letterSpacing:1.5,textTransform:"uppercase",...SS}}>Credit Breakdown</div>
+              {isMobile && (
+                <button
+                  onClick={()=>{ setShowCredits(false); setShowTier(false) }}
+                  style={{background:"transparent",border:"none",color:C.t3,cursor:"pointer",fontSize:20,lineHeight:1,padding:"0 2px",flexShrink:0}}
+                >×</button>
+              )}
+            </div>
 
             {/* Daily */}
             <div style={{marginBottom:12}}>
@@ -253,7 +284,13 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
 
         {showTier && (
           <div style={{
-            position:"absolute", top:"calc(100% + 10px)", right:0,
+            position: isMobile ? "fixed" : "absolute",
+            top: isMobile ? "50%" : "calc(100% + 10px)",
+            left: isMobile ? "50%" : undefined,
+            right: isMobile ? undefined : 0,
+            transform: isMobile ? "translateX(-50%) translateY(-50%)" : undefined,
+            width: isMobile ? "calc(100vw - 40px)" : undefined,
+            maxWidth: isMobile ? 360 : undefined,
             background:"#1C1810", border:`1px solid ${C.purpleB}`,
             borderRadius:14, padding:"20px 24px", zIndex:1000,
             minWidth:300, boxShadow:"0 20px 60px rgba(0,0,0,0.8)",
@@ -261,6 +298,12 @@ export default function CreditsBadge({ initialProfile }: CreditsBadgeProps = {})
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:4}}>
               <span style={{color:C.purpleL,fontSize:15,...GS,fontStyle:"italic",fontWeight:600}}>{tier.label}</span>
               <span style={{color:C.t3,fontSize:12,...SS}}>{tier.price}</span>
+              {isMobile && (
+                <button
+                  onClick={()=>{ setShowCredits(false); setShowTier(false) }}
+                  style={{background:"transparent",border:"none",color:C.t3,cursor:"pointer",fontSize:20,lineHeight:1,padding:"0 2px",flexShrink:0}}
+                >×</button>
+              )}
             </div>
 
             {/* Divider after tier name */}
