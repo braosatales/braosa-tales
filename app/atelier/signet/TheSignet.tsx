@@ -560,7 +560,7 @@ function PresetDropdown({ presets, activeId, onLoad, onSave, onDelete, maxPreset
         <span style={{color:C.t3,fontSize:11,flexShrink:0,transform:open?"rotate(180deg)":"none",transition:"transform 0.2s",marginLeft:6}}>▼</span>
       </div>
       {open&&(
-        <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:0,zIndex:300,background:"#1C1810",border:`1px solid ${C.purpleB}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
+        <div style={{position:"absolute",top:"calc(100% + 5px)",left:"auto",right:0,zIndex:300,minWidth:"max(100%, 320px)",background:"#1C1810",border:`1px solid ${C.purpleB}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
           {presets.length===0?<div style={{padding:"16px",color:C.t3,fontSize:15,textAlign:"center",...GS,fontStyle:"italic"}}>No presets saved yet</div>:(
             <div style={{maxHeight:260,overflowY:"auto",padding:"6px"}}>
               {presets.map(p=>(
