@@ -340,6 +340,12 @@ interface NameResult {
   forged?: boolean
   target?: string
   saved_at?: string
+  vibe?: string
+  style?: string
+  themes?: string[]
+  concept?: string
+  languages?: {id:string; label:string; category:string}[]
+  // Session-only context for history names (not stored in DB)
   _context?: {
     target: string
     languages: {id:string; label:string; category:string}[]
@@ -915,10 +921,9 @@ export default function TheSignet() {
       return
     }
     if (canSave) {
-      const _context = { target, languages, vibe, style, themes, concept: concept || undefined }
-      const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...r, target: r.target || target, _context})})
+      const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...r, target, vibe, style, themes, concept: concept || null, languages: languages || null})})
       const data = await res.json()
-      setSaved(p=>[...p,{...r,id:data.id,_context}]); showToast(`"${r.name}" saved ★`)
+      setSaved(p=>[...p,{...r,id:data.id,target,vibe,style,themes,concept:concept||undefined,languages}]); showToast(`"${r.name}" saved ★`)
     } else { showToast("Save limit reached — upgrade for more") }
   }
   const doUnsave = async (r: NameResult) => {
@@ -1714,48 +1719,50 @@ export default function TheSignet() {
             {r.resonance}
           </div>
 
-          {r._context && (
-            <div style={{
-              marginTop:14, paddingTop:12,
-              borderTop:`1px solid rgba(237,224,200,0.06)`,
-              marginBottom:16,
-            }}>
-              <div style={{
-                color:C.t3, fontSize:9, letterSpacing:2,
-                textTransform:"uppercase" as const,
-                fontFamily:"system-ui,sans-serif",
-                marginBottom:8,
-              }}>Generation context</div>
-
-              {([
-                r._context.target    && ["Naming",    r._context.target],
-                r._context.languages?.length && [
-                  "Languages",
-                  r._context.languages.map((l: {label:string}) => l.label).join(", ")
-                ],
-                r._context.concept   && ["Concept",   r._context.concept],
-                r._context.vibe      && ["Vibe",      r._context.vibe],
-                r._context.style     && ["Style",     r._context.style],
-                r._context.themes?.length && ["Themes", r._context.themes.join(", ")],
-              ].filter(Boolean) as [string, string][]).map(([label, value]) => (
-                <div key={label as string} style={{
-                  display:"flex", gap:8, marginBottom:5,
-                  alignItems:"flex-start",
-                }}>
-                  <span style={{
-                    color:C.t3, fontSize:10,
-                    fontFamily:"system-ui,sans-serif",
-                    flexShrink:0, width:52,
-                  }}>{label as string}</span>
-                  <span style={{
-                    color:C.t2, fontSize:11,
-                    fontFamily:"Georgia,serif",
-                    fontStyle:"italic", lineHeight:1.5,
-                  }}>{value as string}</span>
-                </div>
-              ))}
-            </div>
-          )}
+          {(r._context || r.vibe || r.languages?.length) && (() => {
+            const ctx = r._context
+            const rows: [string, string][] = []
+            const naming = ctx?.target || r.target
+            if (naming) rows.push(["Naming", naming])
+            const langs = ctx?.languages || r.languages
+            if (langs?.length) rows.push(["Languages", langs.map((l: {label:string}) => l.label).join(", ")])
+            const concept = ctx?.concept || r.concept
+            if (concept) rows.push(["Concept", concept])
+            const vibe = ctx?.vibe || r.vibe
+            if (vibe) rows.push(["Vibe", vibe])
+            const style = ctx?.style || r.style
+            if (style) rows.push(["Style", style])
+            const themes = ctx?.themes || r.themes
+            if (themes?.length) rows.push(["Themes", themes.join(", ")])
+            if (!rows.length) return null
+            return (
+              <div style={{marginTop:14, paddingTop:12, borderTop:`1px solid rgba(237,224,200,0.06)`}}>
+                <div style={{
+                  color:C.t3, fontSize:9, letterSpacing:2,
+                  textTransform:"uppercase" as const,
+                  fontFamily:"system-ui,sans-serif",
+                  marginBottom:8,
+                }}>Generation context</div>
+                {rows.map(([label, value]) => (
+                  <div key={label} style={{
+                    display:"flex", gap:8, marginBottom:5,
+                    alignItems:"flex-start",
+                  }}>
+                    <span style={{
+                      color:C.t3, fontSize:10,
+                      fontFamily:"system-ui,sans-serif",
+                      flexShrink:0, width:60,
+                    }}>{label}</span>
+                    <span style={{
+                      color:C.t2, fontSize:11,
+                      fontFamily:"Georgia,serif",
+                      fontStyle:"italic", lineHeight:1.5,
+                    }}>{value}</span>
+                  </div>
+                ))}
+              </div>
+            )
+          })()}
 
           <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
             <button
