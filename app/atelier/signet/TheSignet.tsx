@@ -342,6 +342,7 @@ interface NameResult {
   saved_at?: string
   _context?: {
     target: string
+    languages: {id:string; label:string; category:string}[]
     vibe: string
     style: string
     themes: string[]
@@ -914,7 +915,7 @@ export default function TheSignet() {
       return
     }
     if (canSave) {
-      const _context = { target, vibe, style, themes, concept: concept || undefined }
+      const _context = { target, languages, vibe, style, themes, concept: concept || undefined }
       const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...r, target: r.target || target, _context})})
       const data = await res.json()
       setSaved(p=>[...p,{...r,id:data.id,_context}]); showToast(`"${r.name}" saved ★`)
@@ -1537,6 +1538,7 @@ export default function TheSignet() {
                   batchTs: new Date(entry.generated_at).getTime(),
                   _context: {
                     target: entry.target,
+                    languages: entry.languages || [],
                     vibe: entry.vibe,
                     style: entry.style,
                     themes: entry.themes,
@@ -1726,11 +1728,15 @@ export default function TheSignet() {
               }}>Generation context</div>
 
               {([
-                r._context.target && ["Naming",   r._context.target],
-                r._context.vibe   && ["Vibe",     r._context.vibe],
-                r._context.style  && ["Style",    r._context.style],
+                r._context.target    && ["Naming",    r._context.target],
+                r._context.languages?.length && [
+                  "Languages",
+                  r._context.languages.map((l: {label:string}) => l.label).join(", ")
+                ],
+                r._context.concept   && ["Concept",   r._context.concept],
+                r._context.vibe      && ["Vibe",      r._context.vibe],
+                r._context.style     && ["Style",     r._context.style],
                 r._context.themes?.length && ["Themes", r._context.themes.join(", ")],
-                r._context.concept && ["Concept", r._context.concept],
               ].filter(Boolean) as [string, string][]).map(([label, value]) => (
                 <div key={label as string} style={{
                   display:"flex", gap:8, marginBottom:5,
