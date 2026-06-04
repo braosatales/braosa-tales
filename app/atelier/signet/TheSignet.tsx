@@ -136,7 +136,89 @@ const catText = (cat: string) => CAT_META[cat]?.text || "#aaa"
 
 const VIBES = ["Ancient Historic Fantasy","Dark & Mythic","Sacred & Divine","Corrupted & Fallen","Primordial & Elemental","Epic & Heroic","Melancholic & Bittersweet","Arcane & Esoteric","Savage & Primal","Celestial & Transcendent","Industrial & Mechanical","Cosmic & Unknowable","Hopeful & Utopian","Street-Level & Gritty"]
 const STYLES = ["Mixed","Harsh & Guttural","Flowing & Melodic","Short & Punchy","Long & Ceremonial","Whispered & Soft","Click & Percussive","Sibilant & Hissing"]
-const ARCHETYPES = ["None","Nordic / Germanic","Arabian / Persian","East Asian","African Tribal","Mediterranean / Roman","Celtic / Druidic","Slavic","South Asian","Mesoamerican","Polynesian","East African","Norse Seafarer","Central Asian Nomad","Greco-Byzantine"]
+const ARCHETYPES_GROUPED = [
+  {
+    group: "Cultural Origin",
+    items: [
+      "Nordic / Germanic",
+      "Arabian / Persian",
+      "East Asian",
+      "African Tribal",
+      "Mediterranean / Roman",
+      "Celtic / Druidic",
+      "Slavic",
+      "South Asian",
+      "Mesoamerican",
+      "Polynesian",
+      "East African",
+      "Norse Seafarer",
+      "Central Asian Nomad",
+      "Greco-Byzantine",
+      "West African",
+      "Southeast Asian",
+      "Native American",
+      "Andean / Incan",
+      "Middle Eastern",
+      "Steppe Nomad",
+      "Island / Maritime",
+      "Arctic / Tundra",
+    ],
+  },
+  {
+    group: "Social Background",
+    items: [
+      "Highborn / Noble",
+      "Lowborn / Commoner",
+      "Merchant / Guild",
+      "Outcast / Exile",
+      "Clergy / Religious",
+      "Military / Warrior Caste",
+      "Scholar / Academic",
+      "Criminal / Underground",
+      "Slave / Freed",
+      "Wanderer / No Fixed Home",
+      "Orphan / Unknown Origin",
+      "Royalty / Heir",
+      "Servant / Retainer",
+      "Artisan / Craftsperson",
+      "Farmer / Rural",
+      "Sailor / Sea Folk",
+      "Entertainer / Performer",
+      "Spy / Agent",
+    ],
+  },
+  {
+    group: "Class / Calling",
+    items: [
+      "Warrior / Fighter",
+      "Rogue / Thief",
+      "Mage / Wizard",
+      "Cleric / Priest",
+      "Ranger / Hunter",
+      "Bard / Storyteller",
+      "Paladin / Holy Knight",
+      "Druid / Nature Caller",
+      "Warlock / Pact Bound",
+      "Monk / Ascetic",
+      "Barbarian / Berserker",
+      "Sorcerer / Born of Power",
+      "Artificer / Inventor",
+      "Blood Hunter / Cursed",
+      "Seeker / Investigator",
+      "Diplomat / Envoy",
+      "Healer / Herbalist",
+      "Necromancer / Death Caller",
+      "Summoner / Binder",
+      "Shapeshifter / Skinwalker",
+      "Oracle / Seer",
+      "Pirate / Corsair",
+      "Gladiator / Arena Fighter",
+      "Assassin / Shadow",
+    ],
+  },
+]
+
+const ARCHETYPES = ARCHETYPES_GROUPED.flatMap(g => g.items)
 const TARGETS = ["World / Planet","Continent","Kingdom / Nation","City / Settlement","Mountain / Range","River / Body of Water","Forest / Wilderness","Realm / Dimension","Afterlife / Purgatory","Heaven / Divine Realm","Hell / Dark Realm","Space Station / Ship","Character (Male)","Character (Female)","Character (Neutral)","Organization / Faction","Ancient Order","Deity / God","Creature / Species","Item / Object","Artifact / Relic","Era / Age","Concept / Ideology","Magic System","Technology / Device","Clan / House","Planet / Moon","Star System"]
 
 const TARGET_ICONS: Record<string, string> = {
@@ -642,7 +724,7 @@ export default function TheSignet() {
   const [languages,      setLanguages]      = useState<Lang[]>([])
   const [vibe,           setVibe]           = useState("Ancient Historic Fantasy")
   const [style,          setStyle]          = useState("Mixed")
-  const [archetype,      setArchetype]      = useState("None")
+  const [archetype,      setArchetype]      = useState("")
   const [itemType,       setItemType]       = useState("Sword (Longsword)")
   const [rarity,         setRarity]         = useState("uncommon")
   const [sentient,       setSentient]       = useState(false)
@@ -797,7 +879,14 @@ export default function TheSignet() {
     const refNote   = ref?`\nStyle reference: evoke a similar feel to "${ref.name}" (${ref.language}) but produce a distinct new name.`:""
     const dedupNote = tier.dedup&&generatedNames.length>0?`\n\nCritical: do NOT generate any of these previously seen names: ${generatedNames.slice(-150).join(", ")}`:""
     const itemNote  = isItemTarget?`\nItem type: ${itemType}\nRarity: ${RARITIES.find(r=>r.id===rarity)?.label||rarity}\nNaming guidance: ${RARITY_NAMING_GUIDE[rarity]||""}${sentient?"\nThis item is SENTIENT — name it like a character name, something the item calls itself.":""}`:""
-    return `You are a master linguist and worldbuilder specializing in fantasy nomenclature.\n\nGenerate exactly ${n} name proposal${n>1?"s":""} for: "${target}"\nLanguages to draw from: ${langNames}\nAesthetic vibe: ${vibe}\nPhonological style: ${style}${isCharTarget&&archetype!=="None"?`\nCultural archetype: ${archetype}`:""}${itemNote}\nThematic undertones: ${themes.join(", ")||"None"}${concept.trim() ? `\nCore concept to embody: "${concept.trim()}" — the names should feel rooted in this idea without being literal translations of it.` : ""}${refNote}${dedupNote}\n\nRules:\n- Each name must feel grounded, polished, non-generic\n- Mix single-language and blended names across the set\n- Every name must have a distinctly different rhythm and length\n- For item names: the rarity should be FELT in the name\n\nReturn ONLY a valid JSON array, no extra text:\n[{"name":"","pronunciation":"phonetic e.g. sha-LEM","language":"","root_words":"","meaning":"","resonance":""}]`
+    return `You are a master linguist and worldbuilder specializing in fantasy nomenclature.\n\nGenerate exactly ${n} name proposal${n>1?"s":""} for: "${target}"\nLanguages to draw from: ${langNames}\nAesthetic vibe: ${vibe}\nPhonological style: ${style}${isCharTarget&&archetype&&archetype!=="None" ? (() => {
+    const group = ARCHETYPES_GROUPED.find(g => g.items.includes(archetype))?.group || ""
+    const groupLabel =
+      group === "Cultural Origin"   ? "Cultural origin"   :
+      group === "Social Background" ? "Social background" :
+      group === "Class / Calling"   ? "Class or calling"  : "Archetype"
+    return `\n${groupLabel}: ${archetype} — let this shape the phonetic roots, naming conventions and weight of the name.`
+  })() : ""}${itemNote}\nThematic undertones: ${themes.join(", ")||"None"}${concept.trim() ? `\nCore concept to embody: "${concept.trim()}" — the names should feel rooted in this idea without being literal translations of it.` : ""}${refNote}${dedupNote}\n\nRules:\n- Each name must feel grounded, polished, non-generic\n- Mix single-language and blended names across the set\n- Every name must have a distinctly different rhythm and length\n- For item names: the rarity should be FELT in the name\n\nReturn ONLY a valid JSON array, no extra text:\n[{"name":"","pronunciation":"phonetic e.g. sha-LEM","language":"","root_words":"","meaning":"","resonance":""}]`
   }
 
   const generate = async () => {
@@ -864,7 +953,7 @@ export default function TheSignet() {
         <ConceptTextarea value={concept} onChange={setConcept}/>
       </div>
       <div style={{height:1,background:C.t4}}/>
-      {isCharTarget&&<div><Label>Cultural Archetype</Label><SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES} placeholder="Search archetype…" accent={C.purpleL}/></div>}
+      {isCharTarget&&<div><Label>Cultural Archetype</Label><SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES_GROUPED} placeholder="Search origin, background or class…" accent={C.purpleL}/></div>}
       {isItemTarget&&(
         <div style={{display:"flex",flexDirection:"column",gap:14}}>
           <div><Label>Item Type</Label><SearchableSelect value={itemType} onChange={setItemType} options={Object.entries(ITEM_TYPES).map(([group,items])=>({group,items}))} placeholder="Search item type…" accent={C.gold}/></div>
@@ -957,7 +1046,7 @@ export default function TheSignet() {
       {isCharTarget && (
         <div>
           <Label>Cultural Archetype</Label>
-          <SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES} placeholder="Search archetype…" accent={C.purpleL}/>
+          <SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES_GROUPED} placeholder="Search origin, background or class…" accent={C.purpleL}/>
         </div>
       )}
       {isItemTarget && (
