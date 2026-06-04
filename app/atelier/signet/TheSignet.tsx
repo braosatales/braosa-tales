@@ -278,7 +278,25 @@ const SS = {fontFamily:"system-ui,sans-serif"} as React.CSSProperties
 const GS = {fontFamily:"Georgia,serif"} as React.CSSProperties
 
 interface Lang { id: string; label: string; note?: string; category: string }
-interface NameResult { id?: string; name: string; pronunciation: string; language: string; root_words: string; meaning: string; resonance: string; forged?: boolean; target?: string; saved_at?: string }
+interface NameResult {
+  id?: string
+  name: string
+  pronunciation: string
+  language: string
+  root_words: string
+  meaning: string
+  resonance: string
+  forged?: boolean
+  target?: string
+  saved_at?: string
+  _context?: {
+    target: string
+    vibe: string
+    style: string
+    themes: string[]
+    concept?: string
+  }
+}
 interface HistoryBatchType { id: number; ts: number; open: boolean; target: string; langs: string; results: NameResult[] }
 interface PresetType { id: string; name: string; favourite?: boolean; settings: { archetype: string; languages: Lang[]; vibe: string; style: string; themes: string[]; count: number } }
 interface DbHistoryEntry {
@@ -555,7 +573,7 @@ function ResultCard({ r, saved, canSave, onSave, onCopy, onForgeOne, isHistory }
         </div>
         <div style={{display:"flex",gap:4,flexShrink:0,marginLeft:10,alignItems:"center"}}>
           <button onClick={()=>speak(r.pronunciation||r.name)} style={{background:"transparent",border:"none",cursor:"pointer",fontSize:17,color:C.t3,padding:"3px 5px",transition:"color 0.15s"}} onMouseEnter={e=>(e.target as HTMLButtonElement).style.color=C.t1} onMouseLeave={e=>(e.target as HTMLButtonElement).style.color=C.t3}>🔊</button>
-          <button onClick={doCopy} style={{background:copying?C.goldDim:"transparent",border:`1px solid ${copying?C.goldB:"transparent"}`,borderRadius:5,cursor:"pointer",fontSize:15,color:copying?C.gold:C.t3,padding:"3px 7px",transition:"all 0.15s",...SS}}>{copying?"✓":"⎘"}</button>
+          <button onClick={doCopy} style={{background:copying?C.goldDim:"transparent",border:`1px solid ${copying?C.goldB:"transparent"}`,borderRadius:6,cursor:"pointer",fontSize:14,color:copying?C.gold:C.t3,padding:"5px 10px",transition:"all 0.15s",...SS}}>{copying?"✓":"⎘"}</button>
           {!isHistory&&<button onClick={()=>(saved||canSave)&&onSave(r)} style={{background:"transparent",border:"none",cursor:saved||canSave?"pointer":"not-allowed",fontSize:18,color:saved?C.gold:"rgba(237,224,200,0.18)",padding:"2px 4px",transition:"color 0.2s",opacity:!saved&&!canSave?0.35:1}}>{saved?"★":"☆"}</button>}
         </div>
       </div>
@@ -779,9 +797,10 @@ export default function TheSignet() {
       return
     }
     if (canSave) {
-      const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...r, target: r.target || target})})
+      const _context = { target, vibe, style, themes, concept: concept || undefined }
+      const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...r, target: r.target || target, _context})})
       const data = await res.json()
-      setSaved(p=>[...p,{...r,id:data.id}]); showToast(`"${r.name}" saved ★`)
+      setSaved(p=>[...p,{...r,id:data.id,_context}]); showToast(`"${r.name}" saved ★`)
     } else { showToast("Save limit reached — upgrade for more") }
   }
   const doUnsave = async (r: NameResult) => {
@@ -1364,6 +1383,12 @@ export default function TheSignet() {
                   ...r,
                   batchTarget: entry.target,
                   batchTs: new Date(entry.generated_at).getTime(),
+                  _context: {
+                    target: entry.target,
+                    vibe: entry.vibe,
+                    style: entry.style,
+                    themes: entry.themes,
+                  }
                 }))
               )
 
@@ -1535,7 +1560,46 @@ export default function TheSignet() {
             {r.resonance}
           </div>
 
-          <div style={{display:"flex",gap:8}}>
+          {r._context && (
+            <div style={{
+              marginTop:14, paddingTop:12,
+              borderTop:`1px solid rgba(237,224,200,0.06)`,
+              marginBottom:16,
+            }}>
+              <div style={{
+                color:C.t3, fontSize:9, letterSpacing:2,
+                textTransform:"uppercase" as const,
+                fontFamily:"system-ui,sans-serif",
+                marginBottom:8,
+              }}>Generation context</div>
+
+              {([
+                r._context.target && ["Naming",   r._context.target],
+                r._context.vibe   && ["Vibe",     r._context.vibe],
+                r._context.style  && ["Style",    r._context.style],
+                r._context.themes?.length && ["Themes", r._context.themes.join(", ")],
+                r._context.concept && ["Concept", r._context.concept],
+              ].filter(Boolean) as [string, string][]).map(([label, value]) => (
+                <div key={label as string} style={{
+                  display:"flex", gap:8, marginBottom:5,
+                  alignItems:"flex-start",
+                }}>
+                  <span style={{
+                    color:C.t3, fontSize:10,
+                    fontFamily:"system-ui,sans-serif",
+                    flexShrink:0, width:52,
+                  }}>{label as string}</span>
+                  <span style={{
+                    color:C.t2, fontSize:11,
+                    fontFamily:"Georgia,serif",
+                    fontStyle:"italic", lineHeight:1.5,
+                  }}>{value as string}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
             <button
               onClick={()=>{
                 const nameWithTarget = {...r, target: (r as NameResult & {batchTarget?:string}).batchTarget || r.target || target}
@@ -1554,6 +1618,29 @@ export default function TheSignet() {
               {isSaved ? "★ Saved" : "☆ Save"}
             </button>
             <button
+              onClick={()=>speak(r.pronunciation||r.name)}
+              title="Hear pronunciation"
+              style={{
+                flex:1, padding:"9px",
+                background:C.t4,
+                border:`1px solid rgba(237,224,200,0.12)`,
+                borderRadius:7, color:C.t2,
+                cursor:"pointer", fontSize:14,
+                fontFamily:"Georgia,serif",
+                transition:"all 0.15s",
+              }}
+              onMouseEnter={e=>{
+                (e.currentTarget as HTMLButtonElement).style.borderColor=C.purpleB
+                ;(e.currentTarget as HTMLButtonElement).style.color=C.purpleL
+              }}
+              onMouseLeave={e=>{
+                (e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.12)"
+                ;(e.currentTarget as HTMLButtonElement).style.color=C.t2
+              }}
+            >
+              🔊 Hear
+            </button>
+            <button
               onClick={doExport}
               style={{
                 flex:1, padding:"9px",
@@ -1568,6 +1655,29 @@ export default function TheSignet() {
               ⎘ Copy
             </button>
           </div>
+          {results.some(res => res.name === r.name) && (
+            <button
+              onClick={()=>{ forgeOne(r); setSelectedHistoryName(null) }}
+              style={{
+                width:"100%", padding:"8px",
+                background:"transparent",
+                border:`1px solid rgba(237,224,200,0.1)`,
+                borderRadius:7, color:C.t3, cursor:"pointer",
+                fontSize:10, letterSpacing:1,
+                textTransform:"uppercase" as const,
+                fontFamily:"Georgia,serif",
+                marginTop:8, transition:"all 0.15s",
+              }}
+              onMouseEnter={e=>{
+                (e.currentTarget as HTMLButtonElement).style.borderColor=C.goldB
+                ;(e.currentTarget as HTMLButtonElement).style.color=C.gold
+              }}
+              onMouseLeave={e=>{
+                (e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.1)"
+                ;(e.currentTarget as HTMLButtonElement).style.color=C.t3
+              }}
+            >↻ Forge similar (1cr)</button>
+          )}
         </div>
       </div>
     )
