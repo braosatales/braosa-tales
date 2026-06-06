@@ -749,15 +749,15 @@ function HistoryBatch({ batch, onToggle }: { batch: HistoryBatchType; onToggle: 
 }
 
 const ConceptTextarea = ({
-  value,
-  onChange,
+  defaultValue,
+  textareaRef,
 }: {
-  value: string
-  onChange: (v: string) => void
+  defaultValue: string
+  textareaRef: React.RefObject<HTMLTextAreaElement>
 }) => (
   <textarea
-    value={value}
-    onChange={e => onChange(e.target.value)}
+    ref={textareaRef}
+    defaultValue={defaultValue}
     placeholder="e.g. a river of eternal death… a fortress built on betrayal…"
     rows={2}
     style={{
@@ -770,8 +770,12 @@ const ConceptTextarea = ({
       outline:"none", resize:"none" as const,
       lineHeight:1.6, transition:"border-color 0.2s",
     }}
-    onFocus={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(107,28,168,0.45)"}
-    onBlur={e=>(e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"}
+    onFocus={e=>
+      (e.target as HTMLTextAreaElement).style.borderColor="rgba(107,28,168,0.45)"
+    }
+    onBlur={e=>
+      (e.target as HTMLTextAreaElement).style.borderColor="rgba(237,224,200,0.12)"
+    }
   />
 )
 
@@ -841,6 +845,7 @@ export default function TheSignet() {
   const [historyFilter,  setHistoryFilter]  = useState<string>("all")
   const [historySort,    setHistorySort]    = useState<"newest"|"oldest"|"az"|"za">("newest")
   const [concept,        setConcept]        = useState("")
+  const conceptRef = useRef<HTMLTextAreaElement>(null)
   const [feedbackOpen,   setFeedbackOpen]   = useState(false)
   const [feedbackType,   setFeedbackType]   = useState<"bug"|"feature"|"other">("bug")
   const [feedbackText,   setFeedbackText]   = useState("")
@@ -936,9 +941,9 @@ export default function TheSignet() {
       return
     }
     if (canSave) {
-      const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...r, target, vibe, style, themes, concept: concept || null, languages: languages || null})})
+      const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...r, target, vibe, style, themes, concept: conceptRef.current?.value || concept || null, languages: languages || null})})
       const data = await res.json()
-      setSaved(p=>[...p,{...r,id:data.id,saved_at:data.saved_at||new Date().toISOString(),target,vibe,style,themes,concept:concept||undefined,languages}]); showToast(`"${r.name}" saved ★`)
+      setSaved(p=>[...p,{...r,id:data.id,saved_at:data.saved_at||new Date().toISOString(),target,vibe,style,themes,concept:conceptRef.current?.value || concept || undefined,languages}]); showToast(`"${r.name}" saved ★`)
     } else { showToast("Save limit reached — upgrade for more") }
   }
   const doUnsave = async (r: NameResult) => {
@@ -973,7 +978,7 @@ export default function TheSignet() {
       group === "Social Background" ? "Social background" :
       group === "Class / Calling"   ? "Class or calling"  : "Archetype"
     return `\n${groupLabel}: ${archetype} — let this shape the phonetic roots, naming conventions and weight of the name.`
-  })() : ""}${itemNote}\nThematic undertones: ${themes.join(", ")||"None"}${concept.trim() ? `\nCore concept to embody: "${concept.trim()}" — the names should feel rooted in this idea without being literal translations of it.` : ""}${refNote}${dedupNote}\n\nRules:\n- Each name must feel grounded, polished, non-generic\n- Mix single-language and blended names across the set\n- Every name must have a distinctly different rhythm and length\n- For item names: the rarity should be FELT in the name\n\nReturn ONLY a valid JSON array, no extra text:\n[{"name":"","pronunciation":"phonetic e.g. sha-LEM","language":"","root_words":"","meaning":"","resonance":""}]`
+  })() : ""}${itemNote}\nThematic undertones: ${themes.join(", ")||"None"}${(conceptRef.current?.value || concept).trim() ? `\nCore concept to embody: "${(conceptRef.current?.value || concept).trim()}" — the names should feel rooted in this idea without being literal translations of it.` : ""}${refNote}${dedupNote}\n\nRules:\n- Each name must feel grounded, polished, non-generic\n- Mix single-language and blended names across the set\n- Every name must have a distinctly different rhythm and length\n- For item names: the rarity should be FELT in the name\n\nReturn ONLY a valid JSON array, no extra text:\n[{"name":"","pronunciation":"phonetic e.g. sha-LEM","language":"","root_words":"","meaning":"","resonance":""}]`
   }
 
   const generate = async () => {
@@ -981,8 +986,10 @@ export default function TheSignet() {
     if(!canAfford){setError(`Need ${totalCost} credits. You have ${credits}.`);return}
     if(results.length)archiveResults(results)
     setLoading(true); setError(null); setResults([])
+    const currentConcept = conceptRef.current?.value || concept
+    if (currentConcept !== concept) setConcept(currentConcept)
     try {
-      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:1400,messages:[{role:"user",content:buildPrompt(count,null)}],creditsToUse:totalCost,target,languages,vibe,themes,style,concept:concept||null})})
+      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:1400,messages:[{role:"user",content:buildPrompt(count,null)}],creditsToUse:totalCost,target,languages,vibe,themes,style,concept:currentConcept||null})})
       const data = await res.json()
       if(data.creditsRemaining!==undefined){setCredits(data.creditsRemaining);window.dispatchEvent(new CustomEvent("braosa:credits-updated",{detail:{credits:data.creditsRemaining}}))}
       const text = (data.content||[]).map((b:{text?:string})=>b.text||"").join("")
@@ -995,8 +1002,9 @@ export default function TheSignet() {
   const forgeOne = async (ref: NameResult) => {
     if(credits!==Infinity&&credits<1){showToast("Not enough credits");return}
     setForgingId(ref.name)
+    const currentConcept = conceptRef.current?.value || concept
     try {
-      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:400,messages:[{role:"user",content:buildPrompt(1,ref)}],creditsToUse:1,target,languages,vibe,themes,style,concept:concept||null})})
+      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:400,messages:[{role:"user",content:buildPrompt(1,ref)}],creditsToUse:1,target,languages,vibe,themes,style,concept:currentConcept||null})})
       const data = await res.json()
       if(data.creditsRemaining!==undefined){setCredits(data.creditsRemaining);window.dispatchEvent(new CustomEvent("braosa:credits-updated",{detail:{credits:data.creditsRemaining}}))}
       const text = (data.content||[]).map((b:{text?:string})=>b.text||"").join("")
@@ -1037,7 +1045,7 @@ export default function TheSignet() {
           marginLeft:6, letterSpacing:0.5,
           fontFamily:"system-ui,sans-serif",
         }}>optional — guides the generation</span></Label>
-        <ConceptTextarea value={concept} onChange={setConcept}/>
+        <ConceptTextarea defaultValue={concept} textareaRef={conceptRef}/>
       </div>
       <div style={{height:1,background:C.t4}}/>
       {isCharTarget&&<div><Label>Cultural Archetype</Label><SearchableSelect value={archetype} onChange={setArchetype} options={ARCHETYPES_GROUPED} placeholder="Search origin, background or class…" accent={C.purpleL}/></div>}
@@ -2208,7 +2216,7 @@ export default function TheSignet() {
               marginLeft:6, letterSpacing:0.5,
               fontFamily:"system-ui,sans-serif",
             }}>optional</span></Label>
-            <ConceptTextarea value={concept} onChange={setConcept}/>
+            <ConceptTextarea defaultValue={concept} textareaRef={conceptRef}/>
           </div>
 
           {/* Row 2: Filters & Settings — collapsible */}
