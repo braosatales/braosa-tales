@@ -252,40 +252,52 @@ const TARGET_ICONS: Record<string, string> = {
   "Star System":             "🌌",
 }
 
-const getTargetIcon = (target: string) => TARGET_ICONS[target] || "✦"
+const TARGET_FILTER_GROUPS: {label:string; icon:string; targets:string[]}[] = [
+  { label:"Characters",             icon:"⚔️", targets:["Character (Male)","Character (Female)","Character (Neutral)"] },
+  { label:"World / Planet",         icon:"🌍", targets:["World / Planet"] },
+  { label:"Continent",              icon:"🗺", targets:["Continent"] },
+  { label:"Kingdom / Nation",       icon:"⚜️", targets:["Kingdom / Nation"] },
+  { label:"City / Settlement",      icon:"🏰", targets:["City / Settlement"] },
+  { label:"Clan / House",           icon:"🛡", targets:["Clan / House"] },
+  { label:"Organization / Faction", icon:"🏛", targets:["Organization / Faction"] },
+  { label:"Ancient Order",          icon:"📜", targets:["Ancient Order"] },
+  { label:"Deity / God",            icon:"☀️", targets:["Deity / God"] },
+  { label:"Creature / Species",     icon:"🐉", targets:["Creature / Species"] },
+  { label:"Artifact / Relic",       icon:"🔮", targets:["Artifact / Relic"] },
+  { label:"Item / Object",          icon:"💎", targets:["Item / Object"] },
+  { label:"Magic System",           icon:"🌟", targets:["Magic System"] },
+  { label:"Realm / Dimension",      icon:"🌀", targets:["Realm / Dimension"] },
+  { label:"Heaven / Divine Realm",  icon:"✨", targets:["Heaven / Divine Realm"] },
+  { label:"Hell / Dark Realm",      icon:"🔥", targets:["Hell / Dark Realm"] },
+  { label:"Afterlife / Purgatory",  icon:"💀", targets:["Afterlife / Purgatory"] },
+  { label:"Forest / Wilderness",    icon:"🌲", targets:["Forest / Wilderness"] },
+  { label:"Mountain / Range",       icon:"⛰", targets:["Mountain / Range"] },
+  { label:"River / Body of Water",  icon:"🌊", targets:["River / Body of Water"] },
+  { label:"Planet / Moon",          icon:"🪐", targets:["Planet / Moon"] },
+  { label:"Star System",            icon:"🌌", targets:["Star System"] },
+  { label:"Space Station / Ship",   icon:"🚀", targets:["Space Station / Ship"] },
+  { label:"Era / Age",              icon:"⏳", targets:["Era / Age"] },
+  { label:"Concept / Ideology",     icon:"💭", targets:["Concept / Ideology"] },
+  { label:"Technology / Device",    icon:"⚙️", targets:["Technology / Device"] },
+]
 
-const GROUP_ICONS: Record<string, string> = {
-  "Worlds":     "🌍",
-  "Places":     "🏰",
-  "Afterlives": "💀",
-  "Characters": "⚔️",
-  "Groups":     "🏛",
-  "Divine":     "☀️",
-  "Creatures":  "🐉",
-  "Items":      "💎",
-  "Abstract":   "💭",
-  "Other":      "✦",
-}
-
-const TARGET_GROUPS: Record<string, string[]> = {
-  "Worlds":       ["World / Planet","Continent","Realm / Dimension","Planet / Moon","Star System"],
-  "Places":       ["Kingdom / Nation","City / Settlement","Mountain / Range","River / Body of Water","Forest / Wilderness","Space Station / Ship"],
-  "Afterlives":   ["Afterlife / Purgatory","Heaven / Divine Realm","Hell / Dark Realm"],
-  "Characters":   ["Character (Male)","Character (Female)","Character (Neutral)"],
-  "Groups":       ["Organization / Faction","Ancient Order","Clan / House"],
-  "Divine":       ["Deity / God"],
-  "Creatures":    ["Creature / Species"],
-  "Items":        ["Item / Object","Artifact / Relic"],
-  "Abstract":     ["Era / Age","Concept / Ideology","Magic System","Technology / Device"],
-}
-
-const getTargetGroup = (target: string): string => {
+const getTargetFilterLabel = (target: string): string => {
   if (!target) return "Other"
-  for (const [group, targets] of Object.entries(TARGET_GROUPS)) {
-    if (targets.includes(target)) return group
-  }
-  console.warn("Unmatched target group:", JSON.stringify(target))
-  return "Other"
+  const t = target.trim()
+  const match = TARGET_FILTER_GROUPS.find(g => g.targets.includes(t))
+  return match ? match.label : t
+}
+
+const getTargetFilterIcon = (label: string): string => {
+  const match = TARGET_FILTER_GROUPS.find(g => g.label === label)
+  return match ? match.icon : "✦"
+}
+
+const getTargetIcon = (target: string): string => {
+  if (!target) return "✦"
+  const t = target.trim()
+  const match = TARGET_FILTER_GROUPS.find(g => g.targets.includes(t))
+  return match ? match.icon : "✦"
 }
 
 const THEMES = ["Redemption","Corruption & Fall","Restoration","Sacrifice","Ancient Power","Rebirth","Judgment","Lost Glory","Forbidden Knowledge","The Threshold","Covenant","Exile & Return","Light & Shadow","The Wound","Sovereignty","First Contact","Machine Uprising","Ecological Collapse","The Undying","Chosen Path"]
@@ -364,6 +376,7 @@ interface DbHistoryEntry {
   vibe: string
   style: string
   themes: string[]
+  concept?: string
   results: NameResult[]
   credits_used: number
   generated_at: string
@@ -623,7 +636,6 @@ function ResultCard({ r, saved, canSave, onSave, onCopy, onForgeOne, isHistory }
   const doCopy = () => { navigator.clipboard.writeText(r.name).then(()=>{ setCopying(true); setTimeout(()=>setCopying(false),1500); onCopy&&onCopy(r.name) }) }
   return (
     <div style={{background:C.card2,border:`1px solid ${r.forged?"rgba(212,174,88,0.28)":C.border}`,borderRadius:12,padding:"20px 22px",marginBottom:14,transition:"border-color 0.2s,background 0.2s",position:"relative"}} onMouseEnter={e=>{(e.currentTarget as HTMLDivElement).style.borderColor=r.forged?C.goldB:C.purpleB;(e.currentTarget as HTMLDivElement).style.background="rgba(107,28,168,0.05)"}} onMouseLeave={e=>{(e.currentTarget as HTMLDivElement).style.borderColor=r.forged?"rgba(212,174,88,0.28)":C.border;(e.currentTarget as HTMLDivElement).style.background=C.card2}}>
-      {r.forged&&<div style={{position:"absolute",top:10,right:48,fontSize:11,color:C.gold,letterSpacing:1.5,textTransform:"uppercase",...SS,opacity:0.7}}>↻ forged</div>}
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start"}}>
         <div style={{flex:1}}>
           <div style={{color:C.t1,fontSize:28,fontStyle:"italic",...GS,letterSpacing:0.5,fontWeight:600}}>{r.name}</div>
@@ -709,6 +721,11 @@ function ResultCard({ r, saved, canSave, onSave, onCopy, onForgeOne, isHistory }
       {!isHistory&&(
         <div style={{marginTop:10,display:"flex",justifyContent:"flex-end"}}>
           <button onClick={()=>onForgeOne(r)} style={{background:"transparent",border:`1px solid rgba(237,224,200,0.1)`,borderRadius:5,padding:"4px 10px",color:C.t3,cursor:"pointer",fontSize:11,letterSpacing:1.5,textTransform:"uppercase",...GS,transition:"all 0.15s"}} onMouseEnter={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor=C.goldB;(e.currentTarget as HTMLButtonElement).style.color=C.gold}} onMouseLeave={e=>{(e.currentTarget as HTMLButtonElement).style.borderColor="rgba(237,224,200,0.1)";(e.currentTarget as HTMLButtonElement).style.color=C.t3}}>↻ forge similar (1cr)</button>
+        </div>
+      )}
+      {r.forged && (
+        <div style={{display:"flex",justifyContent:"flex-end",marginTop:6}}>
+          <span style={{color:C.gold,fontSize:10,letterSpacing:1.5,textTransform:"uppercase" as const,fontFamily:"system-ui,sans-serif",opacity:0.75}}>↻ forged</span>
         </div>
       )}
     </div>
@@ -967,7 +984,7 @@ export default function TheSignet() {
     if(results.length)archiveResults(results)
     setLoading(true); setError(null); setResults([])
     try {
-      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:1400,messages:[{role:"user",content:buildPrompt(count,null)}],creditsToUse:totalCost,target,languages,vibe,themes,style})})
+      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:1400,messages:[{role:"user",content:buildPrompt(count,null)}],creditsToUse:totalCost,target,languages,vibe,themes,style,concept:concept||null})})
       const data = await res.json()
       if(data.creditsRemaining!==undefined){setCredits(data.creditsRemaining);window.dispatchEvent(new CustomEvent("braosa:credits-updated",{detail:{credits:data.creditsRemaining}}))}
       const text = (data.content||[]).map((b:{text?:string})=>b.text||"").join("")
@@ -981,7 +998,7 @@ export default function TheSignet() {
     if(credits!==Infinity&&credits<1){showToast("Not enough credits");return}
     setForgingId(ref.name)
     try {
-      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:400,messages:[{role:"user",content:buildPrompt(1,ref)}],creditsToUse:1,target,languages,vibe,themes,style})})
+      const res  = await fetch("/api/generate/signet",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({max_tokens:400,messages:[{role:"user",content:buildPrompt(1,ref)}],creditsToUse:1,target,languages,vibe,themes,style,concept:concept||null})})
       const data = await res.json()
       if(data.creditsRemaining!==undefined){setCredits(data.creditsRemaining);window.dispatchEvent(new CustomEvent("braosa:credits-updated",{detail:{credits:data.creditsRemaining}}))}
       const text = (data.content||[]).map((b:{text?:string})=>b.text||"").join("")
@@ -1248,7 +1265,7 @@ export default function TheSignet() {
                   <option key={t} value={t}>
                     {t === "all"
                       ? "All types"
-                      : `${GROUP_ICONS[t] || "✦"} ${t}`
+                      : `${getTargetFilterIcon(t)} ${t}`
                     }
                   </option>
                 ))}
@@ -1429,16 +1446,23 @@ export default function TheSignet() {
             ) : (() => {
               let filtered = savedFilter === "all"
                 ? saved
-                : saved.filter(s => getTargetGroup((s as NameResult & {target?:string}).target || "") === savedFilter)
+                : saved.filter(s => {
+                    const label = getTargetFilterLabel((s as any).target || "")
+                    return label === savedFilter
+                  })
 
               const sortedFiltered = [...filtered].sort((a, b) => {
-                const aTime = (a as any).saved_at ? new Date((a as any).saved_at).getTime() : 0
-                const bTime = (b as any).saved_at ? new Date((b as any).saved_at).getTime() : 0
-                if (savedSort === "newest") return bTime - aTime
-                if (savedSort === "oldest") return aTime - bTime
+                const aTime = (a as any).saved_at
+                  ? new Date((a as any).saved_at).getTime() : 0
+                const bTime = (b as any).saved_at
+                  ? new Date((b as any).saved_at).getTime() : 0
+                if (savedSort === "newest")
+                  return aTime > bTime ? -1 : aTime < bTime ? 1 : 0
+                if (savedSort === "oldest")
+                  return aTime < bTime ? -1 : aTime > bTime ? 1 : 0
                 if (savedSort === "az") return a.name.localeCompare(b.name)
                 if (savedSort === "za") return b.name.localeCompare(a.name)
-                return bTime - aTime
+                return aTime > bTime ? -1 : aTime < bTime ? 1 : 0
               })
 
               return (
@@ -1450,17 +1474,13 @@ export default function TheSignet() {
                     onSortChange={val=>setSavedSort(val as "newest"|"oldest"|"az"|"za")}
                     onExport={exportSaved}
                     count={sortedFiltered.length}
-                    filterOptions={[
-                      "all",
-                      ...Array.from(
-                        new Set(
-                          saved.map(s => getTargetGroup(
-                            (s as NameResult & {target?:string}).target || ""
-                          ))
-                        )
-                      ).filter(g => g !== "Other"),
-                      ...(saved.some(s => getTargetGroup((s as NameResult & {target?:string}).target || "") === "Other") ? ["Other"] : []),
-                    ]}
+                    filterOptions={(() => {
+                      const presentLabels = Array.from(new Set(
+                        saved.map(s => getTargetFilterLabel((s as any).target || ""))
+                      )).filter(l => l && l !== "Other").sort()
+                      const hasOther = saved.some(s => getTargetFilterLabel((s as any).target || "") === "Other")
+                      return ["all", ...presentLabels, ...(hasOther ? ["Other"] : [])]
+                    })()}
                   />
                   {tier.maxSaves!==Infinity&&(
                     <div style={{color:C.t3,fontSize:11,letterSpacing:1,...SS,marginBottom:10,marginTop:-6}}>
@@ -1547,6 +1567,7 @@ export default function TheSignet() {
                     vibe: entry.vibe,
                     style: entry.style,
                     themes: entry.themes,
+                    concept: entry.concept || undefined,
                   }
                 }))
               )
@@ -1572,7 +1593,10 @@ export default function TheSignet() {
 
               const filteredNames = historyFilter === "all"
                 ? allNames
-                : allNames.filter(n => getTargetGroup(n.batchTarget || "") === historyFilter)
+                : allNames.filter(n => {
+                    const label = getTargetFilterLabel(n.batchTarget || "")
+                    return label === historyFilter
+                  })
 
               const sortedNames = [...filteredNames].sort((a, b) => {
                 if (historySort === "az")     return a.name.localeCompare(b.name)
@@ -1603,13 +1627,13 @@ export default function TheSignet() {
                       showToast(`${sortedNames.length} names copied`)
                     }}
                     count={sortedNames.length}
-                    filterOptions={[
-                      "all",
-                      ...Array.from(
-                        new Set(allNames.map(n => getTargetGroup(n.batchTarget || "")))
-                      ).filter(g => g !== "Other"),
-                      ...(allNames.some(n => getTargetGroup(n.batchTarget || "") === "Other") ? ["Other"] : []),
-                    ]}
+                    filterOptions={(() => {
+                      const presentLabels = Array.from(new Set(
+                        allNames.map(n => getTargetFilterLabel(n.batchTarget || ""))
+                      )).filter(l => l && l !== "Other").sort()
+                      const hasOther = allNames.some(n => getTargetFilterLabel(n.batchTarget || "") === "Other")
+                      return ["all", ...presentLabels, ...(hasOther ? ["Other"] : [])]
+                    })()}
                   />
 
                   {visible.map((r, i) => (

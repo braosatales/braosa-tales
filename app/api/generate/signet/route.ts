@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
-  const { creditsToUse = 1, target = '', languages = [], vibe = '', themes = [], style = '' } = body
+  const { creditsToUse = 1, target = '', languages = [], vibe = '', themes = [], style = '', concept = '' } = body
 
   const user = await getUserByClerkId(userId)
   if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
@@ -66,6 +66,7 @@ export async function POST(req: NextRequest) {
       vibe,
       themes,
       style,
+      concept: concept || null,
       results,
       credits_used: creditsToUse,
     })
