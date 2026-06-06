@@ -462,14 +462,12 @@ function LanguagePicker({ selected, onChange, maxLangs }: { selected: Lang[]; on
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState("")
   const [tab, setTab] = useState("ancient")
-  const ref = useRef<HTMLDivElement>(null)
   const atLimit = maxLangs !== Infinity && selected.length >= maxLangs
-  useEffect(()=>{ const h=(e: MouseEvent)=>{ if(ref.current&&!ref.current.contains(e.target as Node))setOpen(false)}; document.addEventListener("mousedown",h); return()=>document.removeEventListener("mousedown",h) },[])
   const filtered = useMemo(()=>{ if(!search.trim())return null; const q=search.toLowerCase(); return ALL_LANGS.filter(l=>l.label.toLowerCase().includes(q)||(l.note||"").toLowerCase().includes(q)) },[search])
   const list = filtered || LANGS[tab].map(l=>({...l,category:tab}))
   const toggle = (lang: Lang) => { if(selected.find(s=>s.id===lang.id))onChange(selected.filter(s=>s.id!==lang.id)); else if(!atLimit)onChange([...selected,lang]) }
   return (
-    <div ref={ref} style={{position:"relative"}}>
+    <div style={{position:"relative"}}>
       {maxLangs!==Infinity&&<div style={{display:"flex",justifyContent:"flex-end",marginBottom:4}}><span style={{fontSize:11,letterSpacing:1.5,...SS,color:atLimit?C.danger:C.t3,background:atLimit?C.dangerDim:"transparent",border:`1px solid ${atLimit?C.dangerB:"transparent"}`,borderRadius:4,padding:atLimit?"2px 7px":"0"}}>{selected.length}/{maxLangs}{atLimit&&" — limit reached"}</span></div>}
       <div onClick={()=>setOpen(!open)} style={{background:C.t4,border:`1px solid ${open?C.purpleB:"rgba(237,224,200,0.12)"}`,borderRadius:8,padding:"12px 16px",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"space-between",minHeight:52,transition:"border-color 0.2s"}}>
         <div style={{display:"flex",flexWrap:"wrap",gap:5,flex:1}}>
@@ -483,7 +481,7 @@ function LanguagePicker({ selected, onChange, maxLangs }: { selected: Lang[]; on
       </div>
       {open&&(
         <div style={{position:"absolute",top:"calc(100% + 5px)",left:0,right:0,zIndex:300,minWidth:360,background:"#1C1810",border:`1px solid ${C.purpleB}`,borderRadius:10,boxShadow:"0 20px 60px rgba(0,0,0,0.8)",overflow:"hidden"}}>
-          <div style={{padding:"10px 10px 0"}}><input autoFocus placeholder="Search all languages…" value={search} onChange={e=>setSearch(e.target.value)} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:15,...GS,outline:"none"}}/></div>
+          <div style={{padding:"10px 10px 0",position:"relative"}}><input autoFocus placeholder="Search all languages…" value={search} onChange={e=>setSearch(e.target.value)} style={{width:"100%",boxSizing:"border-box",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:6,padding:"8px 12px",color:C.t1,fontSize:15,...GS,outline:"none"}}/><button onClick={()=>setOpen(false)} style={{position:"absolute",top:10,right:10,background:"transparent",border:"none",color:"#8A7A65",cursor:"pointer",fontSize:18,lineHeight:1,padding:"4px 8px",borderRadius:4,transition:"color 0.15s"}} onMouseEnter={e=>(e.currentTarget as HTMLButtonElement).style.color="#F2E8D5"} onMouseLeave={e=>(e.currentTarget as HTMLButtonElement).style.color="#8A7A65"}>×</button></div>
           {atLimit&&<div style={{margin:"8px 10px 0",padding:"6px 10px",background:C.dangerDim,border:`1px solid ${C.dangerB}`,borderRadius:6,display:"flex",justifyContent:"space-between",alignItems:"center"}}><span style={{color:C.danger,fontSize:13,...SS}}>Language limit reached.</span><span onClick={()=>window.location.href="/pricing"} style={{color:C.gold,fontSize:13,cursor:"pointer",textDecoration:"underline",...SS}}>Upgrade →</span></div>}
           <div style={{display:"flex",maxHeight:320}}>
             {!search&&(
@@ -940,7 +938,7 @@ export default function TheSignet() {
     if (canSave) {
       const res  = await fetch("/api/user/saved-names",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...r, target, vibe, style, themes, concept: concept || null, languages: languages || null})})
       const data = await res.json()
-      setSaved(p=>[...p,{...r,id:data.id,target,vibe,style,themes,concept:concept||undefined,languages}]); showToast(`"${r.name}" saved ★`)
+      setSaved(p=>[...p,{...r,id:data.id,saved_at:data.saved_at||new Date().toISOString(),target,vibe,style,themes,concept:concept||undefined,languages}]); showToast(`"${r.name}" saved ★`)
     } else { showToast("Save limit reached — upgrade for more") }
   }
   const doUnsave = async (r: NameResult) => {
