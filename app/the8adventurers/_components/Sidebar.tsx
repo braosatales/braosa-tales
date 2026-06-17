@@ -99,11 +99,22 @@ export default function Sidebar({ isAdmin, players }: Props) {
     <>
       <button
         onClick={() => setMobileOpen((v) => !v)}
-        className="fixed top-4 left-4 z-50 md:hidden flex items-center justify-center w-9 h-9 bg-brand-card border border-brand-border rounded-sm text-brand-gold-400"
+        className="fixed top-4 right-4 z-50 md:hidden flex items-center justify-center w-9 h-9 bg-brand-card border border-brand-border rounded-sm text-brand-gold-400"
         aria-label="Toggle menu"
       >
         {mobileOpen ? '✕' : '☰'}
       </button>
+
+      {isAdmin && isOnPlayers && !pathname.includes('/new') && (
+        <Link
+          href="/the8adventurers/players/new"
+          className="md:hidden fixed top-4 right-14 z-40 w-9 h-9 bg-brand-purple-600 hover:bg-brand-purple-400 rounded-sm text-brand-parchment flex items-center justify-center transition-colors text-lg font-bold"
+          aria-label="Add Player"
+          title="Add Player"
+        >
+          +
+        </Link>
+      )}
 
       {mobileOpen && (
         <div

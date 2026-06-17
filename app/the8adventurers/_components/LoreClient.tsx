@@ -111,13 +111,25 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto">
+      {/* Mobile fixed "+" add button */}
+      {isAdmin && (
+        <button
+          onClick={openCreate}
+          className="md:hidden fixed top-4 right-14 z-40 w-9 h-9 bg-brand-purple-600 hover:bg-brand-purple-400 rounded-sm text-brand-parchment flex items-center justify-center transition-colors text-lg font-bold"
+          aria-label="Add Lore Entry"
+          title="Add Lore Entry"
+        >
+          +
+        </button>
+      )}
+
       <div className="flex items-center justify-between mb-6">
         <div>
           <p className="section-label">Lore</p>
           <h1 className="font-cinzel text-brand-parchment text-2xl md:text-3xl font-bold">{label}</h1>
         </div>
         {isAdmin && (
-          <button onClick={openCreate} className="btn-primary text-xs">+ Add Entry</button>
+          <button onClick={openCreate} className="hidden md:inline-flex btn-primary text-xs">+ Add Entry</button>
         )}
       </div>
 

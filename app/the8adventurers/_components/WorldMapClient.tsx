@@ -167,13 +167,25 @@ export default function WorldMapClient({ initialMaps, initialPins, locationEntri
 
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto">
+      {/* Mobile fixed "+" add map button */}
+      {isAdmin && (
+        <button
+          onClick={() => setShowAddMap((v) => !v)}
+          className="md:hidden fixed top-4 right-14 z-40 w-9 h-9 bg-brand-purple-600 hover:bg-brand-purple-400 rounded-sm text-brand-parchment flex items-center justify-center transition-colors text-lg font-bold"
+          aria-label="Add Map"
+          title="Add Map"
+        >
+          +
+        </button>
+      )}
+
       <div className="flex items-center justify-between mb-6">
         <div>
           <p className="section-label">Campaign</p>
           <h1 className="font-cinzel text-brand-parchment text-2xl md:text-3xl font-bold">World Map</h1>
         </div>
         {isAdmin && (
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             {selectedMap && (
               <button
                 onClick={() => { setPinMode((v) => !v); setPendingPin(null) }}
@@ -182,7 +194,7 @@ export default function WorldMapClient({ initialMaps, initialPins, locationEntri
                 {pinMode ? 'Cancel Pin' : '+ Add Pin'}
               </button>
             )}
-            <button onClick={() => setShowAddMap((v) => !v)} className="btn-primary text-xs">
+            <button onClick={() => setShowAddMap((v) => !v)} className="hidden md:inline-flex btn-primary text-xs">
               + Add Map
             </button>
           </div>

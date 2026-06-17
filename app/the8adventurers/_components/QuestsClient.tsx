@@ -82,10 +82,75 @@ function questToForm(q: Quest): QuestFormState {
   }
 }
 
-function StatusBadge({ status }: { status: QuestStatus }) {
+function QuestStatusIcon({ status }: { status: QuestStatus }) {
+  if (status === 'available') return (
+    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true" fill="none">
+      <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  )
+  if (status === 'in_progress') return (
+    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+      <circle cx="8" cy="8" r="6" stroke="currentColor" strokeWidth="1.5" fill="none" />
+      <path d="M 8 2 A 6 6 0 0 0 8 14 Z" fill="currentColor" />
+    </svg>
+  )
+  if (status === 'completed') return (
+    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+      <circle cx="8" cy="8" r="7" fill="currentColor" />
+      <path d="M 4.5 8.5 L 6.5 10.5 L 11 5.5" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
   return (
-    <span className={`inline-block text-[10px] font-cinzel tracking-widest uppercase px-1.5 py-0.5 rounded-sm border ${STATUS_COLORS[status]}`}>
-      {STATUS_LABELS[status]}
+    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+      <circle cx="8" cy="8" r="7" fill="currentColor" />
+      <path d="M 5.5 5.5 L 10.5 10.5 M 10.5 5.5 L 5.5 10.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function SortIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 3.5h10M4 7h6M6 10.5h2" />
+    </svg>
+  )
+}
+
+function StatusPill({
+  status,
+  isAdmin,
+  onChange,
+}: {
+  status: QuestStatus
+  isAdmin: boolean
+  onChange?: (s: QuestStatus) => void
+}) {
+  const pill = (
+    <span
+      className={`inline-flex items-center justify-center w-7 h-7 rounded-full border ${STATUS_COLORS[status]}`}
+      title={`Status: ${STATUS_LABELS[status]}`}
+      aria-label={`Status: ${STATUS_LABELS[status]}`}
+    >
+      <QuestStatusIcon status={status} />
+    </span>
+  )
+
+  if (!isAdmin || !onChange) return pill
+
+  return (
+    <span className="relative inline-flex cursor-pointer" title={`Change status: ${STATUS_LABELS[status]}`}>
+      {pill}
+      <select
+        value={status}
+        onChange={(e) => onChange(e.target.value as QuestStatus)}
+        onClick={(e) => e.stopPropagation()}
+        aria-label={`Change quest status`}
+        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+      >
+        {(Object.keys(STATUS_LABELS) as QuestStatus[]).map((s) => (
+          <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+        ))}
+      </select>
     </span>
   )
 }
@@ -423,43 +488,82 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
 
   return (
     <div className="p-6 md:p-10 max-w-4xl mx-auto">
+      {/* Mobile fixed "+" add button */}
+      {isAdmin && (
+        <button
+          onClick={openCreate}
+          className="md:hidden fixed top-4 right-14 z-40 w-9 h-9 bg-brand-purple-600 hover:bg-brand-purple-400 rounded-sm text-brand-parchment flex items-center justify-center transition-colors text-lg font-bold"
+          aria-label="Add Quest"
+          title="Add Quest"
+        >
+          +
+        </button>
+      )}
+
       <div className="flex items-center justify-between mb-6">
         <div>
           <p className="section-label">Campaign</p>
           <h1 className="font-cinzel text-brand-parchment text-2xl md:text-3xl font-bold">Quests</h1>
         </div>
         {isAdmin && (
-          <button onClick={openCreate} className="btn-primary text-xs">+ Add Quest</button>
+          <button onClick={openCreate} className="hidden md:inline-flex btn-primary text-xs">+ Add Quest</button>
         )}
       </div>
 
       {/* Filter + sort controls */}
-      <div className="flex flex-wrap items-center gap-3 mb-6">
-        <div className="flex flex-wrap gap-2">
-          {STATUS_ORDER.map((s) => (
-            <button
-              key={s}
-              onClick={() => toggleStatus(s)}
-              className={`px-3 py-1 text-[10px] font-cinzel tracking-widest uppercase rounded-sm border transition-colors ${
-                activeStatuses.has(s)
-                  ? STATUS_COLORS[s]
-                  : 'text-brand-muted border-brand-border/40 bg-transparent'
-              }`}
-            >
-              {STATUS_LABELS[s]}
-            </button>
-          ))}
+      <div className="flex items-center gap-2 mb-6">
+        <div className="flex gap-2 items-center">
+          {STATUS_ORDER.map((s) => {
+            const active = activeStatuses.has(s)
+            return (
+              <button
+                key={s}
+                onClick={() => toggleStatus(s)}
+                aria-label={`Filter: ${STATUS_LABELS[s]}`}
+                title={STATUS_LABELS[s]}
+                className={`flex items-center justify-center transition-all border w-8 h-8 rounded-full md:w-auto md:h-auto md:rounded-sm md:px-3 md:py-1 ${
+                  active ? STATUS_COLORS[s] : 'text-brand-muted border-brand-border/40 bg-transparent'
+                }`}
+              >
+                <span className={`md:hidden ${!active ? 'opacity-40' : ''}`}>
+                  <QuestStatusIcon status={s} />
+                </span>
+                <span className="hidden md:inline text-[10px] font-cinzel tracking-widest uppercase">
+                  {STATUS_LABELS[s]}
+                </span>
+              </button>
+            )
+          })}
         </div>
-        <select
-          value={sortMode}
-          onChange={(e) => setSortMode(e.target.value as typeof sortMode)}
-          onClick={(e) => e.stopPropagation()}
-          className="ml-auto bg-brand-bg border border-brand-border rounded-sm px-2 py-1 text-brand-muted font-fell text-xs focus:outline-none focus:border-brand-purple-600"
-        >
-          <option value="status">Status (default)</option>
-          <option value="title">Title A-Z</option>
-          <option value="recent">Most recent</option>
-        </select>
+
+        {/* Sort: icon-only trigger on mobile, full select on desktop */}
+        <div className="ml-auto relative flex items-center">
+          <div className="relative md:hidden">
+            <span className="pointer-events-none flex items-center justify-center w-8 h-8 rounded-sm border border-brand-border text-brand-muted">
+              <SortIcon />
+            </span>
+            <select
+              value={sortMode}
+              onChange={(e) => setSortMode(e.target.value as typeof sortMode)}
+              aria-label="Sort quests"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+            >
+              <option value="status">Status (default)</option>
+              <option value="title">Title A-Z</option>
+              <option value="recent">Most recent</option>
+            </select>
+          </div>
+          <select
+            value={sortMode}
+            onChange={(e) => setSortMode(e.target.value as typeof sortMode)}
+            onClick={(e) => e.stopPropagation()}
+            className="hidden md:block bg-brand-bg border border-brand-border rounded-sm px-2 py-1 text-brand-muted font-fell text-xs focus:outline-none focus:border-brand-purple-600"
+          >
+            <option value="status">Status (default)</option>
+            <option value="title">Title A-Z</option>
+            <option value="recent">Most recent</option>
+          </select>
+        </div>
       </div>
 
       {displayedQuests.length === 0 && (
@@ -497,23 +601,13 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
                         {q.title}
                       </h3>
                     </button>
-                    <StatusBadge status={q.status} />
+                    <StatusPill
+                      status={q.status}
+                      isAdmin={isAdmin}
+                      onChange={(s) => changeStatus(q, s)}
+                    />
                     {isAdmin && q.is_secret && <SecretBadge />}
                   </div>
-
-                  {/* Admin status select */}
-                  {isAdmin && (
-                    <select
-                      value={q.status}
-                      onChange={(e) => { e.stopPropagation(); changeStatus(q, e.target.value as QuestStatus) }}
-                      onClick={(e) => e.stopPropagation()}
-                      className="bg-brand-bg border border-brand-border rounded-sm px-2 py-0.5 text-brand-muted font-fell text-xs focus:outline-none focus:border-brand-purple-600 mt-1"
-                    >
-                      {(Object.keys(STATUS_LABELS) as QuestStatus[]).map((s) => (
-                        <option key={s} value={s}>{STATUS_LABELS[s]}</option>
-                      ))}
-                    </select>
-                  )}
                 </div>
 
                 {isAdmin && (
