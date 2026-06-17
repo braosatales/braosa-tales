@@ -4,14 +4,16 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 
-type Props = { isAdmin: boolean }
+type PlayerRef = { id: string; name: string }
+type Props = { isAdmin: boolean; players: PlayerRef[] }
 
 const LORE_LINKS = [
-  { href: '/the8adventurers/lore/enemy-boss', label: 'Enemies (Bosses)' },
-  { href: '/the8adventurers/lore/enemy-monster', label: 'Enemies (Monsters)' },
-  { href: '/the8adventurers/lore/friend', label: 'Friends' },
-  { href: '/the8adventurers/lore/location', label: 'Locations' },
-  { href: '/the8adventurers/lore/faction', label: 'Factions' },
+  { href: '/the8adventurers/lore/history', label: 'History' },
+  { href: '/the8adventurers/lore/locations', label: 'Locations' },
+  { href: '/the8adventurers/lore/friends', label: 'Friends' },
+  { href: '/the8adventurers/lore/foes', label: 'Foes' },
+  { href: '/the8adventurers/lore/factions', label: 'Factions' },
+  { href: '/the8adventurers/lore/monsters', label: 'Monsters' },
 ]
 
 const SESSION_LINKS = [
@@ -24,9 +26,7 @@ function NavLink({ href, label, active }: { href: string; label: string; active:
     <Link
       href={href}
       className={`block pl-6 py-1.5 text-sm font-fell transition-colors ${
-        active
-          ? 'text-brand-gold-300'
-          : 'text-brand-muted hover:text-brand-parchment'
+        active ? 'text-brand-gold-300' : 'text-brand-muted hover:text-brand-parchment'
       }`}
     >
       {label}
@@ -39,9 +39,7 @@ function TopLink({ href, label, active }: { href: string; label: string; active:
     <Link
       href={href}
       className={`block px-4 py-2 text-xs font-cinzel tracking-widest uppercase transition-colors ${
-        active
-          ? 'text-brand-gold-300'
-          : 'text-brand-muted hover:text-brand-parchment'
+        active ? 'text-brand-gold-300' : 'text-brand-muted hover:text-brand-parchment'
       }`}
     >
       {label}
@@ -49,19 +47,49 @@ function TopLink({ href, label, active }: { href: string; label: string; active:
   )
 }
 
-export default function Sidebar({ isAdmin }: Props) {
+function ExpandableSection({
+  label,
+  open,
+  onToggle,
+  children,
+}: {
+  label: string
+  open: boolean
+  onToggle: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <div>
+      <button
+        onClick={onToggle}
+        className="flex items-center gap-2 w-full px-4 py-2 text-xs font-cinzel tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors"
+      >
+        <span className={`transition-transform duration-150 text-[10px] ${open ? 'rotate-90' : 'rotate-0'}`}>
+          ▶
+        </span>
+        {label}
+      </button>
+      {open && <div className="pb-1">{children}</div>}
+    </div>
+  )
+}
+
+export default function Sidebar({ isAdmin, players }: Props) {
   const pathname = usePathname()
   const isOnLore = pathname.startsWith('/the8adventurers/lore')
   const isOnSessions = pathname.startsWith('/the8adventurers/sessions')
+  const isOnPlayers = pathname.startsWith('/the8adventurers/players')
 
   const [loreOpen, setLoreOpen] = useState(isOnLore)
   const [sessionsOpen, setSessionsOpen] = useState(isOnSessions)
+  const [playersOpen, setPlayersOpen] = useState(isOnPlayers)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   useEffect(() => {
     if (isOnLore) setLoreOpen(true)
     if (isOnSessions) setSessionsOpen(true)
-  }, [isOnLore, isOnSessions])
+    if (isOnPlayers) setPlayersOpen(true)
+  }, [isOnLore, isOnSessions, isOnPlayers])
 
   useEffect(() => {
     setMobileOpen(false)
@@ -69,7 +97,6 @@ export default function Sidebar({ isAdmin }: Props) {
 
   return (
     <>
-      {/* Mobile toggle button */}
       <button
         onClick={() => setMobileOpen((v) => !v)}
         className="fixed top-4 left-4 z-50 md:hidden flex items-center justify-center w-9 h-9 bg-brand-card border border-brand-border rounded-sm text-brand-gold-400"
@@ -78,7 +105,6 @@ export default function Sidebar({ isAdmin }: Props) {
         {mobileOpen ? '✕' : '☰'}
       </button>
 
-      {/* Overlay on mobile */}
       {mobileOpen && (
         <div
           className="fixed inset-0 z-30 bg-black/60 md:hidden"
@@ -86,7 +112,6 @@ export default function Sidebar({ isAdmin }: Props) {
         />
       )}
 
-      {/* Sidebar panel */}
       <aside
         className={`
           fixed md:static inset-y-0 left-0 z-40
@@ -96,7 +121,6 @@ export default function Sidebar({ isAdmin }: Props) {
           ${mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
       >
-        {/* Header */}
         <div className="px-4 py-5 border-b border-brand-border">
           <p className="section-label mb-0.5">Campaign Hub</p>
           <h2 className="font-cinzel text-brand-parchment text-sm font-bold leading-tight">
@@ -109,36 +133,47 @@ export default function Sidebar({ isAdmin }: Props) {
           )}
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 overflow-y-auto py-3">
+          {/* Lore */}
+          <ExpandableSection label="Lore" open={loreOpen} onToggle={() => setLoreOpen((v) => !v)}>
+            {LORE_LINKS.map((l) => (
+              <NavLink key={l.href} href={l.href} label={l.label} active={pathname === l.href} />
+            ))}
+          </ExpandableSection>
 
-          {/* Lore (expandable) */}
-          <div>
-            <button
-              onClick={() => setLoreOpen((v) => !v)}
-              className="flex items-center gap-2 w-full px-4 py-2 text-xs font-cinzel tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors"
-            >
-              <span
-                className={`transition-transform duration-150 text-[10px] ${loreOpen ? 'rotate-90' : 'rotate-0'}`}
+          {/* Players */}
+          <ExpandableSection label="Players" open={playersOpen} onToggle={() => setPlayersOpen((v) => !v)}>
+            {isAdmin && (
+              <Link
+                href="/the8adventurers/players/new"
+                className="flex items-center gap-1.5 pl-6 py-1.5 text-sm font-fell text-brand-gold-400 hover:text-brand-gold-300 transition-colors"
+                onClick={(e) => e.stopPropagation()}
               >
-                ▶
-              </span>
-              Lore
-            </button>
-            {loreOpen && (
-              <div className="pb-1">
-                {LORE_LINKS.map((l) => (
-                  <NavLink key={l.href} href={l.href} label={l.label} active={pathname === l.href} />
-                ))}
-              </div>
+                <span className="text-base leading-none">+</span> Add Player
+              </Link>
             )}
-          </div>
+            {players.map((p) => (
+              <NavLink
+                key={p.id}
+                href={`/the8adventurers/players/${p.id}`}
+                label={p.name}
+                active={pathname === `/the8adventurers/players/${p.id}`}
+              />
+            ))}
+            {players.length === 0 && (
+              <p className="pl-6 py-1.5 text-xs font-fell text-brand-muted italic">No players yet</p>
+            )}
+          </ExpandableSection>
 
-          {/* Top-level links */}
           <TopLink
             href="/the8adventurers/quests"
             label="Quests"
             active={pathname.startsWith('/the8adventurers/quests')}
+          />
+          <TopLink
+            href="/the8adventurers/achievements"
+            label="Achievements"
+            active={pathname.startsWith('/the8adventurers/achievements')}
           />
           <TopLink
             href="/the8adventurers/timeline"
@@ -151,27 +186,11 @@ export default function Sidebar({ isAdmin }: Props) {
             active={pathname.startsWith('/the8adventurers/world-map')}
           />
 
-          {/* Sessions (expandable) */}
-          <div>
-            <button
-              onClick={() => setSessionsOpen((v) => !v)}
-              className="flex items-center gap-2 w-full px-4 py-2 text-xs font-cinzel tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors"
-            >
-              <span
-                className={`transition-transform duration-150 text-[10px] ${sessionsOpen ? 'rotate-90' : 'rotate-0'}`}
-              >
-                ▶
-              </span>
-              Sessions
-            </button>
-            {sessionsOpen && (
-              <div className="pb-1">
-                {SESSION_LINKS.map((l) => (
-                  <NavLink key={l.href} href={l.href} label={l.label} active={pathname === l.href} />
-                ))}
-              </div>
-            )}
-          </div>
+          <ExpandableSection label="Sessions" open={sessionsOpen} onToggle={() => setSessionsOpen((v) => !v)}>
+            {SESSION_LINKS.map((l) => (
+              <NavLink key={l.href} href={l.href} label={l.label} active={pathname === l.href} />
+            ))}
+          </ExpandableSection>
         </nav>
       </aside>
     </>

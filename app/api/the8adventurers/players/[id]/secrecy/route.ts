@@ -3,43 +3,40 @@ import { NextResponse } from 'next/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
 
-export async function GET(req: Request) {
+// GET all secrecy rows for a player
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const { searchParams } = new URL(req.url)
-  const category = searchParams.get('category')
-
   const supabase = createServerSupabase()
-  const admin = await isAdmin()
-
-  let query = supabase
-    .from('the8_lore_entries')
+  const { data, error } = await supabase
+    .from('the8_player_field_secrecy')
     .select('*')
-    .order('created_at', { ascending: false })
+    .eq('player_id', params.id)
 
-  if (category) query = query.eq('category', category)
-  if (!admin) query = query.eq('is_secret', false)
-
-  const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data)
 }
 
-export async function POST(req: Request) {
+// PUT bulk-upsert secrecy rows — body: { secrecy: Record<fieldName, boolean> }
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!await isAdmin()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { category, title, description, portrait_url, is_secret } = await req.json()
+  const { secrecy } = await req.json() as { secrecy: Record<string, boolean> }
   const supabase = createServerSupabase()
 
-  const { data, error } = await supabase
-    .from('the8_lore_entries')
-    .insert({ category, title, description: description || null, portrait_url: portrait_url || null, is_secret: is_secret ?? true })
-    .select()
-    .single()
+  const rows = Object.entries(secrecy).map(([field_name, is_secret]) => ({
+    player_id: params.id,
+    field_name,
+    is_secret,
+  }))
+
+  const { error } = await supabase
+    .from('the8_player_field_secrecy')
+    .upsert(rows, { onConflict: 'player_id,field_name' })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json(data)
+  return NextResponse.json({ ok: true })
 }
