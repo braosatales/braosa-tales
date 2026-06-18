@@ -17,8 +17,13 @@ export async function GET() {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  const quests = admin ? data : (data ?? []).filter((q) => !q.is_secret)
-  return NextResponse.json(quests)
+  if (!admin) {
+    const safe = (data ?? [])
+      .filter((q) => !q.is_secret)
+      .map(({ gm_notes: _, ...row }) => row)
+    return NextResponse.json(safe)
+  }
+  return NextResponse.json(data)
 }
 
 export async function POST(req: Request) {
@@ -30,7 +35,7 @@ export async function POST(req: Request) {
   const {
     title, description, portrait_url, status, is_secret, sort_order,
     reward_platinum, reward_gold, reward_electrum, reward_silver, reward_copper,
-    reward_achievement_id, reward_items, reward_other,
+    reward_achievement_id, reward_items, reward_other, gm_notes,
     player_ids = [], exp_map = {},
   } = body
 
@@ -46,6 +51,7 @@ export async function POST(req: Request) {
       reward_copper: reward_copper ?? 0,
       reward_achievement_id: reward_achievement_id || null,
       reward_items: reward_items || null, reward_other: reward_other || null,
+      gm_notes: gm_notes || null,
     })
     .select()
     .single()

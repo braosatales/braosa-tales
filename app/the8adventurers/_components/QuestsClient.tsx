@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Quest, QuestItem, QuestStatus, Player, Achievement } from '@/lib/the8adventurers/types'
-import RichCard from '@/components/the8adventurers/RichCard'
 import Toggle from '@/components/the8adventurers/Toggle'
 import SecretBadge from '@/components/the8adventurers/SecretBadge'
 import MentionTextarea from '@/components/the8adventurers/MentionTextarea'
+import ViewToggle, { type ViewMode } from '@/components/the8adventurers/ViewToggle'
+import CardMenu from '@/components/the8adventurers/CardMenu'
+import ArticleModal, { type ArticleModalData } from '@/components/the8adventurers/ArticleModal'
 
 type Props = {
   initialQuests: Quest[]
@@ -54,6 +56,7 @@ type QuestFormState = {
   reward_achievement_id: string
   reward_items: string
   reward_other: string
+  gm_notes: string
   player_ids: string[]
   exp_map: Record<string, number>
 }
@@ -63,7 +66,7 @@ function emptyForm(): QuestFormState {
     title: '', description: '', portrait_url: '',
     status: 'available', is_secret: true, sort_order: 0,
     reward_platinum: 0, reward_gold: 0, reward_electrum: 0, reward_silver: 0, reward_copper: 0,
-    reward_achievement_id: '', reward_items: '', reward_other: '',
+    reward_achievement_id: '', reward_items: '', reward_other: '', gm_notes: '',
     player_ids: [], exp_map: {},
   }
 }
@@ -77,6 +80,7 @@ function questToForm(q: Quest): QuestFormState {
     reward_copper: q.reward_copper ?? 0,
     reward_achievement_id: q.reward_achievement_id ?? '',
     reward_items: q.reward_items ?? '', reward_other: q.reward_other ?? '',
+    gm_notes: q.gm_notes ?? '',
     player_ids: (q.the8_quest_players ?? []).map((p) => p.player_id),
     exp_map: Object.fromEntries((q.the8_quest_exp ?? []).map((e) => [e.player_id, e.exp_amount])),
   }
@@ -144,7 +148,7 @@ function StatusPill({
         value={status}
         onChange={(e) => onChange(e.target.value as QuestStatus)}
         onClick={(e) => e.stopPropagation()}
-        aria-label={`Change quest status`}
+        aria-label="Change quest status"
         className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
       >
         {(Object.keys(STATUS_LABELS) as QuestStatus[]).map((s) => (
@@ -152,76 +156,6 @@ function StatusPill({
         ))}
       </select>
     </span>
-  )
-}
-
-function CurrencyChip({ amount, label, color }: { amount: number; label: string; color: string }) {
-  return (
-    <span className={`inline-flex items-center gap-1 font-cinzel text-xs ${color}`}>
-      <span className="font-bold">{amount}</span>
-      <span className="opacity-70">{label}</span>
-    </span>
-  )
-}
-
-function QuestRewardHero({
-  quest,
-  players,
-  achievement,
-}: {
-  quest: Quest
-  players: Player[]
-  achievement: Achievement | undefined
-}) {
-  const hasCurrency = (quest.reward_platinum ?? 0) > 0 || (quest.reward_gold ?? 0) > 0 ||
-    (quest.reward_electrum ?? 0) > 0 || (quest.reward_silver ?? 0) > 0 || (quest.reward_copper ?? 0) > 0
-  const hasReward = hasCurrency || (quest.the8_quest_exp ?? []).length > 0 ||
-    achievement || quest.reward_items || quest.reward_other
-
-  if (!hasReward) return null
-
-  return (
-    <div className="mt-3 border-t border-brand-border pt-3 space-y-2">
-      <p className="section-label">Rewards</p>
-      {hasCurrency && (
-        <div className="flex flex-wrap gap-4">
-          {CURRENCY_LABELS.map(({ key, label, color }) => {
-            const amount = (quest as Record<string, unknown>)[key] as number
-            return amount > 0 ? (
-              <CurrencyChip key={key} amount={amount} label={label} color={color} />
-            ) : null
-          })}
-        </div>
-      )}
-      {(quest.the8_quest_exp ?? []).length > 0 && (
-        <div className="flex flex-wrap gap-3">
-          {(quest.the8_quest_exp ?? []).map((exp) => {
-            const player = players.find((p) => p.id === exp.player_id)
-            if (!player) return null
-            return (
-              <span key={exp.player_id} className="font-fell text-xs text-brand-muted">
-                {player.name}: <span className="text-brand-purple-200">+{exp.exp_amount} XP</span>
-              </span>
-            )
-          })}
-        </div>
-      )}
-      {achievement && (
-        <div className="font-fell text-xs text-brand-gold-300">
-          🏅 Unlocks: {achievement.title}
-        </div>
-      )}
-      {quest.reward_items && (
-        <div className="font-fell text-xs text-brand-muted">
-          Items: <span className="text-[#F0E8FF]">{quest.reward_items}</span>
-        </div>
-      )}
-      {quest.reward_other && (
-        <div className="font-fell text-xs text-brand-muted">
-          Other: <span className="text-[#F0E8FF]">{quest.reward_other}</span>
-        </div>
-      )}
-    </div>
   )
 }
 
@@ -303,6 +237,75 @@ function PlayerCheckRow({
   )
 }
 
+function QuestRewardHero({
+  quest,
+  players,
+  achievement,
+}: {
+  quest: Quest
+  players: Player[]
+  achievement: Achievement | undefined
+}) {
+  const hasCurrency = (quest.reward_platinum ?? 0) > 0 || (quest.reward_gold ?? 0) > 0 ||
+    (quest.reward_electrum ?? 0) > 0 || (quest.reward_silver ?? 0) > 0 || (quest.reward_copper ?? 0) > 0
+  const hasReward = hasCurrency || (quest.the8_quest_exp ?? []).length > 0 ||
+    achievement || quest.reward_items || quest.reward_other
+
+  if (!hasReward) return null
+
+  return (
+    <div className="mt-3 border-t border-brand-border pt-3 space-y-2">
+      <p className="section-label">Rewards</p>
+      {hasCurrency && (
+        <div className="flex flex-wrap gap-4">
+          {CURRENCY_LABELS.map(({ key, label, color }) => {
+            const amount = (quest as Record<string, unknown>)[key] as number
+            return amount > 0 ? (
+              <span key={key} className={`inline-flex items-center gap-1 font-cinzel text-xs ${color}`}>
+                <span className="font-bold">{amount}</span>
+                <span className="opacity-70">{label}</span>
+              </span>
+            ) : null
+          })}
+        </div>
+      )}
+      {(quest.the8_quest_exp ?? []).length > 0 && (
+        <div className="flex flex-wrap gap-3">
+          {(quest.the8_quest_exp ?? []).map((exp) => {
+            const player = players.find((p) => p.id === exp.player_id)
+            if (!player) return null
+            return (
+              <span key={exp.player_id} className="font-fell text-xs text-brand-muted">
+                {player.name}: <span className="text-brand-purple-200">+{exp.exp_amount} XP</span>
+              </span>
+            )
+          })}
+        </div>
+      )}
+      {achievement && (
+        <div className="font-fell text-xs text-brand-gold-300">
+          🏅 Unlocks: {achievement.title}
+        </div>
+      )}
+      {quest.reward_items && (
+        <div className="font-fell text-xs text-brand-muted">
+          Items: <span className="text-[#F0E8FF]">{quest.reward_items}</span>
+        </div>
+      )}
+      {quest.reward_other && (
+        <div className="font-fell text-xs text-brand-muted">
+          Other: <span className="text-[#F0E8FF]">{quest.reward_other}</span>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function getStoredView(): ViewMode {
+  if (typeof window === 'undefined') return 'grid'
+  return (localStorage.getItem('the8_view_quests') as ViewMode) ?? 'grid'
+}
+
 export default function QuestsClient({ initialQuests, players, achievements, isAdmin }: Props) {
   const router = useRouter()
   const [quests, setQuests] = useState<Quest[]>(initialQuests)
@@ -313,12 +316,22 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
   const [newItemLabel, setNewItemLabel] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
+  const [view, setView] = useState<ViewMode>('grid')
+  const [viewingArticle, setViewingArticle] = useState<ArticleModalData | null>(null)
 
-  // Filter/sort state
   const [activeStatuses, setActiveStatuses] = useState<Set<QuestStatus>>(
     new Set<QuestStatus>(['in_progress', 'available', 'completed', 'failed'])
   )
   const [sortMode, setSortMode] = useState<'status' | 'title' | 'recent'>('status')
+
+  useEffect(() => {
+    setView(getStoredView())
+  }, [])
+
+  function handleViewChange(v: ViewMode) {
+    setView(v)
+    if (typeof window !== 'undefined') localStorage.setItem('the8_view_quests', v)
+  }
 
   function toggleExpand(id: string) {
     setExpanded((prev) => {
@@ -340,7 +353,6 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
     const filtered = quests.filter((q) => activeStatuses.has(q.status))
     if (sortMode === 'title') return [...filtered].sort((a, b) => a.title.localeCompare(b.title))
     if (sortMode === 'recent') return [...filtered].sort((a, b) => b.created_at.localeCompare(a.created_at))
-    // status sort: in_progress → available → completed → failed, within status by sort_order
     return [...filtered].sort((a, b) => {
       const si = STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status)
       return si !== 0 ? si : a.sort_order - b.sort_order
@@ -359,6 +371,39 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
     setForm(questToForm(q))
     setErr('')
     setShowModal(true)
+  }
+
+  function openView(q: Quest) {
+    setViewingArticle({
+      type: 'quest',
+      data: q,
+      players,
+      achievements,
+      onItemToggle: (questId, updatedItem) => {
+        setQuests((prev) => prev.map((quest) =>
+          quest.id !== questId ? quest : {
+            ...quest,
+            the8_quest_items: quest.the8_quest_items.map((i) =>
+              i.id === updatedItem.id ? updatedItem : i
+            ),
+          }
+        ))
+        if (viewingArticle?.type === 'quest' && viewingArticle.data.id === questId) {
+          setViewingArticle((prev) => {
+            if (!prev || prev.type !== 'quest') return prev
+            return {
+              ...prev,
+              data: {
+                ...prev.data,
+                the8_quest_items: prev.data.the8_quest_items.map((i) =>
+                  i.id === updatedItem.id ? updatedItem : i
+                ),
+              },
+            }
+          })
+        }
+      },
+    })
   }
 
   async function handleSave() {
@@ -380,6 +425,7 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
       reward_achievement_id: form.reward_achievement_id || null,
       reward_items: form.reward_items.trim() || null,
       reward_other: form.reward_other.trim() || null,
+      gm_notes: form.gm_notes.trim() || null,
       player_ids: form.player_ids,
       exp_map: form.exp_map,
     }
@@ -409,15 +455,13 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
     router.refresh()
   }
 
-  async function handleDelete() {
-    if (!editingQuest) return
-    if (!confirm(`Delete quest "${editingQuest.title}"?`)) return
+  async function handleDeleteQuest(quest: Quest) {
     setSaving(true)
-    const res = await fetch(`/api/the8adventurers/quests/${editingQuest.id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/the8adventurers/quests/${quest.id}`, { method: 'DELETE' })
     setSaving(false)
     if (!res.ok) { setErr('Error deleting'); return }
-    setQuests((prev) => prev.filter((q) => q.id !== editingQuest.id))
-    setShowModal(false)
+    setQuests((prev) => prev.filter((q) => q.id !== quest.id))
+    if (editingQuest?.id === quest.id) setShowModal(false)
     router.refresh()
   }
 
@@ -487,7 +531,7 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
   const inputCls = 'w-full bg-brand-bg border border-brand-border rounded-sm px-3 py-2 text-brand-parchment font-fell text-sm focus:outline-none focus:border-brand-purple-600'
 
   return (
-    <div className="p-6 md:p-10 max-w-4xl mx-auto">
+    <div className="p-6 md:p-10 max-w-5xl mx-auto">
       {/* Mobile fixed "+" add button */}
       {isAdmin && (
         <button
@@ -500,14 +544,17 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
         </button>
       )}
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <div>
           <p className="section-label">Campaign</p>
           <h1 className="font-cinzel text-brand-parchment text-2xl md:text-3xl font-bold">Quests</h1>
         </div>
-        {isAdmin && (
-          <button onClick={openCreate} className="hidden md:inline-flex btn-primary text-xs">+ Add Quest</button>
-        )}
+        <div className="flex items-center gap-2">
+          <ViewToggle value={view} onChange={handleViewChange} />
+          {isAdmin && (
+            <button onClick={openCreate} className="hidden md:inline-flex btn-primary text-xs">+ Add Quest</button>
+          )}
+        </div>
       </div>
 
       {/* Filter + sort controls */}
@@ -536,7 +583,6 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
           })}
         </div>
 
-        {/* Sort: icon-only trigger on mobile, full select on desktop */}
         <div className="ml-auto relative flex items-center">
           <div className="relative md:hidden">
             <span className="pointer-events-none flex items-center justify-center w-8 h-8 rounded-sm border border-brand-border text-brand-muted">
@@ -570,120 +616,166 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
         <p className="font-fell text-brand-muted italic">No quests match the current filters.</p>
       )}
 
-      <div className="space-y-4">
-        {displayedQuests.map((q) => {
-          const isExp = expanded.has(q.id)
-          const items = [...(q.the8_quest_items ?? [])].sort((a, b) => a.sort_order - b.sort_order)
-          const linkedPlayers = players.filter((p) =>
-            (q.the8_quest_players ?? []).some((qp) => qp.player_id === p.id)
-          )
-          const rewardAchievement = achievements.find((a) => a.id === q.reward_achievement_id)
-
-          return (
-            <div key={q.id} className="dark-card">
-              {/* Header row */}
-              <div className="flex items-start gap-3 mb-2">
-                {q.portrait_url && (
-                  <img
-                    src={q.portrait_url}
-                    alt={q.title}
-                    className="w-14 h-14 object-cover rounded-sm border border-brand-border flex-shrink-0"
+      {/* Grid view */}
+      {view === 'grid' ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {displayedQuests.map((q) => {
+            const linkedPlayers = players.filter((p) =>
+              (q.the8_quest_players ?? []).some((qp) => qp.player_id === p.id)
+            )
+            return (
+              <div
+                key={q.id}
+                className="relative dark-card flex flex-col overflow-hidden"
+                onClick={!isAdmin ? () => openView(q) : undefined}
+                style={!isAdmin ? { cursor: 'pointer' } : undefined}
+              >
+                <div className="absolute top-2 right-2 z-10">
+                  <CardMenu
+                    isAdmin={isAdmin}
+                    onView={() => openView(q)}
+                    onEdit={isAdmin ? () => openEdit(q) : undefined}
+                    onDelete={isAdmin ? () => handleDeleteQuest(q) : undefined}
                   />
-                )}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <button
-                      onClick={() => toggleExpand(q.id)}
-                      className="flex items-center gap-2 text-left"
-                    >
-                      <span className={`text-[10px] text-brand-muted transition-transform duration-150 ${isExp ? 'rotate-90' : ''}`}>▶</span>
-                      <h3 className="font-cinzel font-semibold text-base leading-tight text-brand-parchment">
-                        {q.title}
-                      </h3>
-                    </button>
-                    <StatusPill
-                      status={q.status}
-                      isAdmin={isAdmin}
-                      onChange={(s) => changeStatus(q, s)}
-                    />
-                    {isAdmin && q.is_secret && <SecretBadge />}
-                  </div>
                 </div>
-
-                {isAdmin && (
-                  <button
-                    onClick={(e) => { e.stopPropagation(); openEdit(q) }}
-                    className="flex-shrink-0 text-brand-muted hover:text-brand-gold-300 transition-colors text-xs font-cinzel tracking-wide"
-                  >
-                    Edit
-                  </button>
+                {q.portrait_url && (
+                  <img src={q.portrait_url} alt={q.title} className="w-full h-32 object-cover rounded-sm mb-3 border border-brand-border" />
+                )}
+                <div className="flex items-center gap-2 mb-1 flex-wrap pr-8">
+                  <h3 className="font-cinzel text-brand-parchment font-semibold text-base leading-tight">{q.title}</h3>
+                  <StatusPill status={q.status} isAdmin={isAdmin} onChange={(s) => changeStatus(q, s)} />
+                  {isAdmin && q.is_secret && <SecretBadge />}
+                </div>
+                {linkedPlayers.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-1">
+                    {linkedPlayers.map((p) => (
+                      <span key={p.id} className="font-fell text-xs text-brand-purple-200 bg-brand-purple-900/30 border border-brand-purple-600/30 px-1.5 py-0.5 rounded-sm">
+                        {p.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {q.description && (
+                  <p className="font-fell text-brand-muted text-sm leading-relaxed line-clamp-2 mt-auto pt-1">
+                    {q.description}
+                  </p>
                 )}
               </div>
+            )
+          })}
+        </div>
+      ) : (
+        /* List view */
+        <div className="space-y-4">
+          {displayedQuests.map((q) => {
+            const isExp = expanded.has(q.id)
+            const items = [...(q.the8_quest_items ?? [])].sort((a, b) => a.sort_order - b.sort_order)
+            const linkedPlayers = players.filter((p) =>
+              (q.the8_quest_players ?? []).some((qp) => qp.player_id === p.id)
+            )
+            const rewardAchievement = achievements.find((a) => a.id === q.reward_achievement_id)
 
-              {q.description && (
-                <p className="font-fell text-brand-muted text-sm mb-2 leading-relaxed">
-                  {q.description}
-                </p>
-              )}
-
-              {/* Linked players */}
-              {linkedPlayers.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {linkedPlayers.map((p) => (
-                    <span key={p.id} className="font-fell text-xs text-brand-purple-200 bg-brand-purple-900/30 border border-brand-purple-600/30 px-2 py-0.5 rounded-sm">
-                      {p.name}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              {/* Expanded: items + rewards */}
-              {isExp && (
-                <div className="mt-3 pl-2">
-                  {items.length > 0 && (
-                    <div className="space-y-2 mb-3">
-                      {items.map((item) => (
-                        <QuestItemRow
-                          key={item.id}
-                          item={item}
-                          questId={q.id}
-                          isAdmin={isAdmin}
-                          onToggle={() => toggleItemDone(q.id, item)}
-                          onDelete={() => deleteItem(q.id, item)}
-                        />
-                      ))}
-                    </div>
+            return (
+              <div key={q.id} className="dark-card">
+                <div className="flex items-start gap-3 mb-2">
+                  {q.portrait_url && (
+                    <img
+                      src={q.portrait_url}
+                      alt={q.title}
+                      className="w-14 h-14 object-cover rounded-sm border border-brand-border flex-shrink-0"
+                    />
                   )}
-
-                  {isAdmin && (
-                    <div className="flex gap-2 mb-3">
-                      <input
-                        type="text"
-                        value={newItemLabel[q.id] ?? ''}
-                        onChange={(e) => setNewItemLabel((prev) => ({ ...prev, [q.id]: e.target.value }))}
-                        onKeyDown={(e) => e.key === 'Enter' && addItem(q.id)}
-                        onClick={(e) => e.stopPropagation()}
-                        placeholder="New checklist item…"
-                        className="flex-1 bg-brand-bg border border-brand-border rounded-sm px-2 py-1 text-brand-parchment font-fell text-xs focus:outline-none focus:border-brand-purple-600"
-                      />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
                       <button
-                        onClick={(e) => { e.stopPropagation(); addItem(q.id) }}
-                        className="btn-outline text-[10px] px-2 py-1"
+                        onClick={() => toggleExpand(q.id)}
+                        className="flex items-center gap-2 text-left"
                       >
-                        Add
+                        <span className={`text-[10px] text-brand-muted transition-transform duration-150 ${isExp ? 'rotate-90' : ''}`}>▶</span>
+                        <h3 className="font-cinzel font-semibold text-base leading-tight text-brand-parchment">
+                          {q.title}
+                        </h3>
                       </button>
+                      <StatusPill
+                        status={q.status}
+                        isAdmin={isAdmin}
+                        onChange={(s) => changeStatus(q, s)}
+                      />
+                      {isAdmin && q.is_secret && <SecretBadge />}
                     </div>
-                  )}
+                  </div>
 
-                  <QuestRewardHero quest={q} players={players} achievement={rewardAchievement} />
+                  <CardMenu
+                    isAdmin={isAdmin}
+                    onView={() => openView(q)}
+                    onEdit={isAdmin ? () => openEdit(q) : undefined}
+                    onDelete={isAdmin ? () => handleDeleteQuest(q) : undefined}
+                  />
                 </div>
-              )}
-            </div>
-          )
-        })}
-      </div>
 
-      {/* Quest modal */}
+                {q.description && (
+                  <p className="font-fell text-brand-muted text-sm mb-2 leading-relaxed line-clamp-1">
+                    {q.description}
+                  </p>
+                )}
+
+                {linkedPlayers.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {linkedPlayers.map((p) => (
+                      <span key={p.id} className="font-fell text-xs text-brand-purple-200 bg-brand-purple-900/30 border border-brand-purple-600/30 px-2 py-0.5 rounded-sm">
+                        {p.name}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {isExp && (
+                  <div className="mt-3 pl-2">
+                    {items.length > 0 && (
+                      <div className="space-y-2 mb-3">
+                        {items.map((item) => (
+                          <QuestItemRow
+                            key={item.id}
+                            item={item}
+                            questId={q.id}
+                            isAdmin={isAdmin}
+                            onToggle={() => toggleItemDone(q.id, item)}
+                            onDelete={() => deleteItem(q.id, item)}
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    {isAdmin && (
+                      <div className="flex gap-2 mb-3">
+                        <input
+                          type="text"
+                          value={newItemLabel[q.id] ?? ''}
+                          onChange={(e) => setNewItemLabel((prev) => ({ ...prev, [q.id]: e.target.value }))}
+                          onKeyDown={(e) => e.key === 'Enter' && addItem(q.id)}
+                          onClick={(e) => e.stopPropagation()}
+                          placeholder="New checklist item…"
+                          className="flex-1 bg-brand-bg border border-brand-border rounded-sm px-2 py-1 text-brand-parchment font-fell text-xs focus:outline-none focus:border-brand-purple-600"
+                        />
+                        <button
+                          onClick={(e) => { e.stopPropagation(); addItem(q.id) }}
+                          className="btn-outline text-[10px] px-2 py-1"
+                        >
+                          Add
+                        </button>
+                      </div>
+                    )}
+
+                    <QuestRewardHero quest={q} players={players} achievement={rewardAchievement} />
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Edit / Create modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center pt-8 px-4 overflow-y-auto">
           <div
@@ -743,7 +835,6 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
                 <span className="font-fell text-sm text-brand-muted">{form.is_secret ? 'GM Only' : 'Visible to players'}</span>
               </div>
 
-              {/* Players */}
               {players.length > 0 && (
                 <div>
                   <label className="section-label block mb-2">Linked Players & XP</label>
@@ -762,7 +853,6 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
                 </div>
               )}
 
-              {/* Currency rewards */}
               <div>
                 <label className="section-label block mb-2">Currency Rewards</label>
                 <div className="grid grid-cols-5 gap-2">
@@ -781,7 +871,6 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
                 </div>
               </div>
 
-              {/* Achievement reward */}
               {achievements.length > 0 && (
                 <div>
                   <label className="section-label block mb-1">Achievement Unlock (optional)</label>
@@ -808,6 +897,17 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
                 <input type="text" value={form.reward_other} onChange={(e) => setForm((f) => ({ ...f, reward_other: e.target.value }))} className={inputCls} placeholder="e.g. Noble title, secret passage key" />
               </div>
 
+              <div>
+                <label className="section-label block mb-1 text-red-400/80">GM Notes (private)</label>
+                <textarea
+                  value={form.gm_notes}
+                  onChange={(e) => setForm((f) => ({ ...f, gm_notes: e.target.value }))}
+                  rows={3}
+                  placeholder="Private notes, only visible to GM…"
+                  className={`${inputCls} resize-y border-red-800/40 focus:border-red-700/60`}
+                />
+              </div>
+
               {err && <p className="text-red-400 text-sm font-fell">{err}</p>}
 
               <div className="flex gap-3 pt-2">
@@ -815,7 +915,7 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
                   {saving ? 'Saving…' : 'Save'}
                 </button>
                 {editingQuest && (
-                  <button onClick={handleDelete} disabled={saving} className="btn-outline text-xs text-red-400 border-red-400/40 hover:bg-red-400/10">
+                  <button onClick={() => handleDeleteQuest(editingQuest)} disabled={saving} className="btn-outline text-xs text-red-400 border-red-400/40 hover:bg-red-400/10">
                     Delete
                   </button>
                 )}
@@ -823,6 +923,14 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
             </div>
           </div>
         </div>
+      )}
+
+      {viewingArticle && (
+        <ArticleModal
+          article={viewingArticle}
+          isAdmin={isAdmin}
+          onClose={() => setViewingArticle(null)}
+        />
       )}
     </div>
   )

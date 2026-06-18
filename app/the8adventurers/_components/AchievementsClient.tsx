@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import type { Achievement, Player } from '@/lib/the8adventurers/types'
-import RichCard from '@/components/the8adventurers/RichCard'
 import Toggle from '@/components/the8adventurers/Toggle'
 import SecretBadge from '@/components/the8adventurers/SecretBadge'
 import MentionTextarea from '@/components/the8adventurers/MentionTextarea'
+import ViewToggle, { type ViewMode } from '@/components/the8adventurers/ViewToggle'
+import CardMenu from '@/components/the8adventurers/CardMenu'
+import ArticleModal, { type ArticleModalData } from '@/components/the8adventurers/ArticleModal'
 
 type Props = {
   initialAchievements: Achievement[]
@@ -20,11 +22,12 @@ type FormState = {
   portrait_url: string
   unlock_text: string
   is_secret: boolean
+  gm_notes: string
   player_ids: string[]
 }
 
 function emptyForm(): FormState {
-  return { title: '', description: '', portrait_url: '', unlock_text: '', is_secret: true, player_ids: [] }
+  return { title: '', description: '', portrait_url: '', unlock_text: '', is_secret: true, gm_notes: '', player_ids: [] }
 }
 
 function achievementToForm(a: Achievement): FormState {
@@ -34,18 +37,9 @@ function achievementToForm(a: Achievement): FormState {
     portrait_url: a.portrait_url ?? '',
     unlock_text: a.unlock_text ?? '',
     is_secret: a.is_secret,
+    gm_notes: a.gm_notes ?? '',
     player_ids: (a.the8_achievement_players ?? []).map((p) => p.player_id),
   }
-}
-
-function AchievementRewardHero({ unlock_text }: { unlock_text: string | null }) {
-  if (!unlock_text) return null
-  return (
-    <div className="mt-3 border-t border-brand-border pt-3">
-      <p className="section-label mb-1">How to Unlock</p>
-      <p className="font-fell text-[#F0E8FF] text-sm">{unlock_text}</p>
-    </div>
-  )
 }
 
 function PlayerRow({
@@ -70,6 +64,11 @@ function PlayerRow({
   )
 }
 
+function getStoredView(): ViewMode {
+  if (typeof window === 'undefined') return 'grid'
+  return (localStorage.getItem('the8_view_achievements') as ViewMode) ?? 'grid'
+}
+
 export default function AchievementsClient({ initialAchievements, players, isAdmin }: Props) {
   const router = useRouter()
   const [achievements, setAchievements] = useState<Achievement[]>(initialAchievements)
@@ -78,6 +77,17 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
   const [form, setForm] = useState<FormState>(emptyForm())
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
+  const [view, setView] = useState<ViewMode>('grid')
+  const [viewingArticle, setViewingArticle] = useState<ArticleModalData | null>(null)
+
+  useEffect(() => {
+    setView(getStoredView())
+  }, [])
+
+  function handleViewChange(v: ViewMode) {
+    setView(v)
+    if (typeof window !== 'undefined') localStorage.setItem('the8_view_achievements', v)
+  }
 
   function openCreate() {
     setEditing(null)
@@ -91,6 +101,10 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
     setForm(achievementToForm(a))
     setErr('')
     setShowModal(true)
+  }
+
+  function openView(a: Achievement) {
+    setViewingArticle({ type: 'achievement', data: a, players })
   }
 
   function togglePlayer(pid: string) {
@@ -112,6 +126,7 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
       portrait_url: form.portrait_url.trim() || null,
       unlock_text: form.unlock_text.trim() || null,
       is_secret: form.is_secret,
+      gm_notes: form.gm_notes.trim() || null,
       player_ids: form.player_ids,
     }
 
@@ -140,22 +155,20 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
     router.refresh()
   }
 
-  async function handleDelete() {
-    if (!editing) return
-    if (!confirm(`Delete achievement "${editing.title}"?`)) return
+  async function handleDeleteAchievement(achievement: Achievement) {
     setSaving(true)
-    const res = await fetch(`/api/the8adventurers/achievements/${editing.id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/the8adventurers/achievements/${achievement.id}`, { method: 'DELETE' })
     setSaving(false)
     if (!res.ok) { setErr('Error deleting'); return }
-    setAchievements((prev) => prev.filter((a) => a.id !== editing.id))
-    setShowModal(false)
+    setAchievements((prev) => prev.filter((a) => a.id !== achievement.id))
+    if (editing?.id === achievement.id) setShowModal(false)
     router.refresh()
   }
 
   const inputCls = 'w-full bg-brand-bg border border-brand-border rounded-sm px-3 py-2 text-brand-parchment font-fell text-sm focus:outline-none focus:border-brand-purple-600'
 
   return (
-    <div className="p-6 md:p-10 max-w-4xl mx-auto">
+    <div className="p-6 md:p-10 max-w-5xl mx-auto">
       {/* Mobile fixed "+" add button */}
       {isAdmin && (
         <button
@@ -168,56 +181,109 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
         </button>
       )}
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <div>
           <p className="section-label">Campaign</p>
           <h1 className="font-cinzel text-brand-parchment text-2xl md:text-3xl font-bold">Achievements</h1>
         </div>
-        {isAdmin && (
-          <button onClick={openCreate} className="hidden md:inline-flex btn-primary text-xs">+ Add Achievement</button>
-        )}
+        <div className="flex items-center gap-2">
+          <ViewToggle value={view} onChange={handleViewChange} />
+          {isAdmin && (
+            <button onClick={openCreate} className="hidden md:inline-flex btn-primary text-xs">+ Add Achievement</button>
+          )}
+        </div>
       </div>
 
       {achievements.length === 0 && (
         <p className="font-fell text-brand-muted italic">No achievements yet.</p>
       )}
 
-      <div className="grid gap-4">
-        {achievements.map((a) => {
-          const awardedPlayers = players.filter((p) =>
-            (a.the8_achievement_players ?? []).some((ap) => ap.player_id === p.id)
-          )
-
-          return (
-            <div
-              key={a.id}
-              className={isAdmin ? 'cursor-pointer' : ''}
-              onClick={isAdmin ? () => openEdit(a) : undefined}
-            >
-              <RichCard portrait_url={a.portrait_url} title={a.title} description={a.description}>
-                <AchievementRewardHero unlock_text={a.unlock_text} />
-
+      {view === 'grid' ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {achievements.map((a) => {
+            const awardedPlayers = players.filter((p) =>
+              (a.the8_achievement_players ?? []).some((ap) => ap.player_id === p.id)
+            )
+            return (
+              <div
+                key={a.id}
+                className="relative dark-card flex flex-col overflow-hidden"
+                onClick={!isAdmin ? () => openView(a) : undefined}
+                style={!isAdmin ? { cursor: 'pointer' } : undefined}
+              >
+                <div className="absolute top-2 right-2 z-10">
+                  <CardMenu
+                    isAdmin={isAdmin}
+                    onView={() => openView(a)}
+                    onEdit={isAdmin ? () => openEdit(a) : undefined}
+                    onDelete={isAdmin ? () => handleDeleteAchievement(a) : undefined}
+                  />
+                </div>
+                {a.portrait_url && (
+                  <img src={a.portrait_url} alt={a.title} className="w-full h-32 object-cover rounded-sm mb-3 border border-brand-border" />
+                )}
+                <h3 className="font-cinzel text-brand-parchment font-semibold text-base leading-tight mb-1 pr-8">
+                  {a.title}
+                </h3>
+                {isAdmin && a.is_secret && <div className="mb-1"><SecretBadge /></div>}
+                {a.description && (
+                  <p className="font-fell text-brand-muted text-sm leading-relaxed line-clamp-2">{a.description}</p>
+                )}
                 {awardedPlayers.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1 mt-2">
                     {awardedPlayers.map((p) => (
-                      <span
-                        key={p.id}
-                        className="font-fell text-xs text-brand-gold-300 bg-brand-gold-400/10 border border-brand-gold-400/30 px-2 py-0.5 rounded-sm"
-                      >
+                      <span key={p.id} className="font-fell text-xs text-brand-gold-300 bg-brand-gold-400/10 border border-brand-gold-400/30 px-1.5 py-0.5 rounded-sm">
                         {p.name}
                       </span>
                     ))}
                   </div>
                 )}
-
-                {isAdmin && a.is_secret && (
-                  <div className="mt-3"><SecretBadge /></div>
+              </div>
+            )
+          })}
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {achievements.map((a) => {
+            const awardedPlayers = players.filter((p) =>
+              (a.the8_achievement_players ?? []).some((ap) => ap.player_id === p.id)
+            )
+            return (
+              <div
+                key={a.id}
+                className="relative dark-card flex items-center gap-3"
+                onClick={!isAdmin ? () => openView(a) : undefined}
+                style={!isAdmin ? { cursor: 'pointer' } : undefined}
+              >
+                {a.portrait_url ? (
+                  <img src={a.portrait_url} alt={a.title} className="w-10 h-10 object-cover rounded-sm border border-brand-border flex-shrink-0" />
+                ) : (
+                  <div className="w-10 h-10 bg-brand-border/20 rounded-sm flex-shrink-0" />
                 )}
-              </RichCard>
-            </div>
-          )
-        })}
-      </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-cinzel text-brand-parchment font-semibold text-sm leading-tight truncate">
+                      {a.title}
+                    </h3>
+                    {isAdmin && a.is_secret && <SecretBadge />}
+                  </div>
+                  {awardedPlayers.length > 0 && (
+                    <p className="font-fell text-brand-muted text-xs truncate mt-0.5">
+                      {awardedPlayers.map((p) => p.name).join(', ')}
+                    </p>
+                  )}
+                </div>
+                <CardMenu
+                  isAdmin={isAdmin}
+                  onView={() => openView(a)}
+                  onEdit={isAdmin ? () => openEdit(a) : undefined}
+                  onDelete={isAdmin ? () => handleDeleteAchievement(a) : undefined}
+                />
+              </div>
+            )
+          })}
+        </div>
+      )}
 
       {showModal && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center pt-16 px-4">
@@ -280,6 +346,17 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
                 </div>
               )}
 
+              <div>
+                <label className="section-label block mb-1 text-red-400/80">GM Notes (private)</label>
+                <textarea
+                  value={form.gm_notes}
+                  onChange={(e) => setForm((f) => ({ ...f, gm_notes: e.target.value }))}
+                  rows={3}
+                  placeholder="Private notes, only visible to GM…"
+                  className={`${inputCls} resize-y border-red-800/40 focus:border-red-700/60`}
+                />
+              </div>
+
               {err && <p className="text-red-400 text-sm font-fell">{err}</p>}
 
               <div className="flex gap-3 pt-2">
@@ -287,7 +364,7 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
                   {saving ? 'Saving…' : 'Save'}
                 </button>
                 {editing && (
-                  <button onClick={handleDelete} disabled={saving} className="btn-outline text-xs text-red-400 border-red-400/40 hover:bg-red-400/10">
+                  <button onClick={() => handleDeleteAchievement(editing)} disabled={saving} className="btn-outline text-xs text-red-400 border-red-400/40 hover:bg-red-400/10">
                     Delete
                   </button>
                 )}
@@ -295,6 +372,14 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
             </div>
           </div>
         </div>
+      )}
+
+      {viewingArticle && (
+        <ArticleModal
+          article={viewingArticle}
+          isAdmin={isAdmin}
+          onClose={() => setViewingArticle(null)}
+        />
       )}
     </div>
   )

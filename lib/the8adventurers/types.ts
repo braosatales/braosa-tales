@@ -7,6 +7,7 @@ export type LoreEntry = {
   description: string | null
   portrait_url: string | null
   is_secret: boolean
+  gm_notes?: string | null
   created_at: string
   updated_at: string
 }
@@ -41,6 +42,7 @@ export type Quest = {
   reward_achievement_id: string | null
   reward_items: string | null
   reward_other: string | null
+  gm_notes?: string | null
   created_at: string
   updated_at: string
   the8_quest_items: QuestItem[]
@@ -85,6 +87,7 @@ export type Achievement = {
   portrait_url: string | null
   unlock_text: string | null
   is_secret: boolean
+  gm_notes?: string | null
   created_at: string
   updated_at: string
   the8_achievement_players?: { player_id: string; awarded_at: string }[]

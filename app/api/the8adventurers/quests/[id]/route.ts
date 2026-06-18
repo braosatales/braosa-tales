@@ -3,6 +3,29 @@ import { NextResponse } from 'next/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
 
+export async function GET(_req: Request, { params }: { params: { id: string } }) {
+  const { userId } = await auth()
+  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+  const supabase = createServerSupabase()
+  const admin = await isAdmin()
+
+  const { data, error } = await supabase
+    .from('the8_quests')
+    .select('*, the8_quest_items(*), the8_quest_players(player_id), the8_quest_exp(player_id, exp_amount)')
+    .eq('id', params.id)
+    .single()
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 404 })
+
+  if (!admin) {
+    if (data.is_secret) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    const { gm_notes: _, ...safe } = data
+    return NextResponse.json(safe)
+  }
+  return NextResponse.json(data)
+}
+
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -20,7 +43,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
-  // Replace player assignments if provided
   if (player_ids !== undefined) {
     await supabase.from('the8_quest_players').delete().eq('quest_id', params.id)
     if (player_ids.length > 0) {
@@ -30,7 +52,6 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
   }
 
-  // Replace EXP map if provided
   if (exp_map !== undefined) {
     await supabase.from('the8_quest_exp').delete().eq('quest_id', params.id)
     const expRows = Object.entries(exp_map as Record<string, number>)

@@ -1,5 +1,6 @@
 import { createServerSupabase } from '@/lib/supabase-server'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
+import type { Quest } from '@/lib/the8adventurers/types'
 import QuestsClient from '../_components/QuestsClient'
 
 export const metadata = { title: 'Quests' }
@@ -17,13 +18,20 @@ export default async function QuestsPage() {
     supabase.from('the8_achievements').select('*').order('created_at', { ascending: false }),
   ])
 
-  const quests = admin
-    ? (questsResult.data ?? [])
-    : (questsResult.data ?? []).filter((q) => !q.is_secret)
+  const rawQuests = questsResult.data ?? []
 
+  const quests: Quest[] = admin
+    ? rawQuests
+    : rawQuests
+        .filter((q) => !q.is_secret)
+        .map(({ gm_notes: _, ...row }) => row)
+
+  const rawAchievements = achievementsResult.data ?? []
   const achievements = admin
-    ? (achievementsResult.data ?? [])
-    : (achievementsResult.data ?? []).filter((a) => !a.is_secret)
+    ? rawAchievements
+    : rawAchievements
+        .filter((a) => !a.is_secret)
+        .map(({ gm_notes: _, ...row }) => row)
 
   return (
     <QuestsClient

@@ -23,6 +23,11 @@ export async function GET(req: Request) {
 
   const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  if (!admin) {
+    const safe = (data ?? []).map(({ gm_notes: _, ...row }) => row)
+    return NextResponse.json(safe)
+  }
   return NextResponse.json(data)
 }
 
@@ -31,12 +36,19 @@ export async function POST(req: Request) {
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!await isAdmin()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { category, title, description, portrait_url, is_secret } = await req.json()
+  const { category, title, description, portrait_url, is_secret, gm_notes } = await req.json()
   const supabase = createServerSupabase()
 
   const { data, error } = await supabase
     .from('the8_lore_entries')
-    .insert({ category, title, description: description || null, portrait_url: portrait_url || null, is_secret: is_secret ?? true })
+    .insert({
+      category,
+      title,
+      description: description || null,
+      portrait_url: portrait_url || null,
+      is_secret: is_secret ?? true,
+      gm_notes: gm_notes || null,
+    })
     .select()
     .single()
 

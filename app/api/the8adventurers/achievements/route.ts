@@ -19,6 +19,11 @@ export async function GET() {
 
   const { data, error } = await query
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  if (!admin) {
+    const safe = (data ?? []).map(({ gm_notes: _, ...row }) => row)
+    return NextResponse.json(safe)
+  }
   return NextResponse.json(data)
 }
 
@@ -27,12 +32,19 @@ export async function POST(req: Request) {
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!await isAdmin()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { title, description, portrait_url, unlock_text, is_secret, player_ids = [] } = await req.json()
+  const { title, description, portrait_url, unlock_text, is_secret, gm_notes, player_ids = [] } = await req.json()
   const supabase = createServerSupabase()
 
   const { data: achievement, error } = await supabase
     .from('the8_achievements')
-    .insert({ title, description: description || null, portrait_url: portrait_url || null, unlock_text: unlock_text || null, is_secret: is_secret ?? true })
+    .insert({
+      title,
+      description: description || null,
+      portrait_url: portrait_url || null,
+      unlock_text: unlock_text || null,
+      is_secret: is_secret ?? true,
+      gm_notes: gm_notes || null,
+    })
     .select()
     .single()
 

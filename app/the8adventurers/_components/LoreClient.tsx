@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import type { LoreEntry, LoreCategory } from '@/lib/the8adventurers/types'
-import RichCard from '@/components/the8adventurers/RichCard'
 import Toggle from '@/components/the8adventurers/Toggle'
 import SecretBadge from '@/components/the8adventurers/SecretBadge'
 import MentionTextarea from '@/components/the8adventurers/MentionTextarea'
+import ViewToggle, { type ViewMode } from '@/components/the8adventurers/ViewToggle'
+import CardMenu from '@/components/the8adventurers/CardMenu'
+import ArticleModal, { type ArticleModalData } from '@/components/the8adventurers/ArticleModal'
 
 type Props = {
   initialEntries: LoreEntry[]
@@ -20,10 +22,11 @@ type FormState = {
   description: string
   portrait_url: string
   is_secret: boolean
+  gm_notes: string
 }
 
 function emptyForm(): FormState {
-  return { title: '', description: '', portrait_url: '', is_secret: true }
+  return { title: '', description: '', portrait_url: '', is_secret: true, gm_notes: '' }
 }
 
 function entryToForm(e: LoreEntry): FormState {
@@ -32,7 +35,13 @@ function entryToForm(e: LoreEntry): FormState {
     description: e.description ?? '',
     portrait_url: e.portrait_url ?? '',
     is_secret: e.is_secret,
+    gm_notes: e.gm_notes ?? '',
   }
+}
+
+function getStoredView(): ViewMode {
+  if (typeof window === 'undefined') return 'grid'
+  return (localStorage.getItem('the8_view_lore') as ViewMode) ?? 'grid'
 }
 
 export default function LoreClient({ initialEntries, category, label, isAdmin }: Props) {
@@ -43,6 +52,17 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
   const [form, setForm] = useState<FormState>(emptyForm())
   const [saving, setSaving] = useState(false)
   const [err, setErr] = useState('')
+  const [view, setView] = useState<ViewMode>('grid')
+  const [viewingArticle, setViewingArticle] = useState<ArticleModalData | null>(null)
+
+  useEffect(() => {
+    setView(getStoredView())
+  }, [])
+
+  function handleViewChange(v: ViewMode) {
+    setView(v)
+    if (typeof window !== 'undefined') localStorage.setItem('the8_view_lore', v)
+  }
 
   function openCreate() {
     setEditing(null)
@@ -58,6 +78,10 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
     setShowModal(true)
   }
 
+  function openView(entry: LoreEntry) {
+    setViewingArticle({ type: 'lore', data: entry })
+  }
+
   async function handleSave() {
     if (!form.title.trim()) { setErr('Title is required'); return }
     setSaving(true); setErr('')
@@ -68,6 +92,7 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
       description: form.description.trim() || null,
       portrait_url: form.portrait_url.trim() || null,
       is_secret: form.is_secret,
+      gm_notes: form.gm_notes.trim() || null,
     }
 
     const res = editing
@@ -95,22 +120,20 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
     router.refresh()
   }
 
-  async function handleDelete() {
-    if (!editing) return
-    if (!confirm(`Delete "${editing.title}"?`)) return
+  async function handleDeleteEntry(entry: LoreEntry) {
     setSaving(true)
-    const res = await fetch(`/api/the8adventurers/lore/${editing.id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/the8adventurers/lore/${entry.id}`, { method: 'DELETE' })
     setSaving(false)
     if (!res.ok) { setErr('Error deleting'); return }
-    setEntries((prev) => prev.filter((e) => e.id !== editing.id))
-    setShowModal(false)
+    setEntries((prev) => prev.filter((e) => e.id !== entry.id))
+    if (editing?.id === entry.id) setShowModal(false)
     router.refresh()
   }
 
   const inputCls = 'w-full bg-brand-bg border border-brand-border rounded-sm px-3 py-2 text-brand-parchment font-fell text-sm focus:outline-none focus:border-brand-purple-600'
 
   return (
-    <div className="p-6 md:p-10 max-w-4xl mx-auto">
+    <div className="p-6 md:p-10 max-w-5xl mx-auto">
       {/* Mobile fixed "+" add button */}
       {isAdmin && (
         <button
@@ -123,42 +146,107 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
         </button>
       )}
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <div>
           <p className="section-label">Lore</p>
           <h1 className="font-cinzel text-brand-parchment text-2xl md:text-3xl font-bold">{label}</h1>
         </div>
-        {isAdmin && (
-          <button onClick={openCreate} className="hidden md:inline-flex btn-primary text-xs">+ Add Entry</button>
-        )}
+        <div className="flex items-center gap-2">
+          <ViewToggle value={view} onChange={handleViewChange} />
+          {isAdmin && (
+            <button onClick={openCreate} className="hidden md:inline-flex btn-primary text-xs">+ Add Entry</button>
+          )}
+        </div>
       </div>
 
       {entries.length === 0 && (
         <p className="font-fell text-brand-muted italic">No entries yet.</p>
       )}
 
-      <div className="grid gap-4">
-        {entries.map((entry) => (
-          <div
-            key={entry.id}
-            className={isAdmin ? 'cursor-pointer' : ''}
-            onClick={isAdmin ? () => openEdit(entry) : undefined}
-          >
-            <RichCard portrait_url={entry.portrait_url} title={entry.title} description={entry.description}>
-              {isAdmin && entry.is_secret && (
-                <div className="mt-3">
-                  <SecretBadge />
-                </div>
+      {view === 'grid' ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {entries.map((entry) => (
+            <div
+              key={entry.id}
+              className="relative dark-card flex flex-col overflow-hidden"
+              onClick={!isAdmin ? () => openView(entry) : undefined}
+              style={!isAdmin ? { cursor: 'pointer' } : undefined}
+            >
+              <div className="absolute top-2 right-2 z-10">
+                <CardMenu
+                  isAdmin={isAdmin}
+                  onView={() => openView(entry)}
+                  onEdit={isAdmin ? () => openEdit(entry) : undefined}
+                  onDelete={isAdmin ? () => handleDeleteEntry(entry) : undefined}
+                />
+              </div>
+              {entry.portrait_url && (
+                <img
+                  src={entry.portrait_url}
+                  alt={entry.title}
+                  className="w-full h-32 object-cover rounded-sm mb-3 border border-brand-border"
+                />
               )}
-            </RichCard>
-          </div>
-        ))}
-      </div>
+              <h3 className="font-cinzel text-brand-parchment font-semibold text-base leading-tight mb-1 pr-8">
+                {entry.title}
+              </h3>
+              {isAdmin && entry.is_secret && <div className="mb-1"><SecretBadge /></div>}
+              {entry.description && (
+                <p className="font-fell text-brand-muted text-sm leading-relaxed line-clamp-2">
+                  {entry.description}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {entries.map((entry) => (
+            <div
+              key={entry.id}
+              className="relative dark-card flex items-center gap-3"
+              onClick={!isAdmin ? () => openView(entry) : undefined}
+              style={!isAdmin ? { cursor: 'pointer' } : undefined}
+            >
+              {entry.portrait_url ? (
+                <img
+                  src={entry.portrait_url}
+                  alt={entry.title}
+                  className="w-10 h-10 object-cover rounded-sm border border-brand-border flex-shrink-0"
+                />
+              ) : (
+                <div className="w-10 h-10 bg-brand-border/20 rounded-sm flex-shrink-0" />
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <h3 className="font-cinzel text-brand-parchment font-semibold text-sm leading-tight truncate">
+                    {entry.title}
+                  </h3>
+                  <span className="text-[10px] font-cinzel tracking-widest uppercase text-brand-purple-400 bg-brand-purple-600/10 border border-brand-purple-600/30 px-1.5 py-0.5 rounded-sm flex-shrink-0">
+                    {entry.category}
+                  </span>
+                  {isAdmin && entry.is_secret && <SecretBadge />}
+                </div>
+                {entry.description && (
+                  <p className="font-fell text-brand-muted text-xs truncate mt-0.5">{entry.description}</p>
+                )}
+              </div>
+              <CardMenu
+                isAdmin={isAdmin}
+                onView={() => openView(entry)}
+                onEdit={isAdmin ? () => openEdit(entry) : undefined}
+                onDelete={isAdmin ? () => handleDeleteEntry(entry) : undefined}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
+      {/* Edit / Create modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center pt-16 px-4">
           <div
-            className="bg-brand-card border border-brand-border rounded-sm p-6 w-full max-w-lg max-h-[80vh] overflow-y-auto"
+            className="bg-brand-card border border-brand-border rounded-sm p-6 w-full max-w-lg max-h-[85vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
@@ -218,6 +306,17 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
                 </span>
               </div>
 
+              <div>
+                <label className="section-label block mb-1 text-red-400/80">GM Notes (private)</label>
+                <textarea
+                  value={form.gm_notes}
+                  onChange={(e) => setForm((f) => ({ ...f, gm_notes: e.target.value }))}
+                  rows={3}
+                  placeholder="Private notes, only visible to GM…"
+                  className={`${inputCls} resize-y border-red-800/40 focus:border-red-700/60`}
+                />
+              </div>
+
               {err && <p className="text-red-400 text-sm font-fell">{err}</p>}
 
               <div className="flex gap-3 pt-2">
@@ -226,7 +325,7 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
                 </button>
                 {editing && (
                   <button
-                    onClick={handleDelete}
+                    onClick={() => handleDeleteEntry(editing)}
                     disabled={saving}
                     className="btn-outline text-xs text-red-400 border-red-400/40 hover:bg-red-400/10"
                   >
@@ -237,6 +336,14 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
             </div>
           </div>
         </div>
+      )}
+
+      {viewingArticle && (
+        <ArticleModal
+          article={viewingArticle}
+          isAdmin={isAdmin}
+          onClose={() => setViewingArticle(null)}
+        />
       )}
     </div>
   )

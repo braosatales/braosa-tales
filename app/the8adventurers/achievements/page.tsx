@@ -1,5 +1,6 @@
 import { createServerSupabase } from '@/lib/supabase-server'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
+import type { Achievement } from '@/lib/the8adventurers/types'
 import AchievementsClient from '../_components/AchievementsClient'
 
 export const metadata = { title: 'Achievements' }
@@ -16,9 +17,13 @@ export default async function AchievementsPage() {
     supabase.from('the8_players').select('*').order('name', { ascending: true }),
   ])
 
-  const achievements = admin
-    ? (achievementsResult.data ?? [])
-    : (achievementsResult.data ?? []).filter((a) => !a.is_secret)
+  const rawAchievements = achievementsResult.data ?? []
+
+  const achievements: Achievement[] = admin
+    ? rawAchievements
+    : rawAchievements
+        .filter((a) => !a.is_secret)
+        .map(({ gm_notes: _, ...row }) => row)
 
   return (
     <AchievementsClient
