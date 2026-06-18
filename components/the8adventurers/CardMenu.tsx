@@ -4,12 +4,12 @@ import { useState, useEffect, useRef } from 'react'
 
 type Props = {
   isAdmin: boolean
-  onView: () => void
   onEdit?: () => void
   onDelete?: () => void
+  onToggleSecret?: () => void
 }
 
-export default function CardMenu({ isAdmin, onView, onEdit, onDelete }: Props) {
+export default function CardMenu({ isAdmin, onEdit, onDelete, onToggleSecret }: Props) {
   const [open, setOpen] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -25,6 +25,8 @@ export default function CardMenu({ isAdmin, onView, onEdit, onDelete }: Props) {
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [open])
+
+  if (!isAdmin) return null
 
   return (
     <div className="relative" ref={ref}>
@@ -43,33 +45,35 @@ export default function CardMenu({ isAdmin, onView, onEdit, onDelete }: Props) {
 
       {open && (
         <div className="absolute right-0 top-8 z-40 bg-brand-card border border-brand-border rounded-sm shadow-lg min-w-[130px]">
-          <button
-            onClick={(e) => { e.stopPropagation(); setOpen(false); onView() }}
-            className="w-full text-left px-3 py-2 text-sm font-fell text-brand-parchment hover:bg-brand-purple-600/20 transition-colors"
-          >
-            View
-          </button>
-
-          {isAdmin && onEdit && (
+          {onEdit && (
             <button
               onClick={(e) => { e.stopPropagation(); setOpen(false); onEdit() }}
-              className="w-full text-left px-3 py-2 text-sm font-fell text-brand-parchment hover:bg-brand-purple-600/20 transition-colors border-t border-brand-border/40"
+              className="w-full text-left px-3 py-2 text-sm font-fell text-brand-parchment hover:bg-brand-purple-600/20 transition-colors"
             >
               Edit
             </button>
           )}
 
-          {isAdmin && onDelete && !confirmDelete && (
+          {onToggleSecret && (
+            <button
+              onClick={(e) => { e.stopPropagation(); setOpen(false); onToggleSecret() }}
+              className={`w-full text-left px-3 py-2 text-sm font-fell text-brand-parchment hover:bg-brand-purple-600/20 transition-colors ${onEdit ? 'border-t border-brand-border/40' : ''}`}
+            >
+              Toggle Secret
+            </button>
+          )}
+
+          {onDelete && !confirmDelete && (
             <button
               onClick={(e) => { e.stopPropagation(); setConfirmDelete(true) }}
-              className="w-full text-left px-3 py-2 text-sm font-fell text-red-400 hover:bg-red-400/10 transition-colors border-t border-brand-border/40"
+              className={`w-full text-left px-3 py-2 text-sm font-fell text-red-400 hover:bg-red-400/10 transition-colors ${(onEdit || onToggleSecret) ? 'border-t border-brand-border/40' : ''}`}
             >
               Delete
             </button>
           )}
 
-          {isAdmin && onDelete && confirmDelete && (
-            <div className="border-t border-brand-border/40 p-2 space-y-1.5">
+          {onDelete && confirmDelete && (
+            <div className={`p-2 space-y-1.5 ${(onEdit || onToggleSecret) ? 'border-t border-brand-border/40' : ''}`}>
               <p className="text-[10px] font-fell text-brand-muted px-1">Are you sure?</p>
               <div className="flex gap-1.5">
                 <button

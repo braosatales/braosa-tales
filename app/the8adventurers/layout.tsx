@@ -1,7 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
-import { createServerSupabase } from '@/lib/supabase-server'
 import Sidebar from './_components/Sidebar'
 
 export const metadata = {
@@ -13,16 +12,10 @@ export default async function The8AdventurersLayout({ children }: { children: Re
   if (!userId) redirect('/sign-in')
 
   const admin = await isAdmin()
-  const supabase = createServerSupabase()
-
-  const { data: players } = await supabase
-    .from('the8_players')
-    .select('id, name')
-    .order('name', { ascending: true })
 
   return (
     <div className="flex h-screen overflow-hidden bg-brand-bg">
-      <Sidebar isAdmin={admin} players={players ?? []} />
+      <Sidebar isAdmin={admin} />
       <main className="flex-1 overflow-y-auto min-w-0">
         {children}
       </main>

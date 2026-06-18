@@ -48,6 +48,18 @@ export default function PlayersClient({ initialPlayers, isAdmin }: Props) {
 
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto">
+      {/* Mobile fixed "+" add button — matches Lore/Quests/Achievements pattern */}
+      {isAdmin && (
+        <a
+          href="/the8adventurers/players/new"
+          className="md:hidden fixed top-4 right-14 z-40 w-9 h-9 bg-brand-purple-600 hover:bg-brand-purple-400 rounded-sm text-brand-parchment flex items-center justify-center transition-colors text-lg font-bold"
+          aria-label="Add Player"
+          title="Add Player"
+        >
+          +
+        </a>
+      )}
+
       <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
         <div>
           <p className="section-label">Campaign</p>
@@ -80,12 +92,11 @@ export default function PlayersClient({ initialPlayers, isAdmin }: Props) {
               <div
                 key={player.id}
                 className="relative dark-card flex flex-col overflow-hidden cursor-pointer"
-                onClick={!isAdmin ? () => openView(player) : undefined}
+                onClick={() => openView(player)}
               >
                 <div className="absolute top-2 right-2 z-10">
                   <CardMenu
                     isAdmin={isAdmin}
-                    onView={() => openView(player)}
                     onEdit={isAdmin ? () => router.push(`/the8adventurers/players/${player.id}`) : undefined}
                     onDelete={isAdmin ? () => handleDelete(player) : undefined}
                   />
@@ -124,47 +135,41 @@ export default function PlayersClient({ initialPlayers, isAdmin }: Props) {
           })}
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {players.map((player) => {
             const url = portrait(player)
             return (
               <div
                 key={player.id}
-                className="relative dark-card flex items-center gap-3 cursor-pointer"
-                onClick={!isAdmin ? () => openView(player) : undefined}
+                className="relative flex items-center gap-2 bg-brand-card border border-brand-border rounded-sm px-3 py-2 hover:border-brand-purple-600/50 transition-colors duration-200 cursor-pointer"
+                onClick={() => openView(player)}
               >
                 {url ? (
-                  <img src={url} alt={player.name} className="w-10 h-10 object-cover rounded-sm border border-brand-border flex-shrink-0" />
+                  <img src={url} alt={player.name} className="w-8 h-8 object-cover rounded-sm border border-brand-border flex-shrink-0" />
                 ) : (
-                  <div className="w-10 h-10 bg-brand-border/20 rounded-sm flex-shrink-0 flex items-center justify-center">
-                    <svg width="16" height="16" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-brand-border">
+                  <div className="w-8 h-8 bg-brand-border/20 rounded-sm flex-shrink-0 flex items-center justify-center">
+                    <svg width="14" height="14" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-brand-border">
                       <circle cx="16" cy="12" r="6" /><path d="M4 28c0-6.627 5.373-12 12-12s12 5.373 12 12" />
                     </svg>
                   </div>
                 )}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-cinzel text-brand-parchment font-semibold text-sm leading-tight truncate">
-                      {player.name}
-                    </h3>
-                    {('level' in player) && player.level !== null && (
-                      <span className="text-[10px] font-cinzel tracking-widest uppercase text-brand-gold-300 bg-brand-gold-400/10 border border-brand-gold-400/30 px-1.5 py-0.5 rounded-sm flex-shrink-0">
-                        Lvl {player.level}
-                      </span>
-                    )}
-                    {('class' in player) && player.class && (
-                      <span className="text-[10px] font-cinzel tracking-widest uppercase text-brand-purple-200 bg-brand-purple-600/10 border border-brand-purple-600/30 px-1.5 py-0.5 rounded-sm flex-shrink-0 hidden sm:inline">
-                        {player.class}
-                      </span>
-                    )}
-                  </div>
-                  {('race' in player) && player.race && (
-                    <p className="font-fell text-brand-muted text-xs truncate mt-0.5">{player.race}</p>
+                <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
+                  <h3 className="font-cinzel text-brand-parchment font-semibold text-sm leading-tight truncate">
+                    {player.name}
+                  </h3>
+                  {('level' in player) && player.level !== null && (
+                    <span className="text-[10px] font-cinzel tracking-widest uppercase text-brand-gold-300 bg-brand-gold-400/10 border border-brand-gold-400/30 px-1.5 py-0.5 rounded-sm flex-shrink-0">
+                      Lvl {player.level}
+                    </span>
+                  )}
+                  {('class' in player) && player.class && (
+                    <span className="text-[10px] font-cinzel tracking-widest uppercase text-brand-purple-200 bg-brand-purple-600/10 border border-brand-purple-600/30 px-1.5 py-0.5 rounded-sm flex-shrink-0 hidden sm:inline">
+                      {player.class}
+                    </span>
                   )}
                 </div>
                 <CardMenu
                   isAdmin={isAdmin}
-                  onView={() => openView(player)}
                   onEdit={isAdmin ? () => router.push(`/the8adventurers/players/${player.id}`) : undefined}
                   onDelete={isAdmin ? () => handleDelete(player) : undefined}
                 />

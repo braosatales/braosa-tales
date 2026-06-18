@@ -116,6 +116,17 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
     }))
   }
 
+  async function handleToggleSecret(a: Achievement) {
+    const newSecret = !a.is_secret
+    setAchievements((prev) => prev.map((x) => x.id === a.id ? { ...x, is_secret: newSecret } : x))
+    await fetch(`/api/the8adventurers/achievements/${a.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_secret: newSecret }),
+    })
+    router.refresh()
+  }
+
   async function handleSave() {
     if (!form.title.trim()) { setErr('Title is required'); return }
     setSaving(true); setErr('')
@@ -207,15 +218,14 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
             return (
               <div
                 key={a.id}
-                className="relative dark-card flex flex-col overflow-hidden"
-                onClick={!isAdmin ? () => openView(a) : undefined}
-                style={!isAdmin ? { cursor: 'pointer' } : undefined}
+                className="relative dark-card flex flex-col overflow-hidden cursor-pointer"
+                onClick={() => openView(a)}
               >
                 <div className="absolute top-2 right-2 z-10">
                   <CardMenu
                     isAdmin={isAdmin}
-                    onView={() => openView(a)}
                     onEdit={isAdmin ? () => openEdit(a) : undefined}
+                    onToggleSecret={isAdmin ? () => handleToggleSecret(a) : undefined}
                     onDelete={isAdmin ? () => handleDeleteAchievement(a) : undefined}
                   />
                 </div>
@@ -243,7 +253,7 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
           })}
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {achievements.map((a) => {
             const awardedPlayers = players.filter((p) =>
               (a.the8_achievement_players ?? []).some((ap) => ap.player_id === p.id)
@@ -251,32 +261,29 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
             return (
               <div
                 key={a.id}
-                className="relative dark-card flex items-center gap-3"
-                onClick={!isAdmin ? () => openView(a) : undefined}
-                style={!isAdmin ? { cursor: 'pointer' } : undefined}
+                className="relative flex items-center gap-2 bg-brand-card border border-brand-border rounded-sm px-3 py-2 hover:border-brand-purple-600/50 transition-colors duration-200 cursor-pointer"
+                onClick={() => openView(a)}
               >
                 {a.portrait_url ? (
-                  <img src={a.portrait_url} alt={a.title} className="w-10 h-10 object-cover rounded-sm border border-brand-border flex-shrink-0" />
+                  <img src={a.portrait_url} alt={a.title} className="w-8 h-8 object-cover rounded-sm border border-brand-border flex-shrink-0" />
                 ) : (
-                  <div className="w-10 h-10 bg-brand-border/20 rounded-sm flex-shrink-0" />
+                  <div className="w-8 h-8 bg-brand-border/20 rounded-sm flex-shrink-0" />
                 )}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h3 className="font-cinzel text-brand-parchment font-semibold text-sm leading-tight truncate">
-                      {a.title}
-                    </h3>
-                    {isAdmin && a.is_secret && <SecretBadge />}
-                  </div>
+                <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
+                  <h3 className="font-cinzel text-brand-parchment font-semibold text-sm leading-tight truncate">
+                    {a.title}
+                  </h3>
+                  {isAdmin && a.is_secret && <SecretBadge />}
                   {awardedPlayers.length > 0 && (
-                    <p className="font-fell text-brand-muted text-xs truncate mt-0.5">
+                    <span className="font-fell text-brand-muted text-xs truncate">
                       {awardedPlayers.map((p) => p.name).join(', ')}
-                    </p>
+                    </span>
                   )}
                 </div>
                 <CardMenu
                   isAdmin={isAdmin}
-                  onView={() => openView(a)}
                   onEdit={isAdmin ? () => openEdit(a) : undefined}
+                  onToggleSecret={isAdmin ? () => handleToggleSecret(a) : undefined}
                   onDelete={isAdmin ? () => handleDeleteAchievement(a) : undefined}
                 />
               </div>

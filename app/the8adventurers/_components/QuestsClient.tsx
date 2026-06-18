@@ -406,6 +406,17 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
     })
   }
 
+  async function handleToggleSecret(q: Quest) {
+    const newSecret = !q.is_secret
+    setQuests((prev) => prev.map((x) => x.id === q.id ? { ...x, is_secret: newSecret } : x))
+    await fetch(`/api/the8adventurers/quests/${q.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_secret: newSecret }),
+    })
+    router.refresh()
+  }
+
   async function handleSave() {
     if (!form.title.trim()) { setErr('Title is required'); return }
     setSaving(true); setErr('')
@@ -626,15 +637,14 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
             return (
               <div
                 key={q.id}
-                className="relative dark-card flex flex-col overflow-hidden"
-                onClick={!isAdmin ? () => openView(q) : undefined}
-                style={!isAdmin ? { cursor: 'pointer' } : undefined}
+                className="relative dark-card flex flex-col overflow-hidden cursor-pointer"
+                onClick={() => openView(q)}
               >
                 <div className="absolute top-2 right-2 z-10">
                   <CardMenu
                     isAdmin={isAdmin}
-                    onView={() => openView(q)}
                     onEdit={isAdmin ? () => openEdit(q) : undefined}
+                    onToggleSecret={isAdmin ? () => handleToggleSecret(q) : undefined}
                     onDelete={isAdmin ? () => handleDeleteQuest(q) : undefined}
                   />
                 </div>
@@ -665,72 +675,49 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
           })}
         </div>
       ) : (
-        /* List view */
-        <div className="space-y-4">
+        /* List view — compact rows, ▶ expands checklist inline, card click = view modal */
+        <div className="space-y-1.5">
           {displayedQuests.map((q) => {
             const isExp = expanded.has(q.id)
             const items = [...(q.the8_quest_items ?? [])].sort((a, b) => a.sort_order - b.sort_order)
-            const linkedPlayers = players.filter((p) =>
-              (q.the8_quest_players ?? []).some((qp) => qp.player_id === p.id)
-            )
             const rewardAchievement = achievements.find((a) => a.id === q.reward_achievement_id)
 
             return (
-              <div key={q.id} className="dark-card">
-                <div className="flex items-start gap-3 mb-2">
+              <div
+                key={q.id}
+                className="relative bg-brand-card border border-brand-border rounded-sm px-3 py-2 hover:border-brand-purple-600/50 transition-colors duration-200 cursor-pointer"
+                onClick={() => openView(q)}
+              >
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); toggleExpand(q.id) }}
+                    className="flex-shrink-0 w-5 h-5 flex items-center justify-center text-brand-muted hover:text-brand-parchment transition-colors"
+                    aria-label={isExp ? 'Collapse' : 'Expand'}
+                  >
+                    <span className={`text-[10px] transition-transform duration-150 ${isExp ? 'rotate-90' : 'rotate-0'}`}>▶</span>
+                  </button>
                   {q.portrait_url && (
                     <img
                       src={q.portrait_url}
                       alt={q.title}
-                      className="w-14 h-14 object-cover rounded-sm border border-brand-border flex-shrink-0"
+                      className="w-8 h-8 object-cover rounded-sm border border-brand-border flex-shrink-0"
                     />
                   )}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <button
-                        onClick={() => toggleExpand(q.id)}
-                        className="flex items-center gap-2 text-left"
-                      >
-                        <span className={`text-[10px] text-brand-muted transition-transform duration-150 ${isExp ? 'rotate-90' : ''}`}>▶</span>
-                        <h3 className="font-cinzel font-semibold text-base leading-tight text-brand-parchment">
-                          {q.title}
-                        </h3>
-                      </button>
-                      <StatusPill
-                        status={q.status}
-                        isAdmin={isAdmin}
-                        onChange={(s) => changeStatus(q, s)}
-                      />
-                      {isAdmin && q.is_secret && <SecretBadge />}
-                    </div>
-                  </div>
-
+                  <h3 className="font-cinzel font-semibold text-sm leading-tight text-brand-parchment truncate flex-1 min-w-0">
+                    {q.title}
+                  </h3>
+                  <StatusPill status={q.status} isAdmin={isAdmin} onChange={(s) => changeStatus(q, s)} />
+                  {isAdmin && q.is_secret && <SecretBadge />}
                   <CardMenu
                     isAdmin={isAdmin}
-                    onView={() => openView(q)}
                     onEdit={isAdmin ? () => openEdit(q) : undefined}
+                    onToggleSecret={isAdmin ? () => handleToggleSecret(q) : undefined}
                     onDelete={isAdmin ? () => handleDeleteQuest(q) : undefined}
                   />
                 </div>
 
-                {q.description && (
-                  <p className="font-fell text-brand-muted text-sm mb-2 leading-relaxed line-clamp-1">
-                    {q.description}
-                  </p>
-                )}
-
-                {linkedPlayers.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {linkedPlayers.map((p) => (
-                      <span key={p.id} className="font-fell text-xs text-brand-purple-200 bg-brand-purple-900/30 border border-brand-purple-600/30 px-2 py-0.5 rounded-sm">
-                        {p.name}
-                      </span>
-                    ))}
-                  </div>
-                )}
-
                 {isExp && (
-                  <div className="mt-3 pl-2">
+                  <div className="mt-2 pl-5" onClick={(e) => e.stopPropagation()}>
                     {items.length > 0 && (
                       <div className="space-y-2 mb-3">
                         {items.map((item) => (

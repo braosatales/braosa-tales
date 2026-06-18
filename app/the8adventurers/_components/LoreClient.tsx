@@ -82,6 +82,17 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
     setViewingArticle({ type: 'lore', data: entry })
   }
 
+  async function handleToggleSecret(entry: LoreEntry) {
+    const newSecret = !entry.is_secret
+    setEntries((prev) => prev.map((e) => e.id === entry.id ? { ...e, is_secret: newSecret } : e))
+    await fetch(`/api/the8adventurers/lore/${entry.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ is_secret: newSecret }),
+    })
+    router.refresh()
+  }
+
   async function handleSave() {
     if (!form.title.trim()) { setErr('Title is required'); return }
     setSaving(true); setErr('')
@@ -168,15 +179,14 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="relative dark-card flex flex-col overflow-hidden"
-              onClick={!isAdmin ? () => openView(entry) : undefined}
-              style={!isAdmin ? { cursor: 'pointer' } : undefined}
+              className="relative dark-card flex flex-col overflow-hidden cursor-pointer"
+              onClick={() => openView(entry)}
             >
               <div className="absolute top-2 right-2 z-10">
                 <CardMenu
                   isAdmin={isAdmin}
-                  onView={() => openView(entry)}
                   onEdit={isAdmin ? () => openEdit(entry) : undefined}
+                  onToggleSecret={isAdmin ? () => handleToggleSecret(entry) : undefined}
                   onDelete={isAdmin ? () => handleDeleteEntry(entry) : undefined}
                 />
               </div>
@@ -200,41 +210,35 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
           ))}
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="relative dark-card flex items-center gap-3"
-              onClick={!isAdmin ? () => openView(entry) : undefined}
-              style={!isAdmin ? { cursor: 'pointer' } : undefined}
+              className="relative flex items-center gap-2 bg-brand-card border border-brand-border rounded-sm px-3 py-2 hover:border-brand-purple-600/50 transition-colors duration-200 cursor-pointer"
+              onClick={() => openView(entry)}
             >
               {entry.portrait_url ? (
                 <img
                   src={entry.portrait_url}
                   alt={entry.title}
-                  className="w-10 h-10 object-cover rounded-sm border border-brand-border flex-shrink-0"
+                  className="w-8 h-8 object-cover rounded-sm border border-brand-border flex-shrink-0"
                 />
               ) : (
-                <div className="w-10 h-10 bg-brand-border/20 rounded-sm flex-shrink-0" />
+                <div className="w-8 h-8 bg-brand-border/20 rounded-sm flex-shrink-0" />
               )}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-cinzel text-brand-parchment font-semibold text-sm leading-tight truncate">
-                    {entry.title}
-                  </h3>
-                  <span className="text-[10px] font-cinzel tracking-widest uppercase text-brand-purple-400 bg-brand-purple-600/10 border border-brand-purple-600/30 px-1.5 py-0.5 rounded-sm flex-shrink-0">
-                    {entry.category}
-                  </span>
-                  {isAdmin && entry.is_secret && <SecretBadge />}
-                </div>
-                {entry.description && (
-                  <p className="font-fell text-brand-muted text-xs truncate mt-0.5">{entry.description}</p>
-                )}
+              <div className="flex-1 min-w-0 flex items-center gap-2 flex-wrap">
+                <h3 className="font-cinzel text-brand-parchment font-semibold text-sm leading-tight truncate">
+                  {entry.title}
+                </h3>
+                <span className="text-[10px] font-cinzel tracking-widest uppercase text-brand-purple-400 bg-brand-purple-600/10 border border-brand-purple-600/30 px-1.5 py-0.5 rounded-sm flex-shrink-0">
+                  {entry.category}
+                </span>
+                {isAdmin && entry.is_secret && <SecretBadge />}
               </div>
               <CardMenu
                 isAdmin={isAdmin}
-                onView={() => openView(entry)}
                 onEdit={isAdmin ? () => openEdit(entry) : undefined}
+                onToggleSecret={isAdmin ? () => handleToggleSecret(entry) : undefined}
                 onDelete={isAdmin ? () => handleDeleteEntry(entry) : undefined}
               />
             </div>

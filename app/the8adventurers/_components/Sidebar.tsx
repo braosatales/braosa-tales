@@ -6,8 +6,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import ArticleModal, { type ArticleModalData } from '@/components/the8adventurers/ArticleModal'
 import type { VisiblePlayerData } from '@/lib/the8adventurers/getVisiblePlayerFields'
 
-type PlayerRef = { id: string; name: string }
-type Props = { isAdmin: boolean; players: PlayerRef[] }
+type Props = { isAdmin: boolean }
 
 type SearchResult = {
   id: string
@@ -92,15 +91,13 @@ function ExpandableSection({
   )
 }
 
-export default function Sidebar({ isAdmin, players }: Props) {
+export default function Sidebar({ isAdmin }: Props) {
   const pathname = usePathname()
   const isOnLore = pathname.startsWith('/the8adventurers/lore')
   const isOnSessions = pathname.startsWith('/the8adventurers/sessions')
-  const isOnPlayers = pathname.startsWith('/the8adventurers/players')
 
   const [loreOpen, setLoreOpen] = useState(isOnLore)
   const [sessionsOpen, setSessionsOpen] = useState(isOnSessions)
-  const [playersOpen, setPlayersOpen] = useState(isOnPlayers)
   const [mobileOpen, setMobileOpen] = useState(false)
 
   // Search state
@@ -114,8 +111,7 @@ export default function Sidebar({ isAdmin, players }: Props) {
   useEffect(() => {
     if (isOnLore) setLoreOpen(true)
     if (isOnSessions) setSessionsOpen(true)
-    if (isOnPlayers) setPlayersOpen(true)
-  }, [isOnLore, isOnSessions, isOnPlayers])
+  }, [isOnLore, isOnSessions])
 
   useEffect(() => {
     setMobileOpen(false)
@@ -213,17 +209,6 @@ export default function Sidebar({ isAdmin, players }: Props) {
       >
         {mobileOpen ? '✕' : '☰'}
       </button>
-
-      {isAdmin && isOnPlayers && !pathname.includes('/new') && (
-        <Link
-          href="/the8adventurers/players/new"
-          className="md:hidden fixed top-4 right-14 z-40 w-9 h-9 bg-brand-purple-600 hover:bg-brand-purple-400 rounded-sm text-brand-parchment flex items-center justify-center transition-colors text-lg font-bold"
-          aria-label="Add Player"
-          title="Add Player"
-        >
-          +
-        </Link>
-      )}
 
       {mobileOpen && (
         <div
@@ -326,35 +311,11 @@ export default function Sidebar({ isAdmin, players }: Props) {
             ))}
           </ExpandableSection>
 
-          {/* Players */}
-          <ExpandableSection label="Players" open={playersOpen} onToggle={() => setPlayersOpen((v) => !v)}>
-            <NavLink
-              href="/the8adventurers/players"
-              label="All Players"
-              active={pathname === '/the8adventurers/players'}
-            />
-            {isAdmin && (
-              <Link
-                href="/the8adventurers/players/new"
-                className="flex items-center gap-1.5 pl-6 py-1.5 text-sm font-fell text-brand-gold-400 hover:text-brand-gold-300 transition-colors"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <span className="text-base leading-none">+</span> Add Player
-              </Link>
-            )}
-            {players.map((p) => (
-              <NavLink
-                key={p.id}
-                href={`/the8adventurers/players/${p.id}`}
-                label={p.name}
-                active={pathname === `/the8adventurers/players/${p.id}`}
-              />
-            ))}
-            {players.length === 0 && (
-              <p className="pl-6 py-1.5 text-xs font-fell text-brand-muted italic">No players yet</p>
-            )}
-          </ExpandableSection>
-
+          <TopLink
+            href="/the8adventurers/players"
+            label="Players"
+            active={pathname.startsWith('/the8adventurers/players')}
+          />
           <TopLink
             href="/the8adventurers/quests"
             label="Quests"
