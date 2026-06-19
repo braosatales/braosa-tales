@@ -214,7 +214,7 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
           {entries.map((entry) => (
             <div
               key={entry.id}
-              className="relative flex items-center gap-2 bg-brand-card border border-brand-border rounded-sm px-3 py-2 hover:border-brand-purple-600/50 transition-colors duration-200 cursor-pointer"
+              className="group relative flex items-center gap-2 bg-brand-card border border-brand-border rounded-sm px-3 py-2 hover:border-brand-purple-600/50 transition-colors duration-200 cursor-pointer"
               onClick={() => openView(entry)}
             >
               {entry.portrait_url ? (
@@ -236,6 +236,8 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
                 {isAdmin && entry.is_secret && <SecretBadge />}
               </div>
               <CardMenu
+                variant="list"
+                isSecret={entry.is_secret}
                 isAdmin={isAdmin}
                 onEdit={isAdmin ? () => openEdit(entry) : undefined}
                 onToggleSecret={isAdmin ? () => handleToggleSecret(entry) : undefined}

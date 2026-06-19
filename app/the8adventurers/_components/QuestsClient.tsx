@@ -685,7 +685,7 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
             return (
               <div
                 key={q.id}
-                className="relative bg-brand-card border border-brand-border rounded-sm px-3 py-2 hover:border-brand-purple-600/50 transition-colors duration-200 cursor-pointer"
+                className="group relative bg-brand-card border border-brand-border rounded-sm px-3 py-2 hover:border-brand-purple-600/50 transition-colors duration-200 cursor-pointer"
                 onClick={() => openView(q)}
               >
                 <div className="flex items-center gap-2">
@@ -709,6 +709,8 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
                   <StatusPill status={q.status} isAdmin={isAdmin} onChange={(s) => changeStatus(q, s)} />
                   {isAdmin && q.is_secret && <SecretBadge />}
                   <CardMenu
+                    variant="list"
+                    isSecret={q.is_secret}
                     isAdmin={isAdmin}
                     onEdit={isAdmin ? () => openEdit(q) : undefined}
                     onToggleSecret={isAdmin ? () => handleToggleSecret(q) : undefined}

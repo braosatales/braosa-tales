@@ -141,7 +141,7 @@ export default function PlayersClient({ initialPlayers, isAdmin }: Props) {
             return (
               <div
                 key={player.id}
-                className="relative flex items-center gap-2 bg-brand-card border border-brand-border rounded-sm px-3 py-2 hover:border-brand-purple-600/50 transition-colors duration-200 cursor-pointer"
+                className="group relative flex items-center gap-2 bg-brand-card border border-brand-border rounded-sm px-3 py-2 hover:border-brand-purple-600/50 transition-colors duration-200 cursor-pointer"
                 onClick={() => openView(player)}
               >
                 {url ? (
@@ -169,6 +169,7 @@ export default function PlayersClient({ initialPlayers, isAdmin }: Props) {
                   )}
                 </div>
                 <CardMenu
+                  variant="list"
                   isAdmin={isAdmin}
                   onEdit={isAdmin ? () => router.push(`/the8adventurers/players/${player.id}`) : undefined}
                   onDelete={isAdmin ? () => handleDelete(player) : undefined}
