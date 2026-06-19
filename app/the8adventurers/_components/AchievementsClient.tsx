@@ -79,6 +79,7 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
   const [err, setErr] = useState('')
   const [view, setView] = useState<ViewMode>('grid')
   const [viewingArticle, setViewingArticle] = useState<ArticleModalData | null>(null)
+  const [viewingAchievement, setViewingAchievement] = useState<Achievement | null>(null)
 
   useEffect(() => {
     setView(getStoredView())
@@ -104,6 +105,7 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
   }
 
   function openView(a: Achievement) {
+    setViewingAchievement(a)
     setViewingArticle({ type: 'achievement', data: a, players })
   }
 
@@ -295,9 +297,9 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
       )}
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center pt-16 px-4">
+        <div className="fixed inset-0 bg-black/70 z-50">
           <div
-            className="bg-brand-card border border-brand-border rounded-sm p-6 w-full max-w-lg max-h-[85vh] overflow-y-auto"
+            className="absolute inset-6 bg-brand-card border border-brand-border rounded-sm p-6 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
@@ -387,7 +389,23 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
         <ArticleModal
           article={viewingArticle}
           isAdmin={isAdmin}
-          onClose={() => setViewingArticle(null)}
+          onClose={() => { setViewingArticle(null); setViewingAchievement(null) }}
+          onEdit={isAdmin && viewingAchievement ? () => {
+            const fresh = achievements.find((a) => a.id === viewingAchievement.id) ?? viewingAchievement
+            setViewingArticle(null)
+            setViewingAchievement(null)
+            openEdit(fresh)
+          } : undefined}
+          onToggleSecret={isAdmin && viewingAchievement ? () => {
+            const fresh = achievements.find((a) => a.id === viewingAchievement.id) ?? viewingAchievement
+            handleToggleSecret(fresh)
+          } : undefined}
+          onDelete={isAdmin && viewingAchievement ? () => {
+            const fresh = achievements.find((a) => a.id === viewingAchievement.id) ?? viewingAchievement
+            setViewingArticle(null)
+            setViewingAchievement(null)
+            handleDeleteAchievement(fresh)
+          } : undefined}
         />
       )}
     </div>

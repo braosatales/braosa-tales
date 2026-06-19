@@ -1,5 +1,11 @@
 export type LoreCategory = 'history' | 'locations' | 'friends' | 'foes' | 'factions' | 'monsters'
 
+export type LinkedLoreEntry = {
+  id: string
+  title: string
+  category: LoreCategory
+}
+
 export type LoreEntry = {
   id: string
   category: LoreCategory
@@ -8,6 +14,9 @@ export type LoreEntry = {
   portrait_url: string | null
   is_secret: boolean
   gm_notes?: string | null
+  preferred_habitat?: string | null
+  linked_factions?: LinkedLoreEntry[]
+  linked_locations?: LinkedLoreEntry[]
   created_at: string
   updated_at: string
 }

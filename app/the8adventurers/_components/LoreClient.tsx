@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import type { LoreEntry, LoreCategory } from '@/lib/the8adventurers/types'
+import type { LoreEntry, LoreCategory, LinkedLoreEntry } from '@/lib/the8adventurers/types'
 import Toggle from '@/components/the8adventurers/Toggle'
 import SecretBadge from '@/components/the8adventurers/SecretBadge'
 import MentionTextarea from '@/components/the8adventurers/MentionTextarea'
@@ -23,10 +23,16 @@ type FormState = {
   portrait_url: string
   is_secret: boolean
   gm_notes: string
+  preferred_habitat: string
+  faction_ids: string[]
+  location_ids: string[]
 }
 
 function emptyForm(): FormState {
-  return { title: '', description: '', portrait_url: '', is_secret: true, gm_notes: '' }
+  return {
+    title: '', description: '', portrait_url: '', is_secret: true, gm_notes: '',
+    preferred_habitat: '', faction_ids: [], location_ids: [],
+  }
 }
 
 function entryToForm(e: LoreEntry): FormState {
@@ -36,12 +42,91 @@ function entryToForm(e: LoreEntry): FormState {
     portrait_url: e.portrait_url ?? '',
     is_secret: e.is_secret,
     gm_notes: e.gm_notes ?? '',
+    preferred_habitat: e.preferred_habitat ?? '',
+    faction_ids: (e.linked_factions ?? []).map((f) => f.id),
+    location_ids: (e.linked_locations ?? []).map((l) => l.id),
   }
 }
 
 function getStoredView(): ViewMode {
   if (typeof window === 'undefined') return 'grid'
   return (localStorage.getItem('the8_view_lore') as ViewMode) ?? 'grid'
+}
+
+// Multi-select field for factions or locations
+function MultiSelectField({
+  label,
+  all,
+  selectedIds,
+  onAdd,
+  onRemove,
+  inputCls,
+}: {
+  label: string
+  all: LoreEntry[]
+  selectedIds: string[]
+  onAdd: (id: string) => void
+  onRemove: (id: string) => void
+  inputCls: string
+}) {
+  const [query, setQuery] = useState('')
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const selected = all.filter((e) => selectedIds.includes(e.id))
+  const filtered = query
+    ? all.filter((e) => !selectedIds.includes(e.id) && e.title.toLowerCase().includes(query.toLowerCase()))
+    : []
+
+  return (
+    <div>
+      <label className="section-label block mb-1">{label}</label>
+      {selected.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mb-2">
+          {selected.map((e) => (
+            <span
+              key={e.id}
+              className="inline-flex items-center gap-1 font-fell text-xs text-brand-purple-200 bg-brand-purple-900/30 border border-brand-purple-600/30 px-2 py-0.5 rounded-sm"
+            >
+              {e.title}
+              <button
+                type="button"
+                onClick={() => onRemove(e.id)}
+                className="text-brand-muted hover:text-red-400 transition-colors leading-none ml-0.5"
+                aria-label={`Remove ${e.title}`}
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="relative">
+        <input
+          ref={inputRef}
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={`Search ${label.toLowerCase()}…`}
+          className={inputCls}
+          autoComplete="off"
+        />
+        {filtered.length > 0 && (
+          <div className="absolute z-20 left-0 right-0 top-full mt-0.5 bg-brand-bg border border-brand-border rounded-sm max-h-40 overflow-y-auto shadow-lg">
+            {filtered.map((e) => (
+              <button
+                key={e.id}
+                type="button"
+                onClick={() => { onAdd(e.id); setQuery(''); inputRef.current?.focus() }}
+                className="w-full text-left px-3 py-2 font-fell text-sm text-brand-parchment hover:bg-brand-purple-600/20 transition-colors"
+              >
+                {e.title}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
 
 export default function LoreClient({ initialEntries, category, label, isAdmin }: Props) {
@@ -54,10 +139,27 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
   const [err, setErr] = useState('')
   const [view, setView] = useState<ViewMode>('grid')
   const [viewingArticle, setViewingArticle] = useState<ArticleModalData | null>(null)
+  const [availableFactions, setAvailableFactions] = useState<LoreEntry[]>([])
+  const [availableLocations, setAvailableLocations] = useState<LoreEntry[]>([])
+
+  const isFriendsOrFoes = category === 'friends' || category === 'foes'
+  const isMonsters = category === 'monsters'
 
   useEffect(() => {
     setView(getStoredView())
   }, [])
+
+  useEffect(() => {
+    if (isFriendsOrFoes) {
+      Promise.all([
+        fetch('/api/the8adventurers/lore?category=factions').then((r) => r.json()),
+        fetch('/api/the8adventurers/lore?category=locations').then((r) => r.json()),
+      ]).then(([facs, locs]) => {
+        setAvailableFactions(Array.isArray(facs) ? facs : [])
+        setAvailableLocations(Array.isArray(locs) ? locs : [])
+      })
+    }
+  }, [isFriendsOrFoes])
 
   function handleViewChange(v: ViewMode) {
     setView(v)
@@ -97,13 +199,21 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
     if (!form.title.trim()) { setErr('Title is required'); return }
     setSaving(true); setErr('')
 
-    const payload = {
+    const payload: Record<string, unknown> = {
       category,
       title: form.title.trim(),
       description: form.description.trim() || null,
       portrait_url: form.portrait_url.trim() || null,
       is_secret: form.is_secret,
       gm_notes: form.gm_notes.trim() || null,
+    }
+
+    if (isMonsters) {
+      payload.preferred_habitat = form.preferred_habitat.trim() || null
+    }
+    if (isFriendsOrFoes) {
+      payload.faction_ids = form.faction_ids
+      payload.location_ids = form.location_ids
     }
 
     const res = editing
@@ -122,10 +232,23 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
     setSaving(false)
     if (!res.ok) { setErr(json.error ?? 'Error saving'); return }
 
+    // Rebuild linked arrays locally for immediate UI update
+    const updatedEntry: LoreEntry = {
+      ...json,
+      ...(isFriendsOrFoes ? {
+        linked_factions: availableFactions
+          .filter((f) => form.faction_ids.includes(f.id))
+          .map((f): LinkedLoreEntry => ({ id: f.id, title: f.title, category: f.category })),
+        linked_locations: availableLocations
+          .filter((l) => form.location_ids.includes(l.id))
+          .map((l): LinkedLoreEntry => ({ id: l.id, title: l.title, category: l.category })),
+      } : {}),
+    }
+
     if (editing) {
-      setEntries((prev) => prev.map((e) => (e.id === json.id ? json : e)))
+      setEntries((prev) => prev.map((e) => e.id === json.id ? updatedEntry : e))
     } else {
-      setEntries((prev) => [json, ...prev])
+      setEntries((prev) => [updatedEntry, ...prev])
     }
     setShowModal(false)
     router.refresh()
@@ -142,6 +265,8 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
   }
 
   const inputCls = 'w-full bg-brand-bg border border-brand-border rounded-sm px-3 py-2 text-brand-parchment font-fell text-sm focus:outline-none focus:border-brand-purple-600'
+
+  const viewingEntry = viewingArticle?.type === 'lore' ? viewingArticle.data : null
 
   return (
     <div className="p-6 md:p-10 max-w-5xl mx-auto">
@@ -230,9 +355,6 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
                 <h3 className="font-cinzel text-brand-parchment font-semibold text-sm leading-tight truncate">
                   {entry.title}
                 </h3>
-                <span className="text-[10px] font-cinzel tracking-widest uppercase text-brand-purple-400 bg-brand-purple-600/10 border border-brand-purple-600/30 px-1.5 py-0.5 rounded-sm flex-shrink-0">
-                  {entry.category}
-                </span>
                 {isAdmin && entry.is_secret && <SecretBadge />}
               </div>
               <CardMenu
@@ -248,11 +370,11 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
         </div>
       )}
 
-      {/* Edit / Create modal */}
+      {/* Edit / Create modal — near-fullscreen */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center pt-16 px-4">
+        <div className="fixed inset-0 bg-black/70 z-50">
           <div
-            className="bg-brand-card border border-brand-border rounded-sm p-6 w-full max-w-lg max-h-[85vh] overflow-y-auto"
+            className="absolute inset-6 bg-brand-card border border-brand-border rounded-sm p-6 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
@@ -268,7 +390,7 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-4 max-w-2xl">
               <div>
                 <label className="section-label block mb-1">Title *</label>
                 <input
@@ -301,6 +423,42 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
                   placeholder="https://…"
                 />
               </div>
+
+              {/* Preferred Habitat — monsters only */}
+              {isMonsters && (
+                <div>
+                  <label className="section-label block mb-1">Preferred Habitat</label>
+                  <input
+                    type="text"
+                    value={form.preferred_habitat}
+                    onChange={(e) => setForm((f) => ({ ...f, preferred_habitat: e.target.value }))}
+                    className={inputCls}
+                    placeholder="e.g. Deep forests, ancient ruins"
+                  />
+                </div>
+              )}
+
+              {/* Factions + Locations — friends/foes only */}
+              {isFriendsOrFoes && (
+                <>
+                  <MultiSelectField
+                    label="Factions"
+                    all={availableFactions}
+                    selectedIds={form.faction_ids}
+                    onAdd={(id) => setForm((f) => ({ ...f, faction_ids: [...f.faction_ids, id] }))}
+                    onRemove={(id) => setForm((f) => ({ ...f, faction_ids: f.faction_ids.filter((x) => x !== id) }))}
+                    inputCls={inputCls}
+                  />
+                  <MultiSelectField
+                    label="Locations"
+                    all={availableLocations}
+                    selectedIds={form.location_ids}
+                    onAdd={(id) => setForm((f) => ({ ...f, location_ids: [...f.location_ids, id] }))}
+                    onRemove={(id) => setForm((f) => ({ ...f, location_ids: f.location_ids.filter((x) => x !== id) }))}
+                    inputCls={inputCls}
+                  />
+                </>
+              )}
 
               <div className="flex items-center gap-3">
                 <Toggle
@@ -349,6 +507,20 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
           article={viewingArticle}
           isAdmin={isAdmin}
           onClose={() => setViewingArticle(null)}
+          onEdit={isAdmin && viewingEntry ? () => {
+            const freshEntry = entries.find((e) => e.id === viewingEntry.id) ?? viewingEntry
+            setViewingArticle(null)
+            openEdit(freshEntry)
+          } : undefined}
+          onToggleSecret={isAdmin && viewingEntry ? () => {
+            const freshEntry = entries.find((e) => e.id === viewingEntry.id) ?? viewingEntry
+            handleToggleSecret(freshEntry)
+          } : undefined}
+          onDelete={isAdmin && viewingEntry ? () => {
+            const freshEntry = entries.find((e) => e.id === viewingEntry.id) ?? viewingEntry
+            setViewingArticle(null)
+            handleDeleteEntry(freshEntry)
+          } : undefined}
         />
       )}
     </div>

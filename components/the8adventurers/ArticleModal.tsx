@@ -6,7 +6,6 @@ import type { LoreEntry, Quest, Achievement, Player, QuestItem, QuestStatus } fr
 import type { VisiblePlayerData } from '@/lib/the8adventurers/getVisiblePlayerFields'
 import SecretBadge from './SecretBadge'
 
-// Reuses the same @[Title](id) parser as RichCard
 function renderMentions(text: string): React.ReactNode[] {
   const MENTION_RE = /@\[([^\]]+)\]\(([a-f0-9-]+)\)/g
   const parts: React.ReactNode[] = []
@@ -95,22 +94,66 @@ const CURRENCY_LABELS = [
 ]
 
 // ─── View: Lore ────────────────────────────────────────────────
-function LoreView({ data, isAdmin }: { data: LoreEntry; isAdmin: boolean }) {
+function LoreView({
+  data,
+  isAdmin,
+  onNavigate,
+}: {
+  data: LoreEntry
+  isAdmin: boolean
+  onNavigate?: (id: string) => void
+}) {
+  const showFactions = (data.category === 'friends' || data.category === 'foes') && (data.linked_factions ?? []).length > 0
+  const showLocations = (data.category === 'friends' || data.category === 'foes') && (data.linked_locations ?? []).length > 0
+  const showHabitat = data.category === 'monsters' && data.preferred_habitat
+
   return (
     <>
       {data.portrait_url && (
         <img src={data.portrait_url} alt={data.title} className="w-full max-h-56 object-cover rounded-sm mb-4 border border-brand-border" />
       )}
       <div className="flex items-center gap-2 flex-wrap mb-3">
-        <span className="text-[10px] font-cinzel tracking-widest uppercase text-brand-purple-400 bg-brand-purple-600/10 border border-brand-purple-600/30 px-2 py-0.5 rounded-sm">
-          {data.category}
-        </span>
         {isAdmin && data.is_secret && <SecretBadge />}
       </div>
       <h2 className="font-cinzel text-brand-parchment font-bold text-xl mb-3">{data.title}</h2>
       {data.description && (
-        <div className="font-fell text-[#F0E8FF] text-sm leading-relaxed whitespace-pre-wrap">
+        <div className="font-fell text-[#F0E8FF] text-sm leading-relaxed whitespace-pre-wrap mb-3">
           {renderMentions(data.description)}
+        </div>
+      )}
+      {showHabitat && (
+        <div className="font-fell text-sm text-brand-muted mb-2">
+          Preferred Habitat: <span className="text-[#F0E8FF]">{data.preferred_habitat}</span>
+        </div>
+      )}
+      {showFactions && (
+        <div className="flex flex-wrap items-center gap-1.5 mb-2">
+          <span className="font-fell text-xs text-brand-muted">Faction:</span>
+          {(data.linked_factions ?? []).map((f) => (
+            <button
+              key={f.id}
+              onClick={onNavigate ? () => onNavigate(f.id) : undefined}
+              disabled={!onNavigate}
+              className={`font-fell text-xs text-brand-purple-200 bg-brand-purple-900/30 border border-brand-purple-600/30 px-2 py-0.5 rounded-sm transition-colors ${onNavigate ? 'hover:bg-brand-purple-600/30 cursor-pointer' : 'cursor-default'}`}
+            >
+              {f.title}
+            </button>
+          ))}
+        </div>
+      )}
+      {showLocations && (
+        <div className="flex flex-wrap items-center gap-1.5 mb-2">
+          <span className="font-fell text-xs text-brand-muted">Location:</span>
+          {(data.linked_locations ?? []).map((l) => (
+            <button
+              key={l.id}
+              onClick={onNavigate ? () => onNavigate(l.id) : undefined}
+              disabled={!onNavigate}
+              className={`font-fell text-xs text-brand-gold-300 bg-brand-gold-400/10 border border-brand-gold-400/30 px-2 py-0.5 rounded-sm transition-colors ${onNavigate ? 'hover:bg-brand-gold-400/20 cursor-pointer' : 'cursor-default'}`}
+            >
+              {l.title}
+            </button>
+          ))}
         </div>
       )}
       {isAdmin && <GmNotes notes={data.gm_notes} />}
@@ -381,6 +424,50 @@ function PlayerView({ data, isAdmin }: { data: VisiblePlayerData; isAdmin: boole
   )
 }
 
+// ─── Icon components (reused from CardMenu) ────────────────────
+function IconEdit() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    </svg>
+  )
+}
+
+function IconEye({ off }: { off?: boolean }) {
+  if (off) {
+    return (
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+        <line x1="1" y1="1" x2="23" y2="23"/>
+      </svg>
+    )
+  }
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+  )
+}
+
+function IconTrash() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+    </svg>
+  )
+}
+
+function IconChevronLeft() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  )
+}
+
 // ─── ArticleModal ──────────────────────────────────────────────
 export type ArticleModalData =
   | { type: 'lore'; data: LoreEntry }
@@ -392,9 +479,60 @@ type Props = {
   article: ArticleModalData
   isAdmin: boolean
   onClose: () => void
+  onEdit?: () => void
+  onToggleSecret?: () => void
+  onDelete?: () => void
 }
 
-export default function ArticleModal({ article, isAdmin, onClose }: Props) {
+export default function ArticleModal({ article, isAdmin, onClose, onEdit, onToggleSecret, onDelete }: Props) {
+  const [current, setCurrent] = useState<ArticleModalData>(article)
+  const [previous, setPrevious] = useState<ArticleModalData | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [navigating, setNavigating] = useState(false)
+
+  const isAtRoot = previous === null
+
+  async function navigateToEntry(id: string) {
+    setNavigating(true)
+    try {
+      const res = await fetch(`/api/the8adventurers/lore/${id}`)
+      if (res.ok) {
+        const data: LoreEntry = await res.json()
+        setPrevious(current)
+        setCurrent({ type: 'lore', data })
+      }
+    } finally {
+      setNavigating(false)
+    }
+  }
+
+  function goBack() {
+    if (previous) {
+      setCurrent(previous)
+      setPrevious(null)
+      setConfirmDelete(false)
+    }
+  }
+
+  function handleToggleSecretLocal() {
+    if (current.type === 'lore') {
+      setCurrent((prev) =>
+        prev.type === 'lore'
+          ? { ...prev, data: { ...prev.data, is_secret: !prev.data.is_secret } }
+          : prev
+      )
+    }
+    onToggleSecret?.()
+  }
+
+  function handleDeleteConfirmed() {
+    onDelete?.()
+    onClose()
+  }
+
+  const currentIsSecret = current.type === 'lore' ? current.data.is_secret : false
+  const showToggleSecret = isAdmin && isAtRoot && onToggleSecret && current.type !== 'player'
+
   return (
     <div
       className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center pt-8 px-4 overflow-y-auto"
@@ -404,32 +542,111 @@ export default function ArticleModal({ article, isAdmin, onClose }: Props) {
         className="bg-brand-card border border-brand-border rounded-sm p-6 w-full max-w-lg my-8 relative"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-brand-muted hover:text-brand-parchment transition-colors text-xl leading-none z-10"
-          aria-label="Close"
-        >
-          ✕
-        </button>
+        {/* Header actions */}
+        <div className="absolute top-3 right-3 flex items-center gap-0.5 z-10">
+          {/* Back button when navigated */}
+          {!isAtRoot && (
+            <button
+              onClick={goBack}
+              className="w-7 h-7 flex items-center justify-center text-brand-muted hover:text-brand-parchment transition-colors rounded-sm hover:bg-brand-border/30"
+              aria-label="Back"
+              title="Back"
+            >
+              <IconChevronLeft />
+            </button>
+          )}
+
+          {/* Admin actions (root level only) */}
+          {isAdmin && isAtRoot && !confirmDelete && (
+            <>
+              {onEdit && (
+                <button
+                  onClick={() => { onEdit(); onClose() }}
+                  className="w-7 h-7 flex items-center justify-center text-brand-muted hover:text-brand-parchment transition-colors rounded-sm hover:bg-brand-border/30"
+                  aria-label="Edit"
+                  title="Edit"
+                >
+                  <IconEdit />
+                </button>
+              )}
+              {showToggleSecret && (
+                <button
+                  onClick={handleToggleSecretLocal}
+                  className="w-7 h-7 flex items-center justify-center text-brand-muted hover:text-brand-parchment transition-colors rounded-sm hover:bg-brand-border/30"
+                  aria-label={currentIsSecret ? 'Make public' : 'Make secret'}
+                  title={currentIsSecret ? 'Make public' : 'Make secret'}
+                >
+                  <IconEye off={currentIsSecret} />
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  onClick={() => setConfirmDelete(true)}
+                  className="w-7 h-7 flex items-center justify-center text-brand-muted hover:text-red-400 transition-colors rounded-sm hover:bg-red-400/10"
+                  aria-label="Delete"
+                  title="Delete"
+                >
+                  <IconTrash />
+                </button>
+              )}
+            </>
+          )}
+
+          {/* Inline delete confirmation */}
+          {isAdmin && isAtRoot && confirmDelete && (
+            <div className="flex items-center gap-1.5 bg-red-900/20 border border-red-800/40 rounded-sm px-2 py-1 mr-1">
+              <span className="font-fell text-[10px] text-red-300">Delete?</span>
+              <button
+                onClick={handleDeleteConfirmed}
+                className="font-cinzel text-[10px] text-red-400 hover:text-red-300 transition-colors px-1"
+              >
+                Yes
+              </button>
+              <button
+                onClick={() => setConfirmDelete(false)}
+                className="font-cinzel text-[10px] text-brand-muted hover:text-brand-parchment transition-colors px-1"
+              >
+                No
+              </button>
+            </div>
+          )}
+
+          <button
+            onClick={onClose}
+            className="w-7 h-7 flex items-center justify-center text-brand-muted hover:text-brand-parchment transition-colors text-lg leading-none rounded-sm hover:bg-brand-border/30"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
 
         <div className="pt-1">
-          {article.type === 'lore' && (
-            <LoreView data={article.data} isAdmin={isAdmin} />
+          {navigating && (
+            <div className="flex items-center justify-center py-12">
+              <span className="font-fell text-brand-muted text-sm">Loading…</span>
+            </div>
           )}
-          {article.type === 'quest' && (
-            <QuestView
-              data={article.data}
+          {!navigating && current.type === 'lore' && (
+            <LoreView
+              data={current.data}
               isAdmin={isAdmin}
-              players={article.players}
-              achievements={article.achievements}
-              onItemToggle={article.onItemToggle}
+              onNavigate={isAtRoot ? navigateToEntry : undefined}
             />
           )}
-          {article.type === 'achievement' && (
-            <AchievementView data={article.data} isAdmin={isAdmin} players={article.players} />
+          {!navigating && current.type === 'quest' && (
+            <QuestView
+              data={current.data}
+              isAdmin={isAdmin}
+              players={current.players}
+              achievements={current.achievements}
+              onItemToggle={current.onItemToggle}
+            />
           )}
-          {article.type === 'player' && (
-            <PlayerView data={article.data} isAdmin={isAdmin} />
+          {!navigating && current.type === 'achievement' && (
+            <AchievementView data={current.data} isAdmin={isAdmin} players={current.players} />
+          )}
+          {!navigating && current.type === 'player' && (
+            <PlayerView data={current.data} isAdmin={isAdmin} />
           )}
         </div>
       </div>

@@ -22,6 +22,7 @@ export default function PlayersClient({ initialPlayers, isAdmin }: Props) {
   const [players, setPlayers] = useState<VisiblePlayerData[]>(initialPlayers)
   const [view, setView] = useState<ViewMode>('grid')
   const [viewingArticle, setViewingArticle] = useState<ArticleModalData | null>(null)
+  const [viewingPlayer, setViewingPlayer] = useState<VisiblePlayerData | null>(null)
   const [err, setErr] = useState('')
 
   useEffect(() => {
@@ -34,6 +35,7 @@ export default function PlayersClient({ initialPlayers, isAdmin }: Props) {
   }
 
   function openView(player: VisiblePlayerData) {
+    setViewingPlayer(player)
     setViewingArticle({ type: 'player', data: player })
   }
 
@@ -184,7 +186,18 @@ export default function PlayersClient({ initialPlayers, isAdmin }: Props) {
         <ArticleModal
           article={viewingArticle}
           isAdmin={isAdmin}
-          onClose={() => setViewingArticle(null)}
+          onClose={() => { setViewingArticle(null); setViewingPlayer(null) }}
+          onEdit={isAdmin && viewingPlayer ? () => {
+            setViewingArticle(null)
+            setViewingPlayer(null)
+            router.push(`/the8adventurers/players/${viewingPlayer.id}`)
+          } : undefined}
+          onDelete={isAdmin && viewingPlayer ? () => {
+            const p = viewingPlayer
+            setViewingArticle(null)
+            setViewingPlayer(null)
+            handleDelete(p)
+          } : undefined}
         />
       )}
     </div>

@@ -318,6 +318,7 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
   const [err, setErr] = useState('')
   const [view, setView] = useState<ViewMode>('grid')
   const [viewingArticle, setViewingArticle] = useState<ArticleModalData | null>(null)
+  const [viewingQuest, setViewingQuest] = useState<Quest | null>(null)
 
   const [activeStatuses, setActiveStatuses] = useState<Set<QuestStatus>>(
     new Set<QuestStatus>(['in_progress', 'available', 'completed', 'failed'])
@@ -374,6 +375,7 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
   }
 
   function openView(q: Quest) {
+    setViewingQuest(q)
     setViewingArticle({
       type: 'quest',
       data: q,
@@ -764,11 +766,11 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
         </div>
       )}
 
-      {/* Edit / Create modal */}
+      {/* Edit / Create modal — near-fullscreen */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 z-50 flex items-start justify-center pt-8 px-4 overflow-y-auto">
+        <div className="fixed inset-0 bg-black/70 z-50">
           <div
-            className="bg-brand-card border border-brand-border rounded-sm p-6 w-full max-w-xl my-8"
+            className="absolute inset-6 bg-brand-card border border-brand-border rounded-sm p-6 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-5">
@@ -918,7 +920,23 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
         <ArticleModal
           article={viewingArticle}
           isAdmin={isAdmin}
-          onClose={() => setViewingArticle(null)}
+          onClose={() => { setViewingArticle(null); setViewingQuest(null) }}
+          onEdit={isAdmin && viewingQuest ? () => {
+            const freshQuest = quests.find((q) => q.id === viewingQuest.id) ?? viewingQuest
+            setViewingArticle(null)
+            setViewingQuest(null)
+            openEdit(freshQuest)
+          } : undefined}
+          onToggleSecret={isAdmin && viewingQuest ? () => {
+            const freshQuest = quests.find((q) => q.id === viewingQuest.id) ?? viewingQuest
+            handleToggleSecret(freshQuest)
+          } : undefined}
+          onDelete={isAdmin && viewingQuest ? () => {
+            const freshQuest = quests.find((q) => q.id === viewingQuest.id) ?? viewingQuest
+            setViewingArticle(null)
+            setViewingQuest(null)
+            handleDeleteQuest(freshQuest)
+          } : undefined}
         />
       )}
     </div>

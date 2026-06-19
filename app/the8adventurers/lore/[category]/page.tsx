@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
-import type { LoreCategory, LoreEntry } from '@/lib/the8adventurers/types'
+import type { LoreCategory, LoreEntry, LinkedLoreEntry } from '@/lib/the8adventurers/types'
 import LoreClient from '../../_components/LoreClient'
 
 const URL_TO_DB: Record<string, LoreCategory> = {
@@ -43,9 +43,49 @@ export default async function LoreCategoryPage({ params }: { params: { category:
 
   const { data: rawEntries } = await query
 
-  const entries: LoreEntry[] = admin
+  let entries: LoreEntry[] = admin
     ? (rawEntries ?? [])
     : (rawEntries ?? []).map(({ gm_notes: _, ...row }) => row)
+
+  // Enrich friends/foes with faction + location links
+  if ((dbCategory === 'friends' || dbCategory === 'foes') && entries.length > 0) {
+    const entryIds = entries.map((e) => e.id)
+
+    const [{ data: factionLinks }, { data: locationLinks }] = await Promise.all([
+      supabase.from('the8_lore_entry_factions').select('lore_entry_id, faction_entry_id').in('lore_entry_id', entryIds),
+      supabase.from('the8_lore_entry_locations').select('lore_entry_id, location_entry_id').in('lore_entry_id', entryIds),
+    ])
+
+    const allLinkedIds = [
+      ...(factionLinks ?? []).map((f) => f.faction_entry_id),
+      ...(locationLinks ?? []).map((l) => l.location_entry_id),
+    ]
+    const uniqueIds = Array.from(new Set(allLinkedIds))
+
+    const { data: linkedEntries } = uniqueIds.length > 0
+      ? await supabase.from('the8_lore_entries').select('id, title, category').in('id', uniqueIds)
+      : { data: [] as { id: string; title: string; category: LoreCategory }[] }
+
+    const entryMap = Object.fromEntries((linkedEntries ?? []).map((e) => [e.id, e]))
+
+    entries = entries.map((e) => ({
+      ...e,
+      linked_factions: (factionLinks ?? [])
+        .filter((f) => f.lore_entry_id === e.id && entryMap[f.faction_entry_id])
+        .map((f): LinkedLoreEntry => ({
+          id: f.faction_entry_id,
+          title: entryMap[f.faction_entry_id].title,
+          category: entryMap[f.faction_entry_id].category,
+        })),
+      linked_locations: (locationLinks ?? [])
+        .filter((l) => l.lore_entry_id === e.id && entryMap[l.location_entry_id])
+        .map((l): LinkedLoreEntry => ({
+          id: l.location_entry_id,
+          title: entryMap[l.location_entry_id].title,
+          category: entryMap[l.location_entry_id].category,
+        })),
+    }))
+  }
 
   return (
     <LoreClient

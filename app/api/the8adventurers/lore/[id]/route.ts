@@ -32,16 +32,36 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   if (!await isAdmin()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const body = await req.json()
+  const { faction_ids, location_ids, ...updateFields } = body
   const supabase = createServerSupabase()
 
   const { data, error } = await supabase
     .from('the8_lore_entries')
-    .update({ ...body, updated_at: new Date().toISOString() })
+    .update({ ...updateFields, updated_at: new Date().toISOString() })
     .eq('id', params.id)
     .select()
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+
+  // Sync junction tables if faction_ids or location_ids are provided
+  if (faction_ids !== undefined) {
+    await supabase.from('the8_lore_entry_factions').delete().eq('lore_entry_id', params.id)
+    if (Array.isArray(faction_ids) && faction_ids.length > 0) {
+      await supabase.from('the8_lore_entry_factions').insert(
+        faction_ids.map((id: string) => ({ lore_entry_id: params.id, faction_entry_id: id }))
+      )
+    }
+  }
+  if (location_ids !== undefined) {
+    await supabase.from('the8_lore_entry_locations').delete().eq('lore_entry_id', params.id)
+    if (Array.isArray(location_ids) && location_ids.length > 0) {
+      await supabase.from('the8_lore_entry_locations').insert(
+        location_ids.map((id: string) => ({ lore_entry_id: params.id, location_entry_id: id }))
+      )
+    }
+  }
+
   return NextResponse.json(data)
 }
 
