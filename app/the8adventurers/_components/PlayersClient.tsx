@@ -62,10 +62,7 @@ export default function PlayersClient({ initialPlayers, isAdmin }: Props) {
         </a>
       )}
 
-      <div className="flex items-center mb-6 gap-3">
-        <div className="md:hidden">
-          <ViewToggle value={view} onChange={handleViewChange} />
-        </div>
+      <div className="flex items-center mb-3 md:mb-6 gap-3">
         <div className="flex-1">
           <p className="section-label">Campaign</p>
           <h1 className="font-cinzel text-brand-parchment text-2xl md:text-3xl font-bold">Players</h1>
@@ -81,6 +78,9 @@ export default function PlayersClient({ initialPlayers, isAdmin }: Props) {
             </a>
           )}
         </div>
+      </div>
+      <div className="md:hidden mb-6">
+        <ViewToggle value={view} onChange={handleViewChange} fullWidth />
       </div>
 
       {err && <p className="text-red-400 text-sm font-fell mb-4">{err}</p>}

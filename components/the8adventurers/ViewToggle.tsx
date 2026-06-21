@@ -5,6 +5,7 @@ export type ViewMode = 'grid' | 'list'
 type Props = {
   value: ViewMode
   onChange: (v: ViewMode) => void
+  fullWidth?: boolean
 }
 
 function GridIcon() {
@@ -26,23 +27,23 @@ function ListIcon() {
   )
 }
 
-export default function ViewToggle({ value, onChange }: Props) {
+export default function ViewToggle({ value, onChange, fullWidth }: Props) {
   return (
-    <div className="inline-flex items-center bg-brand-bg border border-brand-border rounded-sm overflow-hidden">
+    <div className={`${fullWidth ? 'flex w-full' : 'inline-flex'} items-center bg-brand-bg border border-brand-border rounded-sm overflow-hidden`}>
       {(['grid', 'list'] as const).map((v) => (
         <button
           key={v}
           onClick={() => onChange(v)}
           title={v === 'grid' ? 'Grid view' : 'List view'}
           aria-label={v === 'grid' ? 'Grid view' : 'List view'}
-          className={`flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-cinzel tracking-widest uppercase transition-colors ${
+          className={`${fullWidth ? 'flex-1 justify-center' : ''} flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-cinzel tracking-widest uppercase transition-colors ${
             value === v
               ? 'bg-brand-purple-600 text-brand-parchment'
               : 'text-brand-muted hover:text-brand-parchment'
           }`}
         >
           {v === 'grid' ? <GridIcon /> : <ListIcon />}
-          <span className="hidden sm:inline">{v}</span>
+          <span className={fullWidth ? undefined : 'hidden sm:inline'}>{v}</span>
         </button>
       ))}
     </div>

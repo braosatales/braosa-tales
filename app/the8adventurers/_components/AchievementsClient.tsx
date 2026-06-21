@@ -194,10 +194,7 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
         </button>
       )}
 
-      <div className="flex items-center mb-6 gap-3">
-        <div className="md:hidden">
-          <ViewToggle value={view} onChange={handleViewChange} />
-        </div>
+      <div className="flex items-center mb-3 md:mb-6 gap-3">
         <div className="flex-1">
           <p className="section-label">Campaign</p>
           <h1 className="font-cinzel text-brand-parchment text-2xl md:text-3xl font-bold">Achievements</h1>
@@ -208,6 +205,9 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
             <button onClick={openCreate} className="btn-primary text-xs">+ Add Achievement</button>
           )}
         </div>
+      </div>
+      <div className="md:hidden mb-6">
+        <ViewToggle value={view} onChange={handleViewChange} fullWidth />
       </div>
 
       {achievements.length === 0 && (
