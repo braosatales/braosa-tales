@@ -294,8 +294,10 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
           )}
         </div>
       </div>
-      <div className="md:hidden mb-6">
-        <ViewToggle value={view} onChange={handleViewChange} fullWidth />
+      <div className="md:hidden mb-6 flex">
+        <div className="ml-auto w-[76px]">
+          <ViewToggle value={view} onChange={handleViewChange} fullWidth />
+        </div>
       </div>
 
       {entries.length === 0 && (
