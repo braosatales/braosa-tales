@@ -282,15 +282,18 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
         </button>
       )}
 
-      <div className="flex items-center justify-between mb-6 gap-3 flex-wrap">
-        <div>
+      <div className="flex items-center mb-6 gap-3">
+        <div className="md:hidden">
+          <ViewToggle value={view} onChange={handleViewChange} />
+        </div>
+        <div className="flex-1">
           <p className="section-label">Lore</p>
           <h1 className="font-cinzel text-brand-parchment text-2xl md:text-3xl font-bold">{label}</h1>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="hidden md:flex items-center gap-2">
           <ViewToggle value={view} onChange={handleViewChange} />
           {isAdmin && (
-            <button onClick={openCreate} className="hidden md:inline-flex btn-primary text-xs">+ Add Entry</button>
+            <button onClick={openCreate} className="btn-primary text-xs">+ Add Entry</button>
           )}
         </div>
       </div>
