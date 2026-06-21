@@ -206,10 +206,8 @@ export default function AchievementsClient({ initialAchievements, players, isAdm
           )}
         </div>
       </div>
-      <div className="md:hidden mb-6 flex">
-        <div className="ml-auto w-[76px]">
-          <ViewToggle value={view} onChange={handleViewChange} fullWidth />
-        </div>
+      <div className="md:hidden flex justify-end mt-2 mb-6">
+        <ViewToggle value={view} onChange={handleViewChange} />
       </div>
 
       {achievements.length === 0 && (
