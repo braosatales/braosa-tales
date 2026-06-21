@@ -13,7 +13,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from('the8_quests')
     .select('*, the8_quest_items(*), the8_quest_players(player_id), the8_quest_exp(player_id, exp_amount)')
-    .order('sort_order', { ascending: true })
+    .order('title', { ascending: true })
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 

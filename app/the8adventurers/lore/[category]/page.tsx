@@ -37,7 +37,7 @@ export default async function LoreCategoryPage({ params }: { params: { category:
     .from('the8_lore_entries')
     .select('*')
     .eq('category', dbCategory)
-    .order('created_at', { ascending: false })
+    .order('title', { ascending: true })
 
   if (!admin) query = query.eq('is_secret', false)
 

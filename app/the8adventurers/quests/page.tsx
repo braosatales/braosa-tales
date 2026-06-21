@@ -13,9 +13,9 @@ export default async function QuestsPage() {
     supabase
       .from('the8_quests')
       .select('*, the8_quest_items(*), the8_quest_players(player_id), the8_quest_exp(player_id, exp_amount)')
-      .order('sort_order', { ascending: true }),
+      .order('title', { ascending: true }),
     supabase.from('the8_players').select('*').order('name', { ascending: true }),
-    supabase.from('the8_achievements').select('*').order('created_at', { ascending: false }),
+    supabase.from('the8_achievements').select('*').order('title', { ascending: true }),
   ])
 
   const rawQuests = questsResult.data ?? []

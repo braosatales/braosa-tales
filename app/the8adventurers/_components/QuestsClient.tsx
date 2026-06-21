@@ -356,7 +356,7 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
     if (sortMode === 'recent') return [...filtered].sort((a, b) => b.created_at.localeCompare(a.created_at))
     return [...filtered].sort((a, b) => {
       const si = STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status)
-      return si !== 0 ? si : a.sort_order - b.sort_order
+      return si !== 0 ? si : a.title.localeCompare(b.title)
     })
   })()
 

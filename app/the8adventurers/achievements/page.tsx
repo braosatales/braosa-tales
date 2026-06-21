@@ -13,7 +13,7 @@ export default async function AchievementsPage() {
     supabase
       .from('the8_achievements')
       .select('*, the8_achievement_players(player_id, awarded_at)')
-      .order('created_at', { ascending: false }),
+      .order('title', { ascending: true }),
     supabase.from('the8_players').select('*').order('name', { ascending: true }),
   ])
 

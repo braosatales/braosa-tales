@@ -16,7 +16,7 @@ export async function GET(req: Request) {
   let query = supabase
     .from('the8_lore_entries')
     .select('*')
-    .order('created_at', { ascending: false })
+    .order('title', { ascending: true })
 
   if (category) query = query.eq('category', category)
   if (!admin) query = query.eq('is_secret', false)

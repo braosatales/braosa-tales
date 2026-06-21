@@ -13,7 +13,7 @@ export async function GET() {
   let query = supabase
     .from('the8_achievements')
     .select('*, the8_achievement_players(player_id, awarded_at)')
-    .order('created_at', { ascending: false })
+    .order('title', { ascending: true })
 
   if (!admin) query = query.eq('is_secret', false)
 
