@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import LocalTime from '@/components/sessions/LocalTime'
+import TypewriterHeadline from '@/components/home/TypewriterHeadline'
 import { GM } from '@/lib/sessions'
 
 export default function HomeHero() {
@@ -18,9 +19,7 @@ export default function HomeHero() {
       <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent to-night" />
 
       <div className="mx-auto flex min-h-[88svh] max-w-[1180px] flex-col justify-center px-6 pb-20 pt-32 md:px-10">
-        <h1 className="font-cinzel text-[2.7rem] font-bold leading-[1.04] tracking-[-0.01em] text-vellum sm:text-[3.4rem] lg:text-[4.2rem]">
-          Every world begins <span className="sm:block">with a word.</span>
-        </h1>
+        <TypewriterHeadline className="font-cinzel text-[2.7rem] font-bold leading-[1.04] tracking-[-0.01em] text-vellum sm:text-[3.4rem] lg:text-[4.2rem]" />
         <p className="mt-6 font-cinzel text-[1.35rem] font-bold text-leaf-soft md:text-[1.6rem]">Sit at our table.</p>
         <p className="mt-3 max-w-measure text-[1.1rem] leading-relaxed text-prose md:text-[1.2rem]">
           Live Dungeons &amp; Dragons campaigns run online every week by {GM.name}, plus the Atelier: the tools
