@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 type FormState = {
   name: string
   portrait_url: string
-  clerk_user_id: string
+  user_id: string
   level: string
   class: string
   race: string
@@ -25,7 +25,7 @@ type FormState = {
 
 function emptyForm(): FormState {
   return {
-    name: '', portrait_url: '', clerk_user_id: '',
+    name: '', portrait_url: '', user_id: '',
     level: '', class: '', race: '', background: '',
     hp_current: '', hp_max: '',
     stat_strength: '', stat_dexterity: '', stat_constitution: '',
@@ -64,7 +64,7 @@ export default function NewPlayerClient() {
       body: JSON.stringify({
         name: form.name.trim(),
         portrait_url: form.portrait_url.trim() || null,
-        clerk_user_id: form.clerk_user_id.trim() || null,
+        user_id: form.user_id.trim() || null,
         level: numOrNull(form.level),
         class: form.class.trim() || null,
         race: form.race.trim() || null,
@@ -105,8 +105,8 @@ export default function NewPlayerClient() {
             <input type="text" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} className={inputCls} />
           </div>
           <div>
-            <label className="section-label block mb-1">Clerk User ID</label>
-            <input type="text" value={form.clerk_user_id} onChange={(e) => setForm((f) => ({ ...f, clerk_user_id: e.target.value }))} className={inputCls} placeholder="user_…" />
+            <label className="section-label block mb-1">Linked account (user ID)</label>
+            <input type="text" value={form.user_id} onChange={(e) => setForm((f) => ({ ...f, user_id: e.target.value }))} className={inputCls} placeholder="Supabase Auth user UUID (optional)" />
           </div>
         </div>
 

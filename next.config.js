@@ -12,6 +12,13 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // Old auth URLs → new pages
+      { source: '/login', destination: '/sign-in', permanent: false },
+      { source: '/signup', destination: '/sign-up', permanent: false },
+    ]
+  },
 }
 
 module.exports = nextConfig

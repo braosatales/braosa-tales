@@ -27,24 +27,27 @@ export async function POST(req: Request) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as any
-    const { clerk_id, tier } = session.metadata
-    await supabaseAdmin.from('users').update({
-      tier,
-      credits: TIER_CREDITS[tier] ?? 100,
-      daily_credits: TIER_DAILY[tier] ?? 5,
-      credits_reset_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-    }).eq('clerk_id', clerk_id)
+    const userId = session.metadata?.user_id ?? session.client_reference_id
+    const tier = session.metadata?.tier
+    if (userId && tier) {
+      await supabaseAdmin.from('users').update({
+        tier,
+        credits: TIER_CREDITS[tier] ?? 100,
+        daily_credits: TIER_DAILY[tier] ?? 5,
+        credits_reset_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      }).eq('id', userId)
+    }
   }
 
   if (event.type === 'customer.subscription.deleted') {
     const sub = event.data.object as any
-    const clerkId = sub.metadata?.clerk_id
-    if (clerkId) {
+    const userId = sub.metadata?.user_id
+    if (userId) {
       await supabaseAdmin.from('users').update({
         tier: 'wanderer',
         credits: 100,
         daily_credits: 5,
-      }).eq('clerk_id', clerkId)
+      }).eq('id', userId)
     }
   }
 

@@ -3,7 +3,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, Suspense } from 'react'
-import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
+import { useAuth } from '@/components/auth/AuthProvider'
+import AccountMenu from '@/components/auth/AccountMenu'
 import CreditsBadge from '@/app/atelier/signet/CreditsBadge'
 
 const links = [
@@ -27,6 +28,7 @@ interface NavProps {
 
 export default function Nav({ userProfile }: NavProps = {}) {
   const [menuOpen, setMenuOpen] = useState(false)
+  const { isSignedIn, signOut } = useAuth()
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4 bg-brand-bg/80 backdrop-blur-sm border-b border-brand-border">
@@ -50,7 +52,7 @@ export default function Nav({ userProfile }: NavProps = {}) {
       </div>
 
       <div className="hidden md:flex items-center gap-3">
-        <SignedOut>
+        {!isSignedIn ? (<>
           <Link
             href="/sign-in"
             className="font-cinzel text-xs tracking-widest uppercase text-brand-muted hover:text-brand-parchment transition-colors"
@@ -60,20 +62,12 @@ export default function Nav({ userProfile }: NavProps = {}) {
           <Link href="/sign-up" className="btn-primary text-xs py-2 px-4">
             Get started
           </Link>
-        </SignedOut>
-        <SignedIn>
+        </>) : (<>
           <Suspense fallback={null}>
             <CreditsBadge initialProfile={userProfile ?? null} />
           </Suspense>
-          <UserButton
-            afterSignOutUrl="/"
-            appearance={{
-              elements: {
-                avatarBox: 'w-8 h-8',
-              },
-            }}
-          />
-        </SignedIn>
+          <AccountMenu />
+        </>)}
       </div>
 
       <button
@@ -97,7 +91,7 @@ export default function Nav({ userProfile }: NavProps = {}) {
             </Link>
           ))}
           <hr className="border-brand-border" />
-          <SignedOut>
+          {!isSignedIn ? (<>
             <Link
               href="/sign-in"
               className="font-cinzel text-xs tracking-widest uppercase text-brand-muted text-left"
@@ -106,8 +100,7 @@ export default function Nav({ userProfile }: NavProps = {}) {
               Sign in
             </Link>
             <Link href="/sign-up" className="btn-primary text-xs py-2 px-4 text-center" onClick={() => setMenuOpen(false)}>Get started</Link>
-          </SignedOut>
-          <SignedIn>
+          </>) : (<>
             <div style={{
               padding: "16px 24px",
               borderBottom: "1px solid rgba(237,224,200,0.08)",
@@ -116,13 +109,21 @@ export default function Nav({ userProfile }: NavProps = {}) {
             }}>
               <CreditsBadge/>
             </div>
-          </SignedIn>
-          <SignedIn>
-            <div className="flex items-center gap-3">
-              <UserButton afterSignOutUrl="/" />
-              <span className="font-cinzel text-xs tracking-widest uppercase text-brand-muted">Account</span>
-            </div>
-          </SignedIn>
+            <Link
+              href="/atelier/signet"
+              className="font-cinzel text-xs tracking-widest uppercase text-brand-muted"
+              onClick={() => setMenuOpen(false)}
+            >
+              The Signet
+            </Link>
+            <button
+              type="button"
+              className="font-cinzel text-xs tracking-widest uppercase text-brand-muted text-left"
+              onClick={() => { setMenuOpen(false); signOut() }}
+            >
+              Sign out
+            </button>
+          </>)}
         </div>
       )}
     </nav>

@@ -5,7 +5,7 @@ import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useUser } from '@clerk/nextjs'
+import { useAuth } from '@/components/auth/AuthProvider'
 
 type Feature = { text: string; included: boolean }
 
@@ -193,7 +193,7 @@ export default function PricingPage() {
   const [loadingTier, setLoadingTier] = useState<string | null>(null)
   const [currency, setCurrency] = useState<'usd' | 'eur'>('usd')
   const router = useRouter()
-  const { isSignedIn } = useUser()
+  const { isSignedIn } = useAuth()
 
   async function handleCheckout(tier: Tier) {
     if (tier.id === 'wanderer') {

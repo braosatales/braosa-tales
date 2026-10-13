@@ -1,10 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
+import { getAuthUser } from '@/lib/auth'
 import { NextResponse } from 'next/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
 
 export async function GET() {
-  const { userId } = await auth()
+  const userId = (await getAuthUser())?.id
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const supabase = createServerSupabase()
@@ -18,7 +18,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { userId } = await auth()
+  const userId = (await getAuthUser())?.id
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!await isAdmin()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     .insert({
       name: body.name,
       portrait_url: body.portrait_url || null,
-      clerk_user_id: body.clerk_user_id || null,
+      user_id: body.user_id || null,
       level: body.level ?? null,
       class: body.class || null,
       race: body.race || null,

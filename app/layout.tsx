@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Cinzel, IM_Fell_English } from 'next/font/google'
-import { ClerkProvider } from '@clerk/nextjs'
+import AuthProvider from '@/components/auth/AuthProvider'
+import { getAuthUser, displayName } from '@/lib/auth'
 import './globals.css'
 
 const cinzel = Cinzel({
@@ -56,16 +57,21 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const user = await getAuthUser()
+  const initialUser = user
+    ? { id: user.id, email: user.email ?? null, name: displayName(user) || null }
+    : null
+
   return (
-    <ClerkProvider>
-      <html lang="en" className={`${cinzel.variable} ${imFell.variable}`}>
-        <body>{children}</body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" className={`${cinzel.variable} ${imFell.variable}`}>
+      <body>
+        <AuthProvider initialUser={initialUser}>{children}</AuthProvider>
+      </body>
+    </html>
   )
 }

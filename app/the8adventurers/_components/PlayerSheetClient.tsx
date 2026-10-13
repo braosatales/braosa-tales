@@ -83,7 +83,7 @@ function HpBar({ current, max }: { current: number; max: number }) {
 type EditFormState = {
   name: string
   portrait_url: string
-  clerk_user_id: string
+  user_id: string
   level: string
   class: string
   race: string
@@ -109,7 +109,7 @@ function playerToEditForm(p: Player, rows: PlayerFieldSecrecy[]): EditFormState 
   return {
     name: p.name,
     portrait_url: p.portrait_url ?? '',
-    clerk_user_id: p.clerk_user_id ?? '',
+    user_id: p.user_id ?? '',
     level: p.level?.toString() ?? '',
     class: p.class ?? '',
     race: p.race ?? '',
@@ -176,7 +176,7 @@ export default function PlayerSheetClient({ player, secrecyRows, isAdmin, fullPl
     const body = {
       name: editForm.name.trim(),
       portrait_url: editForm.portrait_url.trim() || null,
-      clerk_user_id: editForm.clerk_user_id.trim() || null,
+      user_id: editForm.user_id.trim() || null,
       level: numOrNull(editForm.level),
       class: editForm.class.trim() || null,
       race: editForm.race.trim() || null,
@@ -323,8 +323,8 @@ export default function PlayerSheetClient({ player, secrecyRows, isAdmin, fullPl
                   <input type="text" value={editForm.name} onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))} className={inputCls} />
                 </div>
                 <div>
-                  <label className="section-label block mb-1">Clerk User ID</label>
-                  <input type="text" value={editForm.clerk_user_id} onChange={(e) => setEditForm((f) => ({ ...f, clerk_user_id: e.target.value }))} className={inputCls} placeholder="user_…" />
+                  <label className="section-label block mb-1">Linked account (user ID)</label>
+                  <input type="text" value={editForm.user_id} onChange={(e) => setEditForm((f) => ({ ...f, user_id: e.target.value }))} className={inputCls} placeholder="Supabase Auth user UUID (optional)" />
                 </div>
               </div>
 

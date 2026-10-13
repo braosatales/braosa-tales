@@ -1,10 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
+import { getAuthUser } from '@/lib/auth'
 import { NextResponse } from 'next/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
 
 export async function GET(_req: Request, { params }: { params: { id: string } }) {
-  const { userId } = await auth()
+  const userId = (await getAuthUser())?.id
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const supabase = createServerSupabase()
@@ -27,7 +27,7 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
 }
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  const { userId } = await auth()
+  const userId = (await getAuthUser())?.id
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!await isAdmin()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
@@ -70,7 +70,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
-  const { userId } = await auth()
+  const userId = (await getAuthUser())?.id
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!await isAdmin()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 

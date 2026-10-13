@@ -1,37 +1,13 @@
-import { authMiddleware } from '@clerk/nextjs/server'
+import { type NextRequest } from 'next/server'
+import { updateSession } from '@/lib/supabase/middleware'
 
-export default authMiddleware({
-  publicRoutes: [
-    '/',
-    '/pricing(.*)',
-    '/atelier(.*)',
-    '/stories(.*)',
-    '/games(.*)',
-    '/blog(.*)',
-    '/about(.*)',
-    '/tools(.*)',
-    '/privacy',
-    '/terms',
-    '/contact',
-    '/sitemap.xml',
-    '/robots.txt',
-    '/login(.*)',
-    '/signup(.*)',
-    '/sign-in(.*)',
-    '/sign-up(.*)',
-    '/api/webhook(.*)',
-    '/api/webhooks/clerk',
-    '/api/waitlist',
-    '/api/newsletter',
-    '/api/webhooks/stripe',
-    '/api/checkout',
-    '/atelier/signet(.*)',
-  ],
-})
+export async function middleware(request: NextRequest) {
+  return updateSession(request)
+}
 
 export const config = {
   matcher: [
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    '/(api|trpc)(.*)',
+    // Everything except Next internals and static files.
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml|webmanifest)$).*)',
   ],
 }

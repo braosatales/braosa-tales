@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAuthUser } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
+  // Auth required — never let the Anthropic key be used anonymously.
+  const user = await getAuthUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
   const { prompt } = await req.json();
   const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",

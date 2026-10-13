@@ -1,9 +1,9 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabase, getUserByClerkId } from '@/lib/supabase-server'
+import { createServerSupabase } from '@/lib/supabase-server'
+import { getAuthUser, displayName } from '@/lib/auth'
 
 export async function POST(req: NextRequest) {
-  const { userId } = await auth()
+  const user = await getAuthUser()
   const body = await req.json()
   const { type, message, context } = body
 
@@ -15,12 +15,9 @@ export async function POST(req: NextRequest) {
 
   let userEmail = 'anonymous'
   let userName  = 'anonymous'
-  if (userId) {
-    const user = await getUserByClerkId(userId)
-    if (user) {
-      userEmail = user.email || 'unknown'
-      userName  = user.full_name || 'unknown'
-    }
+  if (user) {
+    userEmail = user.email || 'unknown'
+    userName  = displayName(user) || 'unknown'
   }
 
   const { error } = await supabase

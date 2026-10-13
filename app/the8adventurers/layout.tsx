@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server'
+import { getAuthUser } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
 import Sidebar from './_components/Sidebar'
@@ -8,8 +8,8 @@ export const metadata = {
 }
 
 export default async function The8AdventurersLayout({ children }: { children: React.ReactNode }) {
-  const { userId } = await auth()
-  if (!userId) redirect('/sign-in')
+  const user = await getAuthUser()
+  if (!user) redirect('/sign-in?next=/the8adventurers')
 
   const admin = await isAdmin()
 

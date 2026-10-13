@@ -1,4 +1,4 @@
-import { auth } from '@clerk/nextjs/server'
+import { getAuthUser } from '@/lib/auth'
 import { NextResponse } from 'next/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
@@ -7,7 +7,7 @@ import { isAdmin } from '@/lib/the8adventurers/isAdmin'
 // Body: FormData with `file` (image) and `path` (storage subfolder, e.g. "portraits/lore")
 // Returns: { url: string }
 export async function POST(req: Request) {
-  const { userId } = await auth()
+  const userId = (await getAuthUser())?.id
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!await isAdmin()) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 

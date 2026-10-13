@@ -1,15 +1,15 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabase, getUserByClerkId } from '@/lib/supabase-server'
+import { createServerSupabase } from '@/lib/supabase-server'
+import { getAuthUser, getUserProfile } from '@/lib/auth'
 
 export async function POST(req: NextRequest) {
-  const { userId } = await auth()
-  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const authUser = await getAuthUser()
+  if (!authUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await req.json()
   const { creditsToUse = 1, target = '', languages = [], vibe = '', themes = [], style = '', concept = '' } = body
 
-  const user = await getUserByClerkId(userId)
+  const user = await getUserProfile(authUser.id)
   if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
   const totalAvailable = (user.credits || 0) + (user.daily_credits || 0)
   if (totalAvailable < creditsToUse) return NextResponse.json({ error: 'Insufficient credits' }, { status: 402 })

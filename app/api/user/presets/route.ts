@@ -1,13 +1,10 @@
-import { auth } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerSupabase, getUserByClerkId } from '@/lib/supabase-server'
+import { createServerSupabase } from '@/lib/supabase-server'
+import { getAuthUser } from '@/lib/auth'
 
 export async function GET() {
-  const { userId } = await auth()
-  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getUserByClerkId(userId)
-  if (!user) return NextResponse.json([])
+  const user = await getAuthUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const supabase = createServerSupabase()
   const { data } = await supabase
@@ -20,11 +17,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const { userId } = await auth()
-  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getUserByClerkId(userId)
-  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
+  const user = await getAuthUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { name, settings, favourite } = await req.json()
 
@@ -40,11 +34,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const { userId } = await auth()
-  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getUserByClerkId(userId)
-  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
+  const user = await getAuthUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { id, favourite } = await req.json()
   const supabase = createServerSupabase()
@@ -66,11 +57,8 @@ export async function PATCH(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const { userId } = await auth()
-  if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const user = await getUserByClerkId(userId)
-  if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 })
+  const user = await getAuthUser()
+  if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { searchParams } = new URL(req.url)
   const id = searchParams.get('id')

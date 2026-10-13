@@ -1,10 +1,11 @@
-import { currentUser } from '@clerk/nextjs/server'
+import { getAuthUser } from '@/lib/auth'
 
 const ADMIN_EMAIL = 'braosa.tales@gmail.com'
 
 export async function isAdmin(): Promise<boolean> {
-  const user = await currentUser()
-  if (!user) return false
-  const email = user.emailAddresses[0]?.emailAddress ?? ''
-  return email.toLowerCase() === ADMIN_EMAIL
+  const user = await getAuthUser()
+  if (!user?.email) return false
+  // Require a verified address — otherwise anyone could sign up with the admin email.
+  if (!user.email_confirmed_at) return false
+  return user.email.toLowerCase() === ADMIN_EMAIL
 }

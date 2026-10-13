@@ -7,6 +7,8 @@
 - **Framework**: Next.js 14 (App Router)
 - **Styling**: Tailwind CSS with brand tokens
 - **Fonts**: Cinzel (display) + Lora (body) via next/font/google
+- **Auth + DB**: Supabase (Auth via `@supabase/ssr`; `users.id = auth.uid()`)
+- **Payments**: Stripe
 - **Hosting**: Vercel (recommended)
 - **Domain**: Cloudflare DNS → Vercel
 
@@ -54,7 +56,7 @@ Then uncomment the `<Image>` in `components/Nav.tsx`.
 - [x] Hero, Pillars, Tools, Stories, Games, Newsletter, Footer
 
 ### Phase 2 — Auth + Dashboard
-- [ ] Clerk integration for login/signup
+- [x] Supabase Auth — email + password, Google, password reset (`/sign-in`, `/sign-up`)
 - [ ] User dashboard (saved campaigns, purchases)
 
 ### Phase 3 — E-commerce

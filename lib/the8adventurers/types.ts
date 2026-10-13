@@ -63,7 +63,7 @@ export type Player = {
   id: string
   name: string
   portrait_url: string | null
-  clerk_user_id: string | null
+  user_id: string | null
   level: number | null
   class: string | null
   race: string | null

@@ -1,9 +1,9 @@
-import { auth } from '@clerk/nextjs/server'
+import { getAuthUser } from '@/lib/auth'
 import { NextResponse } from 'next/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 
 export async function GET() {
-  const { userId } = await auth()
+  const userId = (await getAuthUser())?.id
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const supabase = createServerSupabase()
@@ -17,7 +17,7 @@ export async function GET() {
 }
 
 export async function PUT(req: Request) {
-  const { userId } = await auth()
+  const userId = (await getAuthUser())?.id
   if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { content } = await req.json()

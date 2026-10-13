@@ -1,7 +1,7 @@
--- Users (CRM)
+-- Users (CRM) — id IS the Supabase Auth user id (auth.uid()).
+-- Rows are created/reclaimed by the on_auth_user_confirmed trigger (see auth_migration_supabase.sql).
 create table users (
-  id uuid primary key default gen_random_uuid(),
-  clerk_id text unique not null,
+  id uuid primary key references auth.users(id) on delete cascade,
   email text not null,
   full_name text,
   tier text default 'wanderer',
@@ -93,13 +93,12 @@ alter table waitlist enable row level security;
 alter table newsletter enable row level security;
 alter table stripe_events enable row level security;
 
--- RLS Policies
-create policy "Users can read own row" on users for select using (clerk_id = current_setting('app.clerk_id', true));
-create policy "Users can update own row" on users for update using (clerk_id = current_setting('app.clerk_id', true));
-create policy "Users can read own saved names" on saved_names for all using (user_id = (select id from users where clerk_id = current_setting('app.clerk_id', true)));
-create policy "Users can read own history" on generation_history for all using (user_id = (select id from users where clerk_id = current_setting('app.clerk_id', true)));
-create policy "Users can read own name log" on generated_names_log for all using (user_id = (select id from users where clerk_id = current_setting('app.clerk_id', true)));
-create policy "Users can read own presets" on presets for all using (user_id = (select id from users where clerk_id = current_setting('app.clerk_id', true)));
+-- RLS Policies (writes go through the service role; users can never update their own credits/tier)
+create policy "users_select_own" on users for select using (id = auth.uid());
+create policy "saved_names_own" on saved_names for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "presets_own" on presets for all using (user_id = auth.uid()) with check (user_id = auth.uid());
+create policy "generation_history_select_own" on generation_history for select using (user_id = auth.uid());
+create policy "generated_names_log_select_own" on generated_names_log for select using (user_id = auth.uid());
 create policy "Anyone can insert waitlist" on waitlist for insert with check (true);
 create policy "Anyone can insert newsletter" on newsletter for insert with check (true);
 create policy "Service role only on stripe_events" on stripe_events for all using (false);
