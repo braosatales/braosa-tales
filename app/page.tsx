@@ -43,7 +43,7 @@ export default function Home() {
 
           {/* Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
-            {/* Waypoint */}
+            {/* Waypoint — coming soon */}
             <div className="relative rounded-xl p-6 flex flex-col gap-3"
                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,174,88,0.15)' }}>
               <span className="absolute top-3 right-3 text-xs border border-[#D4AE58] text-[#D4AE58] rounded-full px-2 py-0.5 opacity-70">
@@ -54,18 +54,16 @@ export default function Home() {
                 Personal goals, tracked with intention. Share your progress with the people that matter.
               </p>
               <div className="mt-auto pt-2">
-                <a
-                  href="https://goals.braosatales.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block text-sm border border-[#D4AE58] text-[#D4AE58] rounded-full px-4 py-1.5 hover:bg-[#D4AE58] hover:text-brand-bg transition-colors duration-200"
+                <button
+                  disabled
+                  className="inline-block text-sm border border-[#D4AE58] text-[#D4AE58] rounded-full px-4 py-1.5 opacity-40 cursor-not-allowed"
                 >
-                  Open Waypoint
-                </a>
+                  Coming Soon
+                </button>
               </div>
             </div>
 
-            {/* Purse */}
+            {/* Purse — coming soon */}
             <div className="relative rounded-xl p-6 flex flex-col gap-3"
                  style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(212,174,88,0.15)' }}>
               <span className="absolute top-3 right-3 text-xs border border-[#D4AE58] text-[#D4AE58] rounded-full px-2 py-0.5 opacity-70">
@@ -76,14 +74,12 @@ export default function Home() {
                 Simple budget and finance tracking. Invite others and manage up to three shared spaces.
               </p>
               <div className="mt-auto pt-2">
-                <a
-                  href="https://budget.braosatales.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block text-sm border border-[#D4AE58] text-[#D4AE58] rounded-full px-4 py-1.5 hover:bg-[#D4AE58] hover:text-brand-bg transition-colors duration-200"
+                <button
+                  disabled
+                  className="inline-block text-sm border border-[#D4AE58] text-[#D4AE58] rounded-full px-4 py-1.5 opacity-40 cursor-not-allowed"
                 >
-                  Open Purse
-                </a>
+                  Coming Soon
+                </button>
               </div>
             </div>
 
