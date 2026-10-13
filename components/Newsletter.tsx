@@ -33,40 +33,44 @@ export default function Newsletter() {
   }
 
   return (
-    <section className="px-8 py-10 md:py-20 border-t border-brand-border text-center">
-      <div className="max-w-md mx-auto">
-        <p className="section-label">Stay in the loop</p>
-        <h2 className="font-cinzel font-bold text-brand-parchment text-2xl mb-2">Join the Chronicle</h2>
-        <p className="font-fell italic text-brand-muted mb-8 leading-relaxed">
-          New tools, new stories, new sessions. No noise.
+    <section id="quill-end" className="border-t border-plum-line">
+      <div className="mx-auto max-w-xl px-6 py-20 text-center md:py-24">
+        <h2 className="font-cinzel text-[1.8rem] font-bold text-vellum">The Chronicle</h2>
+        <p className="mt-3 leading-relaxed text-prose">
+          New seats, new tools and new stories, in one short email when there’s something worth telling.
         </p>
         {success ? (
-          <p className="font-fell text-[#D4AE58]">Welcome to the Chronicle.</p>
+          <p role="status" className="mt-8 text-leaf-soft">You’re in. Watch your inbox for the next Chronicle.</p>
         ) : (
-          <>
-            <div className="flex flex-col sm:flex-row gap-2">
+          <form
+            className="mt-8"
+            onSubmit={(e) => {
+              e.preventDefault()
+              handleSubmit()
+            }}
+          >
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <label htmlFor="chronicle-email" className="sr-only">Email address</label>
               <input
+                id="chronicle-email"
                 type="email"
-                placeholder="your@email.com"
+                required
+                autoComplete="email"
+                placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 bg-brand-card border border-brand-border rounded-sm px-4 py-3 text-sm text-brand-parchment placeholder-brand-muted focus:outline-none focus:border-brand-purple-600 font-fell"
+                className="flex-1 rounded-full border border-plum-line bg-plum px-5 py-3 text-prose placeholder:text-mist/50 focus:border-leaf focus:outline-none"
               />
-              <button
-                type="button"
-                onClick={handleSubmit}
-                disabled={loading}
-                className="btn-primary whitespace-nowrap"
-              >
-                {loading ? 'Subscribing...' : 'Subscribe'}
+              <button type="submit" disabled={loading} className="btn-gold whitespace-nowrap disabled:opacity-60">
+                {loading ? 'Subscribing…' : 'Subscribe'}
               </button>
             </div>
             {error && (
-              <p className={`font-fell text-sm mt-3 ${error.includes('already') ? 'text-[#D4AE58]' : 'text-red-400'}`}>
+              <p role="alert" className={`mt-3 text-[0.9rem] ${error.includes('already') ? 'text-leaf-soft' : 'text-red-300'}`}>
                 {error}
               </p>
             )}
-          </>
+          </form>
         )}
       </div>
     </section>

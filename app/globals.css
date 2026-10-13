@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 :root {
-  --font-cinzel: 'Cinzel', Georgia, serif;
-  --font-fell: 'IM Fell English', Georgia, serif;
+  color-scheme: dark;
+}
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 }
 
 @layer base {
@@ -12,9 +16,12 @@
   body {
     background-color: #0A0712;
     color: #F0E4C4;
-    font-family: var(--font-fell);
+    font-family: var(--font-fell), Georgia, serif;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
+  ::selection { background: rgba(212, 174, 88, 0.35); color: #F3E9D2; }
+  :focus-visible { outline: 2px solid #D4AE58; outline-offset: 3px; border-radius: 2px; }
 }
 
 @layer components {
@@ -53,6 +60,23 @@
   .dark-card {
     @apply bg-brand-card border border-brand-border rounded-sm p-6
            hover:border-brand-purple-600/50 transition-colors duration-200;
+  }
+
+  /* ——— 2026 refresh ——— */
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-leaf px-6 py-3 font-cinzel text-[0.8rem] font-bold
+           tracking-[0.08em] text-night transition-colors duration-200 hover:bg-leaf-soft;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-vellum/25 px-6 py-3 font-cinzel
+           text-[0.8rem] font-bold tracking-[0.08em] text-vellum transition-colors duration-200 hover:border-leaf hover:text-leaf-soft;
+  }
+  .btn-amethyst {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-amethyst-deep px-6 py-3 font-cinzel text-[0.8rem]
+           font-bold tracking-[0.08em] text-vellum transition-colors duration-200 hover:bg-amethyst;
+  }
+  .link-quiet {
+    @apply text-leaf-soft underline decoration-leaf/40 underline-offset-[0.3em] transition-colors hover:text-vellum hover:decoration-vellum/60;
   }
 
   .ornament {

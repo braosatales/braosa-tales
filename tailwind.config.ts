@@ -29,11 +29,23 @@ const config: Config = {
           parchment: '#F0E4C4',
           muted: '#C8B8D8',
         },
+        // 2026 refresh — readable, warmer, two "rooms": tavern (sessions) and workshop (atelier)
+        night: '#0F0B16',      // page
+        plum: { DEFAULT: '#1A1424', line: '#2E2440' },          // workshop surfaces
+        umber: { DEFAULT: '#1C130C', deep: '#140D08', line: '#3D2A1B' }, // tavern surfaces
+        vellum: '#F3E9D2',     // headings
+        prose: '#DCD2E6',      // body text
+        mist: '#A99DBC',       // secondary text
+        leaf: { DEFAULT: '#D4AE58', soft: '#E8CF8E', deep: '#9C7A2F' }, // gold leaf
+        ember: '#C98B4E',      // warm accent on brown
+        amethyst: { DEFAULT: '#8F87E6', deep: '#534AB7' },
       },
       fontFamily: {
         cinzel: ['var(--font-cinzel)', 'Georgia', 'serif'],
         fell: ['var(--font-fell)', 'Georgia', 'serif'],
+        text: ['var(--font-fell)', 'Georgia', 'serif'],
       },
+      maxWidth: { measure: '34em' },
     },
   },
   plugins: [],

@@ -1,20 +1,23 @@
 import type { Metadata } from 'next'
-import { Cinzel, IM_Fell_English } from 'next/font/google'
+import localFont from 'next/font/local'
 import AuthProvider from '@/components/auth/AuthProvider'
 import { getAuthUser, displayName } from '@/lib/auth'
 import './globals.css'
 
-const cinzel = Cinzel({
-  subsets: ['latin'],
-  weight: ['400', '700', '900'],
+// Self-hosted (no Google Fonts request at build or runtime).
+// Cinzel: display. Alegreya: reading text (replaces IM Fell English — far more legible).
+const cinzel = localFont({
+  src: '../node_modules/@fontsource-variable/cinzel/files/cinzel-latin-wght-normal.woff2',
+  weight: '400 900',
   variable: '--font-cinzel',
   display: 'swap',
 })
 
-const imFell = IM_Fell_English({
-  subsets: ['latin'],
-  weight: ['400'],
-  style: ['normal', 'italic'],
+const alegreya = localFont({
+  src: [
+    { path: '../node_modules/@fontsource-variable/alegreya/files/alegreya-latin-wght-normal.woff2', weight: '400 900', style: 'normal' },
+    { path: '../node_modules/@fontsource-variable/alegreya/files/alegreya-latin-wght-italic.woff2', weight: '400 900', style: 'italic' },
+  ],
   variable: '--font-fell',
   display: 'swap',
 })
@@ -68,7 +71,7 @@ export default async function RootLayout({
     : null
 
   return (
-    <html lang="en" className={`${cinzel.variable} ${imFell.variable}`}>
+    <html lang="en" className={`${cinzel.variable} ${alegreya.variable}`}>
       <body>
         <AuthProvider initialUser={initialUser}>{children}</AuthProvider>
       </body>
