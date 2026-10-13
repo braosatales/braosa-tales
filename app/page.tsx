@@ -6,14 +6,12 @@ import StoriesTeaser from '@/components/home/StoriesTeaser'
 import KeepersLife from '@/components/home/KeepersLife'
 import Newsletter from '@/components/Newsletter'
 import Footer from '@/components/Footer'
-import Quill from '@/components/home/Quill'
 
 export default function Home() {
   return (
     <main className="bg-night">
       <Nav />
-      <div className="relative">
-        <Quill />
+      <div>
         <HomeHero />
         <NowPlaying />
         <AtelierTeaser />

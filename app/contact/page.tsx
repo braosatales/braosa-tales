@@ -17,38 +17,29 @@ const topics = [
 
 export default function ContactPage() {
   return (
-    <LegalPage eyebrow="Get in touch" title="Contact" intro="Every message is read by a real person at the table.">
-      <div className="text-center mb-10">
-        <p className="section-label">Email</p>
-        <a
-          href={`mailto:${CONTACT_EMAIL}`}
-          className="font-cinzel text-xl md:text-2xl text-brand-gold-300 hover:text-brand-parchment tracking-wider break-all"
-        >
-          {CONTACT_EMAIL}
-        </a>
-        <p className="font-fell text-brand-muted mt-3">We usually reply within a few working days.</p>
-      </div>
+    <LegalPage title="Contact" intro="Every message is read by a real person at the table.">
+      <p className="text-mist">Email</p>
+      <a href={`mailto:${CONTACT_EMAIL}`} className="mt-1 inline-block break-all font-cinzel text-[1.5rem] font-bold text-leaf-soft hover:text-vellum md:text-[1.9rem]">
+        {CONTACT_EMAIL}
+      </a>
+      <p className="mt-2 text-mist">We usually reply within a few working days.</p>
 
-      <div className="grid sm:grid-cols-2 gap-4">
+      <ul className="mt-12 grid gap-x-10 border-t border-plum-line sm:grid-cols-2">
         {topics.map((t) => (
-          <a
-            key={t.label}
-            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`[Braosa Tales] ${t.subject}`)}`}
-            className="dark-card block group"
-          >
-            <p className="section-label">{t.label}</p>
-            <p className="font-fell text-brand-muted leading-relaxed">{t.text}</p>
-            <p className="mt-3 font-cinzel text-xs tracking-widest uppercase text-brand-gold-300 group-hover:text-brand-parchment">
-              Write to us →
-            </p>
-          </a>
+          <li key={t.label} className="border-b border-plum-line py-5">
+            <a href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`[Braosa Tales] ${t.subject}`)}`} className="group block">
+              <p className="font-cinzel text-[1.1rem] font-bold text-vellum group-hover:text-leaf-soft">{t.label}</p>
+              <p className="mt-1 leading-snug text-prose">{t.text}</p>
+              <p className="mt-2 text-[0.9rem] text-leaf-soft underline decoration-leaf/40 underline-offset-[0.3em]">Write to us</p>
+            </a>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <p className="font-fell text-brand-muted text-center mt-10">
-        Braosa Tales is operated by João Fidalgo Rodrigues · Montijo, Portugal ·{' '}
-        <Link href="/privacy" className="text-brand-gold-300 hover:text-brand-parchment">Privacy</Link> ·{' '}
-        <Link href="/terms" className="text-brand-gold-300 hover:text-brand-parchment">Terms</Link>
+      <p className="mt-12 text-[0.95rem] text-mist">
+        Braosa Tales is run by João Fidalgo Rodrigues in Montijo, Portugal. See the{' '}
+        <Link href="/privacy" className="link-quiet">privacy policy</Link> and{' '}
+        <Link href="/terms" className="link-quiet">terms</Link>.
       </p>
     </LegalPage>
   )

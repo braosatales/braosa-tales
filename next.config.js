@@ -17,6 +17,7 @@ const nextConfig = {
       // Old auth URLs → new pages
       { source: '/login', destination: '/sign-in', permanent: false },
       { source: '/signup', destination: '/sign-up', permanent: false },
+      { source: '/tools', destination: '/atelier', permanent: true },
     ]
   },
 }

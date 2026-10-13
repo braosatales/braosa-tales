@@ -58,8 +58,7 @@ html { scroll-behavior: smooth; }
   }
 
   .dark-card {
-    @apply bg-brand-card border border-brand-border rounded-sm p-6
-           hover:border-brand-purple-600/50 transition-colors duration-200;
+    @apply rounded-2xl border border-plum-line bg-plum p-6;
   }
 
   /* ——— 2026 refresh ——— */

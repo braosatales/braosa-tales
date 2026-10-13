@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import Nav from '@/components/Nav'
+import PageHero, { SectionTitle } from '@/components/PageHero'
 import Footer from '@/components/Footer'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -189,7 +190,6 @@ const PRICES = {
 }
 
 export default function PricingPage() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [loadingTier, setLoadingTier] = useState<string | null>(null)
   const [currency, setCurrency] = useState<'usd' | 'eur'>('usd')
   const router = useRouter()
@@ -218,164 +218,124 @@ export default function PricingPage() {
     }
   }
 
-  return (
-    <main>
-      <Nav />
+  const price = (t: Tier) => PRICES[t.id as keyof typeof PRICES]?.[currency]
 
-      {/* Hero */}
-      <section className="px-8 pt-[calc(64px+1.5rem)] md:pt-24 pb-8 md:pb-14 text-center border-b border-brand-border">
-        <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
-          Choose Your Path
-        </h1>
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="h-px w-16 bg-brand-gold-400/30" />
-          <span className="text-brand-gold-400/50 text-xs">✦</span>
-          <div className="h-px w-16 bg-brand-gold-400/30" />
+  const TierCard = ({ tier }: { tier: Tier }) => {
+    const featured = !!tier.badge
+    return (
+      <div
+        className={`flex flex-col rounded-2xl border p-6 ${
+          tier.lifetime
+            ? 'border-leaf/40 bg-umber'
+            : featured
+              ? 'border-leaf/60 bg-plum shadow-[0_0_0_1px_rgba(212,174,88,0.15)]'
+              : 'border-plum-line bg-plum/60'
+        }`}
+      >
+        <div className="flex items-center justify-between gap-3">
+          <Image src={`/icons/${tier.icon}`} width={40} height={40} alt="" unoptimized />
+          {tier.badge && <span className="rounded-full bg-leaf/15 px-3 py-1 text-[0.72rem] font-bold text-leaf-soft">{tier.badge}</span>}
+          {tier.lifetime && <span className="rounded-full bg-ember/15 px-3 py-1 text-[0.72rem] font-bold text-ember">Pay once</span>}
         </div>
-        <p className="font-fell text-brand-gold-300 text-xl md:text-2xl max-w-lg mx-auto leading-relaxed opacity-90">
-          Begin free. Forge deeper when you&apos;re ready.
+        <h2 className="mt-4 font-cinzel text-[1.35rem] font-bold text-vellum">{tier.name}</h2>
+        <p className="mt-1 text-[0.9rem] leading-snug text-mist">{tier.flavour}</p>
+        <p className="mt-5 flex items-baseline gap-1">
+          <span className="font-cinzel text-[2rem] font-bold text-vellum">{price(tier)}</span>
+          {tier.id !== 'wanderer' && <span className="text-mist">{tier.lifetime ? 'once' : '/month'}</span>}
         </p>
-      </section>
+        <ul className="mt-5 flex-1 space-y-2">
+          {tier.features.map((f) => (
+            <li key={f.text} className={`flex items-start gap-2 text-[0.9rem] leading-snug ${f.included ? 'text-prose' : 'text-mist/50 line-through decoration-mist/30'}`}>
+              <span aria-hidden="true" className={`mt-[0.1em] shrink-0 ${f.included ? 'text-leaf' : ''}`}>{f.included ? '✓' : '–'}</span>
+              <span>
+                <span className="sr-only">{f.included ? 'Included: ' : 'Not included: '}</span>
+                {f.text}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <button
+          type="button"
+          className={`${featured || tier.lifetime ? 'btn-gold' : 'btn-ghost'} mt-7 w-full disabled:opacity-60`}
+          disabled={loadingTier === tier.id}
+          onClick={() => handleCheckout(tier)}
+        >
+          {loadingTier === tier.id ? 'Opening checkout…' : tier.id === 'wanderer' ? 'Start free' : tier.lifetime ? 'Claim lifetime access' : `Choose ${tier.name}`}
+        </button>
+      </div>
+    )
+  }
 
-      {/* Tier Cards */}
-      <section className="px-8 pt-2 pb-10 md:pb-20 border-b border-brand-border">
-        <div className="flex justify-center mb-5">
-          <div
-            className="relative flex items-center rounded-full border border-[#D4AE58] overflow-hidden"
-            style={{ width: '180px', height: '40px', background: 'transparent' }}
-          >
-            {/* Sliding gold indicator */}
-            <div
-              className="absolute top-0 bottom-0 w-1/2 bg-[#D4AE58] rounded-full transition-all duration-200 ease-in-out"
-              style={{ left: currency === 'usd' ? '0%' : '50%' }}
-            />
-            {/* USD option */}
+  return (
+    <main className="bg-night">
+      <Nav />
+      <PageHero
+        tone="plum"
+        title="Plans for the Atelier"
+        intro="Begin free. Forge deeper when you’re ready."
+      >
+        <div role="group" aria-label="Currency" className="inline-flex rounded-full border border-leaf/50 p-1">
+          {(['usd', 'eur'] as const).map((c) => (
             <button
-              onClick={() => setCurrency('usd')}
-              className="relative z-10 flex-1 h-full text-sm font-semibold transition-colors duration-200"
-              style={{ color: currency === 'usd' ? '#12100D' : '#D4AE58' }}
+              key={c}
+              type="button"
+              aria-pressed={currency === c}
+              onClick={() => setCurrency(c)}
+              className={`rounded-full px-5 py-1.5 text-[0.85rem] font-bold transition-colors ${
+                currency === c ? 'bg-leaf text-night' : 'text-leaf-soft hover:text-vellum'
+              }`}
             >
-              $ USD
+              {c === 'usd' ? '$ USD' : '€ EUR'}
             </button>
-            {/* EUR option */}
-            <button
-              onClick={() => setCurrency('eur')}
-              className="relative z-10 flex-1 h-full text-sm font-semibold transition-colors duration-200"
-              style={{ color: currency === 'eur' ? '#12100D' : '#D4AE58' }}
-            >
-              € EUR
-            </button>
-          </div>
-        </div>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6">
-          {tiers.map((tier) => (
-            <div
-              key={tier.name}
-              className={`dark-card flex flex-col ${tier.borderClass ?? ''} ${tier.lifetime ? 'p-8' : ''}`}
-            >
-              {tier.lifetime && (
-                <p className="section-label mb-1">Lifetime</p>
-              )}
-              {tier.badge && (
-                <span className="inline-block self-start mb-2 font-cinzel text-xs tracking-widest uppercase text-brand-gold-400 bg-brand-gold-400/10 border border-brand-gold-400/30 px-2 py-0.5 rounded-sm">
-                  {tier.badge}
-                </span>
-              )}
-              <div className="flex items-center gap-3 mb-1">
-                <Image src={`/icons/${tier.icon}`} width={48} height={48} alt={tier.name} unoptimized />
-                <h2 className="font-cinzel font-black text-brand-parchment text-2xl">
-                  {tier.name}
-                </h2>
-              </div>
-              <div className="flex items-baseline gap-1 mb-2">
-                <span className="font-cinzel font-black text-brand-gold-400 text-4xl">
-                  {PRICES[tier.id as keyof typeof PRICES]?.[currency]}
-                </span>
-                {tier.id !== 'wanderer' && tier.id !== 'author' && (
-                  <span className="font-cinzel text-brand-muted text-sm">/mo</span>
-                )}
-              </div>
-              <p className="font-fell text-brand-gold-300 text-sm mb-6 opacity-80">
-                {tier.flavour}
-              </p>
-              <ul className="flex flex-col gap-2 mb-8 flex-1">
-                {tier.features.map((f) => (
-                  <li
-                    key={f.text}
-                    className={`font-fell text-sm flex items-start gap-2 ${f.included ? 'text-brand-parchment' : 'text-brand-muted opacity-50'}`}
-                  >
-                    <span className="mt-0.5 shrink-0">{f.included ? '✓' : '—'}</span>
-                    <span>{f.text}</span>
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                className="btn-primary w-full"
-                disabled={loadingTier === tier.id}
-                onClick={() => {
-                  console.log('Button clicked:', tier)
-                  handleCheckout(tier)
-                }}
-              >
-                {loadingTier === tier.id ? 'Loading...' : tier.cta}
-              </button>
-            </div>
           ))}
         </div>
-      </section>
+      </PageHero>
 
-      {/* Credit System Explainer */}
-      <section className="bg-brand-card px-8 py-10 md:py-20 border-b border-brand-border">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="font-cinzel font-black text-brand-parchment text-3xl text-center mb-5 md:mb-10">
-            How Credits Work
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6 mb-4 md:mb-8">
-            {creditTiers.map((ct) => (
-              <div key={ct.label} className="dark-card">
-                <div className="flex gap-1.5 mb-4">
-                  {Array.from({ length: ct.dots }).map((_, i) => (
-                    <div key={i} className="w-3 h-3 rounded-full bg-brand-gold-400" />
-                  ))}
-                </div>
-                <p className="font-cinzel font-black text-brand-parchment text-lg mb-1">{ct.label}</p>
-                <p className="font-fell text-brand-gold-300 text-sm mb-3 opacity-80">{ct.subtitle}</p>
-                <p className="font-cinzel text-xs tracking-widest uppercase text-brand-muted">{ct.cost}</p>
-              </div>
+      <section className="bg-plum">
+        <div className="mx-auto max-w-[1180px] px-6 pb-20 md:px-10">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {tiers.map((tier) => (
+              <TierCard key={tier.id} tier={tier} />
             ))}
           </div>
-          <p className="font-fell text-brand-gold-300 text-center text-lg opacity-80">
-            Daily refresh credits reset every 24 hours and do not consume your monthly pool.
-          </p>
+
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
-        <div className="max-w-3xl mx-auto">
-          <h2 className="font-cinzel font-black text-brand-parchment text-3xl text-center mb-5 md:mb-10">
-            Questions
-          </h2>
-          <div className="flex flex-col gap-2">
-            {faqs.map((faq, i) => (
-              <div key={i} className="dark-card">
-                <button
-                  type="button"
-                  className="w-full flex items-start justify-between gap-4 text-left"
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                >
-                  <span className="font-cinzel text-sm tracking-wide text-brand-parchment">{faq.q}</span>
-                  <span className="font-cinzel text-brand-muted shrink-0 mt-0.5 text-lg leading-none">
-                    {openFaq === i ? '−' : '+'}
-                  </span>
-                </button>
-                {openFaq === i && (
-                  <p className="font-fell text-brand-muted leading-relaxed mt-4 text-sm">
-                    {faq.a}
-                  </p>
-                )}
-              </div>
+      <section className="mx-auto max-w-[1180px] px-6 py-20 md:px-10 md:py-24">
+        <SectionTitle>How credits work</SectionTitle>
+        <p className="mt-3 max-w-measure leading-relaxed text-prose">
+          Each name The Signet generates costs credits, depending on how many languages you blend.
+        </p>
+        <ul className="mt-10 grid gap-8 border-t border-plum-line pt-8 md:grid-cols-3">
+          {creditTiers.map((ct) => (
+            <li key={ct.label}>
+              <p aria-hidden="true" className="flex gap-1.5">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <span key={i} className={`h-2.5 w-2.5 rounded-full ${i < ct.dots ? 'bg-leaf' : 'bg-plum-line'}`} />
+                ))}
+              </p>
+              <p className="mt-3 font-cinzel text-[1.15rem] font-bold text-vellum">{ct.label}</p>
+              <p className="text-mist">{ct.subtitle}</p>
+              <p className="mt-1 text-leaf-soft">{ct.cost}</p>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-8 text-mist">Daily refresh credits reset every 24 hours and don’t touch your monthly pool.</p>
+      </section>
+
+      <section className="border-t border-plum-line">
+        <div className="mx-auto grid max-w-[1180px] gap-12 px-6 py-20 md:px-10 md:py-24 lg:grid-cols-[1fr_2fr]">
+          <SectionTitle>Questions</SectionTitle>
+          <div className="divide-y divide-plum-line border-y border-plum-line">
+            {faqs.map((f) => (
+              <details key={f.q} className="group py-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-[1.08rem] text-vellum">
+                  {f.q}
+                  <span aria-hidden="true" className="text-leaf transition-transform duration-300 group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-3 max-w-measure leading-relaxed text-prose">{f.a}</p>
+              </details>
             ))}
           </div>
         </div>

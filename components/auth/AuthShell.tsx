@@ -15,27 +15,22 @@ export default function AuthShell({
   footer?: React.ReactNode
 }) {
   return (
-    <main className="min-h-screen bg-brand-bg flex flex-col items-center justify-center px-4 py-12">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-night px-4 py-12">
       <Link href="/" className="mb-8 opacity-90 hover:opacity-100 transition-opacity" aria-label="Braosa Tales home">
         <Image src="/mark-purple.png" alt="" width={44} height={44} />
       </Link>
 
-      <div className="w-full max-w-md bg-brand-card border border-brand-border rounded-sm px-6 py-8 sm:px-8">
+      <div className="w-full max-w-md rounded-2xl border border-plum-line bg-plum px-6 py-8 sm:px-8">
         <div className="text-center">
-          <p className="section-label">{eyebrow}</p>
-          <h1 className="font-cinzel font-bold text-brand-parchment text-2xl tracking-widest uppercase">{title}</h1>
-          {subtitle && <p className="font-fell text-brand-gold-300/80 mt-2 text-base">{subtitle}</p>}
-          <div className="flex items-center justify-center mt-4">
-            <span className="h-px w-16 bg-brand-border" />
-            <span className="ornament text-xs">✦</span>
-            <span className="h-px w-16 bg-brand-border" />
-          </div>
+          <p className="text-[0.95rem] text-leaf-soft">{eyebrow}</p>
+          <h1 className="font-cinzel text-[1.8rem] font-bold text-vellum">{title}</h1>
+          {subtitle && <p className="mt-2 text-mist">{subtitle}</p>}
         </div>
 
         <div className="mt-6">{children}</div>
       </div>
 
-      {footer && <div className="mt-6 text-center text-sm text-brand-muted max-w-md">{footer}</div>}
+      {footer && <div className="mt-6 max-w-md text-center text-[0.9rem] text-mist">{footer}</div>}
     </main>
   )
 }

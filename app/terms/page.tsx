@@ -43,7 +43,7 @@ export default function TermsPage() {
       <UL>
         <li>
           The free plan includes a limited number of credits. Paid plans add more credits and features, as described on the{' '}
-          <Link href="/pricing" className="text-brand-gold-300 underline decoration-brand-gold-400/40 underline-offset-4 hover:text-brand-parchment">pricing page</Link>.
+          <Link href="/pricing" className="link-quiet">pricing page</Link>.
         </li>
         <li>Monthly plans renew automatically each billing period until you cancel. Cancelling stops future renewals; your plan stays active until the end of the period you&apos;ve paid for.</li>
         <li>Credits have no cash value, can&apos;t be transferred, and expire as described on the pricing page (monthly credits reset each billing period; daily credits refresh every 24 hours).</li>
@@ -93,7 +93,7 @@ export default function TermsPage() {
       <H2>9. Privacy</H2>
       <P>
         How we handle your personal data is explained in our{' '}
-        <Link href="/privacy" className="text-brand-gold-300 underline decoration-brand-gold-400/40 underline-offset-4 hover:text-brand-parchment">Privacy Policy</Link>.
+        <Link href="/privacy" className="link-quiet">Privacy Policy</Link>.
       </P>
 
       <H2>10. Changes and ending</H2>

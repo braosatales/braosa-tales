@@ -18,12 +18,12 @@ export default function HomeHero() {
       <div className="absolute inset-x-0 bottom-0 -z-10 h-40 bg-gradient-to-b from-transparent to-night" />
 
       <div className="mx-auto flex min-h-[88svh] max-w-[1180px] flex-col justify-center px-6 pb-20 pt-32 md:px-10">
-        <p className="text-[1.05rem] text-leaf-soft">Live Dungeons &amp; Dragons, online, every week</p>
-        <h1 className="mt-3 max-w-[12ch] font-cinzel text-[2.9rem] font-bold leading-[1.02] tracking-[-0.01em] text-vellum sm:text-[3.6rem] lg:text-[4.4rem]">
-          Sit at our table.
+        <h1 className="font-cinzel text-[2.7rem] font-bold leading-[1.04] tracking-[-0.01em] text-vellum sm:text-[3.4rem] lg:text-[4.2rem]">
+          Every world begins <span className="sm:block">with a word.</span>
         </h1>
-        <p className="mt-6 max-w-measure text-[1.1rem] leading-relaxed text-prose md:text-[1.2rem]">
-          Long campaigns run by {GM.name} for players anywhere in the world, plus the Atelier: the tools
+        <p className="mt-6 font-cinzel text-[1.35rem] font-bold text-leaf-soft md:text-[1.6rem]">Sit at our table.</p>
+        <p className="mt-3 max-w-measure text-[1.1rem] leading-relaxed text-prose md:text-[1.2rem]">
+          Live Dungeons &amp; Dragons campaigns run online every week by {GM.name}, plus the Atelier: the tools
           built to run them, now opening to every game master.
         </p>
 

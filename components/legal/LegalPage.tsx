@@ -1,5 +1,6 @@
 import Nav from '@/components/NavServer'
 import Footer from '@/components/Footer'
+import PageHero from '@/components/PageHero'
 
 export const CONTACT_EMAIL = 'braosa.tales@gmail.com'
 
@@ -10,32 +11,29 @@ export function LegalPage({
   intro,
   children,
 }: {
-  eyebrow: string
+  eyebrow?: string
   title: string
   updated?: string
   intro?: React.ReactNode
   children: React.ReactNode
 }) {
   return (
-    <main>
+    <main className="bg-night">
       <Nav />
-
-      <section className="px-8 pt-[calc(64px+1.5rem)] md:pt-24 pb-8 md:pb-14 text-center border-b border-brand-border">
-        <p className="section-label">{eyebrow}</p>
-        <h1 className="font-cinzel font-black text-brand-parchment text-4xl md:text-5xl mb-4 leading-tight">{title}</h1>
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="h-px w-16 bg-brand-gold-400/30" />
-          <span className="text-brand-gold-400/50 text-xs">✦</span>
-          <div className="h-px w-16 bg-brand-gold-400/30" />
+      <PageHero
+        title={title}
+        intro={
+          <>
+            {intro}
+            {updated && <span className="mt-3 block text-[0.9rem] text-mist">Last updated {updated}</span>}
+          </>
+        }
+      />
+      <section className="border-t border-plum-line">
+        <div className="mx-auto max-w-[1180px] px-6 py-16 md:px-10 md:py-20">
+          <div className="max-w-[44rem]">{children}</div>
         </div>
-        {intro && <p className="font-fell text-[#D4AE58] text-lg md:text-xl max-w-xl mx-auto leading-relaxed opacity-90">{intro}</p>}
-        {updated && <p className="mt-4 text-sm text-brand-muted">Last updated: {updated}</p>}
       </section>
-
-      <section className="px-6 md:px-8 py-10 md:py-16 border-b border-brand-border">
-        <div className="max-w-3xl mx-auto">{children}</div>
-      </section>
-
       <Footer />
     </main>
   )
@@ -43,22 +41,22 @@ export function LegalPage({
 
 export function H2({ id, children }: { id?: string; children: React.ReactNode }) {
   return (
-    <h2 id={id} className="font-cinzel font-bold text-brand-gold-300 text-lg md:text-xl tracking-widest uppercase mt-12 first:mt-0 mb-4 scroll-mt-24">
+    <h2 id={id} className="mb-3 mt-12 scroll-mt-24 font-cinzel text-[1.35rem] font-bold text-vellum first:mt-0">
       {children}
     </h2>
   )
 }
 
 export function P({ children }: { children: React.ReactNode }) {
-  return <p className="font-fell text-brand-muted leading-loose text-base md:text-lg mb-4">{children}</p>
+  return <p className="mb-4 leading-relaxed text-prose">{children}</p>
 }
 
 export function UL({ children }: { children: React.ReactNode }) {
-  return <ul className="font-fell text-brand-muted leading-loose text-base md:text-lg mb-4 pl-6 list-disc marker:text-brand-gold-400 space-y-1">{children}</ul>
+  return <ul className="mb-4 list-disc space-y-2 pl-6 leading-relaxed text-prose marker:text-leaf">{children}</ul>
 }
 
 export function Strong({ children }: { children: React.ReactNode }) {
-  return <strong className="text-brand-parchment font-normal">{children}</strong>
+  return <strong className="font-normal text-vellum">{children}</strong>
 }
 
 export function A({ href, children }: { href: string; children: React.ReactNode }) {
@@ -66,7 +64,7 @@ export function A({ href, children }: { href: string; children: React.ReactNode 
   return (
     <a
       href={href}
-      className="text-brand-gold-300 underline decoration-brand-gold-400/40 underline-offset-4 hover:text-brand-parchment"
+      className="link-quiet"
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
     >
       {children}

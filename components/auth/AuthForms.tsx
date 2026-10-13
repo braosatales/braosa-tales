@@ -7,9 +7,9 @@ import { createClient } from '@/lib/supabase/client'
 import { safeNext } from '@/lib/safe-next'
 
 const inputCls =
-  'w-full bg-brand-bg border border-brand-border rounded-sm px-3 py-2.5 text-base text-brand-parchment ' +
-  'placeholder:text-brand-muted/40 focus:outline-none focus:border-brand-gold-400 transition-colors'
-const linkCls = 'text-brand-gold-300 hover:text-brand-parchment transition-colors'
+  'w-full rounded-lg border border-plum-line bg-night px-4 py-2.5 text-base text-prose ' +
+  'placeholder:text-mist/40 focus:outline-none focus:border-leaf transition-colors'
+const linkCls = 'text-leaf-soft hover:text-vellum transition-colors'
 const MIN_PASSWORD = 8
 
 function callbackUrl(next: string) {
@@ -39,7 +39,7 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="section-label block">{label}</span>
+      <span className="mb-1.5 block text-[0.9rem] text-mist">{label}</span>
       <input
         type={type}
         required
@@ -58,16 +58,16 @@ function Alert({ tone, children }: { tone: 'error' | 'info'; children: React.Rea
   const cls =
     tone === 'error'
       ? 'border-red-400/40 text-red-300 bg-red-950/20'
-      : 'border-brand-gold-400/40 text-brand-gold-300 bg-brand-gold-400/5'
-  return <p role={tone === 'error' ? 'alert' : 'status'} className={`border rounded-sm px-3 py-2 text-sm ${cls}`}>{children}</p>
+      : 'border-leaf/40 text-leaf-soft bg-leaf/5'
+  return <p role={tone === 'error' ? 'alert' : 'status'} className={`border rounded-lg px-3 py-2 text-sm ${cls}`}>{children}</p>
 }
 
 function Divider() {
   return (
     <div className="flex items-center my-5">
-      <span className="h-px flex-1 bg-brand-border" />
-      <span className="mx-3 font-cinzel text-[0.6rem] tracking-widest uppercase text-brand-muted/60">or</span>
-      <span className="h-px flex-1 bg-brand-border" />
+      <span className="h-px flex-1 bg-plum-line" />
+      <span className="mx-3 font-cinzel text-[0.6rem] tracking-widest uppercase text-mist/60">or</span>
+      <span className="h-px flex-1 bg-plum-line" />
     </div>
   )
 }
@@ -93,7 +93,7 @@ function GoogleButton({ next, label }: { next: string; label: string }) {
 
   return (
     <div className="space-y-3">
-      <button type="button" onClick={go} disabled={loading} className="btn-outline w-full flex items-center justify-center gap-3 text-xs disabled:opacity-60">
+      <button type="button" onClick={go} disabled={loading} className="btn-ghost w-full flex items-center justify-center gap-3 text-xs disabled:opacity-60">
         <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true">
           <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/>
           <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
@@ -145,11 +145,11 @@ export function SignInForm({ next: rawNext, initialError }: { next?: string; ini
           <Link href="/forgot-password" className={`text-sm ${linkCls}`}>Forgot password?</Link>
         </div>
         {error && <Alert tone="error">{error}</Alert>}
-        <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
+        <button type="submit" disabled={loading} className="btn-gold w-full disabled:opacity-60">
           {loading ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
-      <p className="mt-6 text-center text-sm text-brand-muted">
+      <p className="mt-6 text-center text-sm text-mist">
         New to Braosa Tales? <Link href={`/sign-up${nextQs}`} className={linkCls}>Create an account</Link>
       </p>
     </>
@@ -211,9 +211,9 @@ export function SignUpForm({ next: rawNext }: { next?: string }) {
     return (
       <div className="space-y-4 text-center">
         <Alert tone="info">
-          We sent a confirmation link to <strong className="text-brand-parchment">{sentTo}</strong>.
+          We sent a confirmation link to <strong className="text-vellum">{sentTo}</strong>.
         </Alert>
-        <p className="text-sm text-brand-muted">Open it on this device to finish creating your account. Check spam if it doesn’t arrive in a minute.</p>
+        <p className="text-sm text-mist">Open it on this device to finish creating your account. Check spam if it doesn’t arrive in a minute.</p>
         <Link href="/sign-in" className={`inline-block text-sm ${linkCls}`}>Back to sign in</Link>
       </div>
     )
@@ -230,11 +230,11 @@ export function SignUpForm({ next: rawNext }: { next?: string }) {
         <Field label="Email" type="email" value={email} onChange={setEmail} autoComplete="email" placeholder="you@example.com" />
         <Field label="Password" type="password" value={password} onChange={setPassword} autoComplete="new-password" minLength={MIN_PASSWORD} placeholder={`At least ${MIN_PASSWORD} characters`} />
         {error && <Alert tone="error">{error}</Alert>}
-        <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
+        <button type="submit" disabled={loading} className="btn-gold w-full disabled:opacity-60">
           {loading ? 'Creating account…' : 'Create account'}
         </button>
       </form>
-      <p className="mt-6 text-center text-sm text-brand-muted">
+      <p className="mt-6 text-center text-sm text-mist">
         Already have an account? <Link href={`/sign-in${nextQs}`} className={linkCls}>Sign in</Link>
       </p>
     </>
@@ -275,7 +275,7 @@ export function ForgotPasswordForm() {
     <form onSubmit={onSubmit} className="space-y-4">
       <Field label="Email" type="email" value={email} onChange={setEmail} autoComplete="email" placeholder="you@example.com" />
       {error && <Alert tone="error">{error}</Alert>}
-      <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
+      <button type="submit" disabled={loading} className="btn-gold w-full disabled:opacity-60">
         {loading ? 'Sending…' : 'Send reset link'}
       </button>
       <p className="text-center text-sm">
@@ -316,7 +316,7 @@ export function ResetPasswordForm() {
       <Field label="New password" type="password" value={password} onChange={setPassword} autoComplete="new-password" minLength={MIN_PASSWORD} />
       <Field label="Confirm password" type="password" value={confirm} onChange={setConfirm} autoComplete="new-password" minLength={MIN_PASSWORD} />
       {error && <Alert tone="error">{error}</Alert>}
-      <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
+      <button type="submit" disabled={loading} className="btn-gold w-full disabled:opacity-60">
         {loading ? 'Saving…' : 'Set new password'}
       </button>
     </form>

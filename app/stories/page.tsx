@@ -2,143 +2,106 @@ import type { Metadata } from 'next'
 import Image from 'next/image'
 import Nav from '@/components/NavServer'
 import Footer from '@/components/Footer'
-import Link from 'next/link'
+import Newsletter from '@/components/Newsletter'
+import PageHero, { SectionTitle } from '@/components/PageHero'
 
 export const metadata: Metadata = {
-  title: 'The Chronicle',
-  description: 'Stories and lore from the worlds built in the Braosa Tales Atelier.',
+  title: 'Stories',
+  description: 'The world of Braosa: the first novel, an open lore wiki for players, and books direct from the author.',
+  alternates: { canonical: 'https://braosatales.com/stories' },
 }
+
+const wiki = [
+  { title: 'Factions', desc: 'Guilds, empires and secret orders' },
+  { title: 'Locations', desc: 'Cities, ruins and unmarked places' },
+  { title: 'Histories', desc: 'Wars, eras and founding myths' },
+  { title: 'The Pantheon', desc: 'Gods that breathe, bleed and lie' },
+]
+
+const shop = [
+  { title: 'Digital books', desc: 'DRM-free ePub and PDF editions' },
+  { title: 'Physical editions', desc: 'Print-on-demand and limited runs' },
+  { title: 'Lore supplements', desc: 'Player-facing campaign documents' },
+]
 
 export default function StoriesPage() {
   return (
-    <main>
+    <main className="bg-night">
       <Nav />
+      <PageHero
+        title="The world of Braosa"
+        intro="Worlds built by hand, stories told by one. Braosa was lived in at real tables for years before a word of it was written down. Now it’s being written."
+      />
 
-      {/* Hero */}
-      <section className="px-8 pt-[calc(64px+1.5rem)] md:pt-24 pb-8 md:pb-14 text-center border-b border-brand-border">
-        <h1 className="font-cinzel font-black text-brand-parchment text-5xl md:text-6xl mb-4 leading-tight">
-          The Library
-        </h1>
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="h-px w-16 bg-brand-gold-400/30" />
-          <span className="text-brand-gold-400/50 text-xs">✦</span>
-          <div className="h-px w-16 bg-brand-gold-400/30" />
-        </div>
-        <p className="font-fell text-brand-gold-300 text-xl md:text-2xl max-w-lg mx-auto leading-relaxed opacity-90">
-          Worlds built by hand. Stories told by one.
-        </p>
-      </section>
-
-      {/* Featured Release */}
-      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
-        <div className="max-w-6xl mx-auto">
-          <p className="section-label mb-6">Featured Release</p>
-          <div className="flex flex-col md:flex-row gap-5 md:gap-10 items-start">
-            <div className="dark-card flex-shrink-0 w-full md:w-56 h-80 flex flex-col items-center justify-center gap-3">
-              <span className="text-brand-gold-400/40 text-5xl">📖</span>
-              <p className="font-cinzel text-xs tracking-widest uppercase text-brand-muted">Cover Reveal Soon</p>
-            </div>
-            <div className="flex-1">
-              <span className="inline-block font-cinzel text-xs tracking-widest uppercase text-brand-purple-200 border border-brand-purple-600/40 px-3 py-1 rounded-sm mb-4">
-                Coming Soon
-              </span>
-              <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-2 leading-snug">
-                Title Unrevealed
-              </h2>
-              <p className="font-fell italic text-brand-gold-300 text-lg mb-4 opacity-80">
-                Book I of the Braosa Chronicles
-              </p>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="h-px w-10 bg-brand-gold-400/30" />
-                <span className="text-brand-gold-400/40 text-xs">✦</span>
-              </div>
-              <p className="font-fell text-brand-muted leading-loose mb-6">
-                The first novel set in the Braosa Tales universe. Born from years at the table,
-                this world has been lived in before it was ever written down. The book will be
-                available in digital and physical editions — direct from the author.
-              </p>
-              <button type="button" className="btn-primary">
-                Notify me on release
-              </button>
-            </div>
+      {/* Map + first book */}
+      <section className="mx-auto max-w-[1180px] px-6 pb-20 md:px-10 md:pb-24">
+        <div className="grid gap-12 lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-16">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-plum-line">
+            <Image src="/world-map.jpg" alt="Hand-drawn map of the world of Braosa" fill sizes="(min-width: 1024px) 620px, 100vw" className="object-cover opacity-85 sepia-[0.25]" priority />
+            <div className="absolute inset-0 bg-gradient-to-t from-night/60 to-transparent" />
+          </div>
+          <div>
+            <p className="text-[0.9rem] text-leaf-soft">In progress</p>
+            <SectionTitle className="mt-1">Book I of the Braosa Chronicles</SectionTitle>
+            <p className="mt-4 max-w-measure leading-relaxed text-prose">
+              The first novel set in the Braosa universe. Born from years at the table, it tells a story this world has
+              been carrying for a long time. It will be published in digital and physical editions, direct from the author.
+            </p>
+            <p className="mt-4 max-w-measure leading-relaxed text-mist">
+              The title and cover are still under wraps. Subscribe to The Chronicle below and you’ll be the first to see them.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* World Wiki */}
-      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
-            <div className="flex-1">
-              <p className="section-label">The World Wiki</p>
-              <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-4 leading-tight">
-                Free lore for your table
-              </h2>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="h-px w-12 bg-brand-gold-400/30" />
-                <span className="text-brand-gold-400/50 text-xs">✦</span>
-              </div>
-              <p className="font-fell text-brand-muted leading-loose mb-4">
-                The Braosa Tales wiki is an open reference for the universe — factions, locations,
-                histories, and pantheons. If you&apos;re running a campaign set in this world,
-                everything your players need to get oriented is here.
-              </p>
-              <p className="font-fell text-brand-muted leading-loose mb-4 md:mb-8">
-                Some lore is open. Some is locked — it&apos;ll spoil things that haven&apos;t
-                happened at your table yet. That&apos;s by design.
-              </p>
-              <Link href="#" className="font-cinzel text-xs tracking-widest uppercase text-brand-gold-300 hover:text-brand-gold-300/70 transition-colors">
-                Explore the wiki →
-              </Link>
-            </div>
-            <div className="flex-1 grid grid-cols-2 gap-4">
-              {[
-                { icon: 'factions.svg', title: 'Factions', desc: 'Guilds, empires, and secret orders' },
-                { icon: 'locations.svg', title: 'Locations', desc: 'Cities, ruins, and unmarked places' },
-                { icon: 'histories-sq.svg', title: 'Histories', desc: 'Wars, eras, and founding myths' },
-                { icon: 'pantheon.svg', title: 'The Pantheon', desc: 'Gods that breathe, bleed, and lie' },
-              ].map((c) => (
-                <div key={c.title} className="dark-card">
-                  <Image src={`/icons/${c.icon}`} width={48} height={48} alt={c.title} unoptimized />
-                  <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mt-3 mb-1">{c.title}</p>
-                  <p className="font-fell text-brand-muted text-xs leading-relaxed">{c.desc}</p>
-                </div>
-              ))}
-            </div>
+      {/* Wiki */}
+      <section className="border-t border-plum-line">
+        <div className="mx-auto grid max-w-[1180px] gap-12 px-6 py-20 md:px-10 md:py-24 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
+          <div>
+            <SectionTitle>Open lore for your table</SectionTitle>
+            <p className="mt-4 max-w-measure leading-relaxed text-prose">
+              A free reference to the universe for players and game masters: who rules where, what happened before, and
+              which gods are listening.
+            </p>
+            <p className="mt-4 max-w-measure leading-relaxed text-mist">
+              Some of it stays locked until the campaign you’re playing reaches it, so nothing gets spoiled. The wiki is being
+              built now.
+            </p>
           </div>
-        </div>
-      </section>
-
-      {/* Shop Section */}
-      <section className="px-8 py-10 md:py-20 border-b border-brand-border">
-        <div className="max-w-6xl mx-auto">
-          <p className="section-label mb-4">The Shop</p>
-          <h2 className="font-cinzel font-black text-brand-parchment text-3xl mb-4 leading-tight">
-            Own a piece of the world
-          </h2>
-          <p className="font-fell text-brand-muted leading-loose max-w-xl mb-5 md:mb-10">
-            Books, maps, and lore documents — direct from the author. No platform cut.
-            When the shop opens, everything sold here supports the world being built.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { title: 'Digital Books', desc: 'DRM-free ePub & PDF editions', icon: 'digital-books.svg' },
-              { title: 'Physical Editions', desc: 'Print-on-demand, limited runs', icon: 'physical-editions.svg' },
-              { title: 'Lore Supplements', desc: 'Player-facing campaign documents', icon: 'lore-supplements-sq.svg' },
-            ].map((item) => (
-              <div key={item.title} className="dark-card">
-                <Image src={`/icons/${item.icon}`} width={48} height={48} alt={item.title} unoptimized />
-                <p className="font-cinzel text-xs tracking-widest uppercase text-brand-parchment mt-3 mb-1">{item.title}</p>
-                <p className="font-fell text-brand-muted text-sm leading-relaxed mb-4">{item.desc}</p>
-                <span className="inline-block font-cinzel text-xs tracking-widest uppercase text-brand-purple-200 border border-brand-purple-600/40 px-2 py-1 rounded-sm">
-                  Opening soon
-                </span>
-              </div>
+          <ul className="grid gap-x-10 border-t border-plum-line sm:grid-cols-2">
+            {wiki.map((w) => (
+              <li key={w.title} className="border-b border-plum-line py-5">
+                <p className="font-cinzel text-[1.05rem] font-bold text-vellum">{w.title}</p>
+                <p className="mt-1 text-[0.95rem] text-mist">{w.desc}</p>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
 
+      {/* Shop */}
+      <section className="bg-umber">
+        <div className="mx-auto max-w-[1180px] px-6 py-20 md:px-10 md:py-24">
+          <div className="max-w-2xl">
+            <SectionTitle>Direct from the author</SectionTitle>
+            <p className="mt-4 leading-relaxed text-prose">
+              Books, maps and lore documents, sold here with no platform in between. Everything sold supports the world
+              being built.
+            </p>
+          </div>
+          <ul className="mt-10 grid gap-8 border-t border-umber-line pt-8 md:grid-cols-3">
+            {shop.map((s) => (
+              <li key={s.title}>
+                <p className="font-cinzel text-[1.1rem] font-bold text-vellum">{s.title}</p>
+                <p className="mt-1 text-prose">{s.desc}</p>
+                <p className="mt-2 text-[0.85rem] text-ember">Coming soon</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <Newsletter />
       <Footer />
     </main>
   )
