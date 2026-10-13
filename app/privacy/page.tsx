@@ -72,6 +72,43 @@ export default function PrivacyPage() {
         commercial terms as our service provider.
       </P>
 
+      <H2 id="google">Google user data</H2>
+      <P>
+        If you choose <Strong>&quot;Continue with Google&quot;</Strong>, we use Google Sign-In only to create your account
+        and sign you in. This is exactly what happens to the data Google shares with us:
+      </P>
+      <UL>
+        <li>
+          <Strong>What we access:</Strong> only your name, email address and profile picture URL, through the standard{' '}
+          <Strong>openid</Strong>, <Strong>email</Strong> and <Strong>profile</Strong> scopes. We do not access your Gmail,
+          Google Drive, contacts, calendar or any other Google data, and we never receive your Google password.
+        </li>
+        <li>
+          <Strong>How we use it:</Strong> to create and identify your Braosa Tales account, sign you in, show your name in
+          the app and contact you about your account. Nothing else.
+        </li>
+        <li>
+          <Strong>How we store it:</Strong> your name and email are stored in our authentication provider and database
+          (Supabase), encrypted in transit and protected by access controls. We don&apos;t keep your profile picture.
+        </li>
+        <li>
+          <Strong>How we share it:</Strong> we do not sell, rent or share Google user data with third parties, do not use it
+          for advertising, and do not use it to train AI or machine-learning models. It is only processed by Supabase to
+          run sign-in.
+        </li>
+        <li>
+          <Strong>Retention and deletion:</Strong> we keep it while your account is open. To delete it, email{' '}
+          <A href={mail}>{CONTACT_EMAIL}</A> and we&apos;ll delete your account and the Google data linked to it within 30
+          days. You can also remove Braosa Tales&apos; access at any time from your{' '}
+          <A href="https://myaccount.google.com/connections">Google Account connections page</A>.
+        </li>
+      </UL>
+      <P>
+        Braosa Tales&apos; use and transfer of information received from Google APIs adheres to the{' '}
+        <A href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</A>,
+        including the Limited Use requirements.
+      </P>
+
       <H2>Who helps us run the service</H2>
       <P>We share data only with providers that need it to operate Braosa Tales:</P>
       <UL>
