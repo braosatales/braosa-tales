@@ -877,10 +877,13 @@ export default function TheSignet() {
           setPresets(mapped)
 
           const fav = mapped.find(p => p.favourite)
-          if (fav) {
-            setFavouritePresetId(fav.id)
-            setActivePreset(fav.id)
-            const s = fav.settings
+          if (fav) setFavouritePresetId(fav.id)
+          // ?preset=<id> (from the dashboard) wins over the default preset
+          const requested = new URLSearchParams(window.location.search).get("preset")
+          const toLoad = (requested && mapped.find(p => p.id === requested)) || fav
+          if (toLoad) {
+            setActivePreset(toLoad.id)
+            const s = toLoad.settings
             setArchetype(s.archetype)
             setLanguages(s.languages)
             setVibe(s.vibe)
@@ -892,6 +895,9 @@ export default function TheSignet() {
           setPresets([])
         }
         if (Array.isArray(historyData)) setDbHistory(historyData)
+        // ?tab=saved|history (from the dashboard)
+        const tabParam = new URLSearchParams(window.location.search).get("tab")
+        if (tabParam === "saved" || tabParam === "history") setActiveTab(tabParam)
       } catch(e) { console.error("Failed to load profile",e) }
       finally { setProfileLoading(false) }
     }

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Footer from '@/components/Footer'
 import PageHero, { SectionTitle } from '@/components/PageHero'
+import { TOOLS, isLive, type AtelierTool } from '@/lib/atelier'
 
 export const metadata: Metadata = {
   title: 'The Atelier',
@@ -11,36 +12,10 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://braosatales.com/atelier' },
 }
 
-type Tool = { name: string; description: string; icon: string; href?: string }
+const workshop = TOOLS.filter((t) => t.group === 'campaign' && !isLive(t))
+const generators = TOOLS.filter((t) => t.group === 'generator' && !isLive(t))
 
-const workshop: Tool[] = [
-  { name: 'The Athenaeum', description: 'World wiki with GM and player visibility controls.', icon: '01 The Athenaeum.svg' },
-  { name: 'The Atlas', description: 'Interactive maps linked to locations and in-world lore.', icon: '02 The Atlas.svg' },
-  { name: 'The Chronicle', description: 'Session notes with private GM and player-visible layers.', icon: '03 The Chronicle.svg' },
-  { name: 'The Easel', description: 'Mood boards and scene reference galleries.', icon: '04 The Easel.svg' },
-  { name: 'The Journal', description: 'Private GM notes, never visible to players.', icon: '05 The Journal.svg' },
-  { name: 'The Blade', description: 'Encounter builder with initiative and combat tracking.', icon: '06 The Blade.svg' },
-  { name: 'The Hourglass', description: 'Campaign timeline for in-world events and history.', icon: '07 The Hourglass.svg' },
-  { name: 'The Armature', description: 'D&D 5e character sheets, live and player-editable.', icon: '08 The Armature.svg' },
-  { name: 'The Tome', description: 'One dashboard for every campaign you run.', icon: '09 The Tome.svg' },
-]
-
-const generators: Tool[] = [
-  { name: 'The Mallet', description: 'Weapons, armour and magic items.', icon: '11 The Mallet.svg' },
-  { name: 'The Chisel', description: 'NPCs with personality, secrets and hooks.', icon: '12 The Chisel.svg' },
-  { name: 'The Blueprint', description: 'Towns, dungeons and ruins in detail.', icon: '13 The Blueprint.svg' },
-  { name: 'The Compass', description: 'Quest hooks, objectives and complications.', icon: '14 The Compass.svg' },
-  { name: 'The Bestiary', description: 'Original creatures with lore and stat blocks.', icon: '15 The Bestiary.svg' },
-  { name: 'The Crucible', description: 'Factions with goals, tensions and hierarchies.', icon: '16 The Crucible.svg' },
-  { name: 'The Loupe', description: 'Tavern rumours, gossip and local intrigue.', icon: '17 The Loupe.svg' },
-  { name: 'The Letter', description: 'In-world handouts: letters, notices, inscriptions.', icon: '18 The Letter.svg' },
-  { name: 'The Loom', description: 'Story threads woven into narrative arcs.', icon: '19 The Loom.svg' },
-  { name: 'The Cipher', description: 'Invented languages, scripts and ciphers.', icon: '20 The Cipher.svg' },
-  { name: 'The Charter', description: 'Laws, customs and taboos of your world.', icon: '21 The Charter.svg' },
-  { name: 'The Dice Cup', description: 'Random tables for encounters, weather and events.', icon: '22 The Dice Cup.svg' },
-]
-
-function ToolList({ tools }: { tools: Tool[] }) {
+function ToolList({ tools }: { tools: AtelierTool[] }) {
   return (
     <ul className="grid gap-x-12 border-t border-plum-line md:grid-cols-2">
       {tools.map((t) => (

@@ -9,7 +9,7 @@ export const metadata = { title: 'Sign in' }
 type Props = { searchParams: { next?: string; error?: string } }
 
 export default async function SignInPage({ searchParams }: Props) {
-  const next = safeNext(searchParams.next)
+  const next = safeNext(searchParams.next, '/dashboard')
   if (await getAuthUser()) redirect(next)
 
   return (

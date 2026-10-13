@@ -110,7 +110,7 @@ function GoogleButton({ next, label }: { next: string; label: string }) {
 /* ───────────────────────── Sign in ───────────────────────── */
 
 export function SignInForm({ next: rawNext, initialError }: { next?: string; initialError?: string }) {
-  const next = safeNext(rawNext)
+  const next = safeNext(rawNext, '/dashboard')
   const router = useRouter()
   const supabase = useMemo(() => createClient(), [])
   const [email, setEmail] = useState('')
@@ -132,7 +132,7 @@ export function SignInForm({ next: rawNext, initialError }: { next?: string; ini
     router.refresh()
   }
 
-  const nextQs = next !== '/' ? `?next=${encodeURIComponent(next)}` : ''
+  const nextQs = next !== '/dashboard' ? `?next=${encodeURIComponent(next)}` : ''
 
   return (
     <>
@@ -159,7 +159,7 @@ export function SignInForm({ next: rawNext, initialError }: { next?: string; ini
 /* ───────────────────────── Sign up ───────────────────────── */
 
 export function SignUpForm({ next: rawNext }: { next?: string }) {
-  const next = safeNext(rawNext)
+  const next = safeNext(rawNext, '/dashboard')
   const router = useRouter()
   const supabase = useMemo(() => createClient(), [])
   const [name, setName] = useState('')
@@ -219,7 +219,7 @@ export function SignUpForm({ next: rawNext }: { next?: string }) {
     )
   }
 
-  const nextQs = next !== '/' ? `?next=${encodeURIComponent(next)}` : ''
+  const nextQs = next !== '/dashboard' ? `?next=${encodeURIComponent(next)}` : ''
 
   return (
     <>

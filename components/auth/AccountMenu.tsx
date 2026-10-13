@@ -51,6 +51,14 @@ export default function AccountMenu({ onNavigate }: { onNavigate?: () => void })
             {user.email && <p className="text-sm text-mist truncate">{user.email}</p>}
           </div>
           <Link
+            href="/dashboard"
+            role="menuitem"
+            onClick={() => { setOpen(false); onNavigate?.() }}
+            className="block px-4 py-2 text-[0.95rem] text-prose hover:text-vellum hover:bg-night/60"
+          >
+            Your dashboard
+          </Link>
+          <Link
             href="/atelier/signet"
             role="menuitem"
             onClick={() => { setOpen(false); onNavigate?.() }}

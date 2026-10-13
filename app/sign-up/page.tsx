@@ -9,7 +9,7 @@ export const metadata = { title: 'Create account' }
 type Props = { searchParams: { next?: string } }
 
 export default async function SignUpPage({ searchParams }: Props) {
-  const next = safeNext(searchParams.next)
+  const next = safeNext(searchParams.next, '/dashboard')
   if (await getAuthUser()) redirect(next)
 
   return (

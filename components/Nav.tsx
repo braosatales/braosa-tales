@@ -84,6 +84,9 @@ export default function Nav({ userProfile }: NavProps = {}) {
             </>
           ) : (
             <>
+              <Link href="/dashboard" className={`text-[0.95rem] transition-colors hover:text-vellum ${isActive('/dashboard') ? 'text-leaf-soft' : 'text-prose/80'}`}>
+                Dashboard
+              </Link>
               <Suspense fallback={null}>
                 <CreditsBadge initialProfile={userProfile ?? null} />
               </Suspense>
@@ -146,6 +149,9 @@ export default function Nav({ userProfile }: NavProps = {}) {
                 <div className="flex justify-center py-2">
                   <CreditsBadge />
                 </div>
+                <Link href="/dashboard" className="btn-gold" onClick={() => setMenuOpen(false)}>
+                  Your dashboard
+                </Link>
                 <Link href="/atelier/signet" className="btn-ghost" onClick={() => setMenuOpen(false)}>
                   The Signet
                 </Link>
