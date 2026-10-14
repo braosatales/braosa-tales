@@ -69,7 +69,7 @@ export default function MembersAdmin({ c }: { c: CampaignAdminView }) {
     <div>
       <div className="grid min-w-0 gap-10 [&>*]:min-w-0">
         <div>
-          <h3 className="font-cinzel text-[1.1rem] font-bold text-vellum">Players</h3>
+          <h3 className="font-cinzel text-[1.1rem] font-bold text-vellum">At the table</h3>
           <ul className="mt-2 divide-y divide-plum-line border-y border-plum-line">
             {players.length === 0 && c.invites.length === 0 && <li className="py-3 text-[0.95rem] text-mist">No players yet.</li>}
             {players.map((m) => (

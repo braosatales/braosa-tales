@@ -4,25 +4,27 @@ import Footer from '@/components/Footer'
 import CampaignCard from '@/components/sessions/CampaignCard'
 import LocalTime from '@/components/sessions/LocalTime'
 import NotifyForm from '@/components/sessions/NotifyForm'
-import { CAMPAIGNS, GM } from '@/lib/sessions'
+import { GM } from '@/lib/sessions'
+import { getListings, seatState, formatPrice } from '@/lib/listings'
+import CampaignCarousel from '@/components/sessions/CampaignCarousel'
 
 export const metadata: Metadata = {
   title: 'Sessions',
   description:
-    'Live D&D 5e campaigns online with John Rodrigues: Eve of Giants (levels 1–20) and Wings over Phandalin (levels 1–15). Beginners welcome. $20 per session on StartPlaying.',
+    'Live D&D 5e campaigns online with John Rodrigues, from first level to the final battle. Beginners welcome. Book a seat on StartPlaying.',
   alternates: { canonical: 'https://braosatales.com/games' },
 }
 
 const steps = [
-  { title: 'Choose a campaign', text: 'Read the two campaigns above and pick the one that pulls you in.' },
+  { title: 'Choose a campaign', text: 'Read the campaigns above and pick the one that pulls you in.' },
   { title: 'Book on StartPlaying', text: 'Reserve your seat and pay per session through StartPlaying, which handles payments and refunds.' },
   { title: 'Get your invites', text: 'Before the first session you’ll get the Discord server, the Foundry table and the D&D Beyond campaign.' },
 ]
 
-const faqs = [
+const faqsFor = (price: string) => [
   {
     q: 'I’ve never played D&D. Can I join?',
-    a: 'Yes. Beginners are welcome at both tables. Rules are explained as they come up, so you can learn while you play.',
+    a: 'Yes. Beginners are welcome at every table. Rules are explained as they come up, so you can learn while you play.',
   },
   {
     q: 'What do I need?',
@@ -34,7 +36,7 @@ const faqs = [
   },
   {
     q: 'How much does it cost?',
-    a: '$20 per session, paid through StartPlaying. You book and pay session by session.',
+    a: `${price}, paid through StartPlaying. You book and pay session by session.`,
   },
   {
     q: 'What language are games played in?',
@@ -42,7 +44,18 @@ const faqs = [
   },
 ]
 
-export default function SessionsPage() {
+const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight']
+
+export default async function SessionsPage() {
+  const listings = await getListings()
+  const running = listings.filter((l) => seatState(l) !== 'finished')
+  const prices = Array.from(new Set(running.map((l) => l.price).filter((p): p is number => p != null)))
+  const currency = running.find((l) => l.price != null)?.currency ?? 'USD'
+  const priceLine = prices.length === 0 ? 'Priced per session' : prices.length === 1 ? `${formatPrice(prices[0], currency)} per session` : `From ${formatPrice(Math.min(...prices), currency)} per session`
+  const lengths = Array.from(new Set(running.map((l) => l.session_length).filter(Boolean)))
+  const faqs = faqsFor(priceLine)
+  const count = running.length === 1 ? 'One long campaign' : `${WORDS[running.length] ?? running.length} long campaigns`
+
   return (
     <main className="bg-night">
       <Nav />
@@ -53,13 +66,14 @@ export default function SessionsPage() {
             Live D&amp;D, every week
           </h1>
           <p className="mt-5 max-w-measure text-[1.15rem] leading-relaxed text-prose">
-            Two long campaigns run online by {GM.name}, from first level to the final battle. Beginners welcome.
+            {count} run online by {GM.name}, from first level to the final battle. Beginners welcome.
           </p>
           <div className="mt-10 grid max-w-3xl gap-x-12 gap-y-5 text-[0.95rem] text-mist sm:grid-cols-3">
             <LocalTime className="leading-snug" />
             <p className="leading-snug">
-              <span className="text-vellum">$20 per session</span>
-              <br />3 hours, booked on StartPlaying
+              <span className="text-vellum">{priceLine}</span>
+              <br />
+              {lengths.length === 1 ? `${lengths[0]}, booked on StartPlaying` : 'Booked on StartPlaying'}
             </p>
             <p className="leading-snug">
               <span className="text-vellum">
@@ -75,10 +89,8 @@ export default function SessionsPage() {
       </section>
 
       <section id="campaigns" className="scroll-mt-16 bg-umber">
-        <div className="mx-auto grid max-w-[1180px] gap-8 px-6 pb-20 md:px-10 lg:grid-cols-2">
-          {CAMPAIGNS.map((c) => (
-            <CampaignCard key={c.slug} c={c} detailed />
-          ))}
+        <div className="mx-auto max-w-[1180px] px-6 pb-20 md:px-10">
+          <CampaignCarousel label="Campaigns" items={listings.map((c) => ({ key: c.slug, node: <CampaignCard c={c} detailed /> }))} />
         </div>
       </section>
 
@@ -112,7 +124,7 @@ export default function SessionsPage() {
         </div>
       </section>
 
-      <section className="bg-umber">
+      <section id="notify" className="scroll-mt-16 bg-umber">
         <div className="mx-auto grid max-w-[1180px] items-center gap-8 px-6 py-16 md:grid-cols-2 md:px-10">
           <div>
             <h2 className="font-cinzel text-[1.6rem] font-bold text-vellum">Tables full, or the time doesn’t work?</h2>

@@ -4,9 +4,25 @@ import type { User } from '@supabase/supabase-js'
 import { getAuthUser } from '@/lib/auth'
 import { createServerSupabase } from '@/lib/supabase-server'
 import type { Campaign, CampaignRole } from '@/lib/campaigns'
+import type { Act, Safety } from '@/lib/listing-shared'
 
 export type CampaignLink = { label: string; url: string }
-export type HubCampaign = Campaign & { description: string | null; links: CampaignLink[] }
+export type HubCampaign = Campaign & {
+  description: string | null
+  links: CampaignLink[]
+  listed: boolean
+  listed_as: string | null
+  pitch: string | null
+  acts: Act[]
+  price: number | null
+  currency: string
+  session_length: string | null
+  frequency: string | null
+  booking_url: string | null
+  seats_total: number | null
+  sessions_played: number | null
+  safety: Safety
+}
 export type HubMember = { user_id: string; role: CampaignRole; name: string | null; email: string | null; avatar: string | null }
 
 export type Hub = {
@@ -33,7 +49,15 @@ export const getHub = cache(async (slug: string): Promise<Hub | null> => {
   if (!member) return null
   const role = member.role as CampaignRole
   return {
-    campaign: { ...campaign, links: Array.isArray(campaign.links) ? campaign.links : [] } as HubCampaign,
+    campaign: {
+      ...campaign,
+      links: Array.isArray(campaign.links) ? campaign.links : [],
+      acts: Array.isArray(campaign.acts) ? campaign.acts : [],
+      safety: campaign.safety && typeof campaign.safety === 'object' ? campaign.safety : {},
+      price: campaign.price == null ? null : Number(campaign.price),
+      listed: !!campaign.listed,
+      currency: campaign.currency ?? 'USD',
+    } as HubCampaign,
     user,
     role,
     gm: role === 'gm',

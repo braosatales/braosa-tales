@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { getAuthUser } from '@/lib/auth'
 import { createServerSupabase } from '@/lib/supabase-server'
 import AuthShell from '@/components/auth/AuthShell'
+import { refreshListings } from '@/lib/listings'
 
 export const metadata = { title: 'Join a campaign', robots: { index: false } }
 
@@ -28,5 +29,6 @@ export default async function JoinPage({ params }: { params: { code: string } })
     .from('campaign_members')
     .upsert({ campaign_id: campaign.id, user_id: user.id, role: 'player' }, { onConflict: 'campaign_id,user_id', ignoreDuplicates: true })
 
+  refreshListings()
   redirect(`/dashboard?joined=${campaign.slug}`)
 }

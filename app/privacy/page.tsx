@@ -41,7 +41,7 @@ export default function PrivacyPage() {
           card number; we keep your plan, purchase status and the related Stripe records.
         </li>
         <li>
-          <Strong>Newsletter and waitlist</Strong> — your email address, if you sign up.
+          <Strong>Newsletter, waitlist and seat alerts</Strong> — your email address, if you sign up, and which campaign you asked to hear about. A seat alert sends one email when a seat opens, then stops.
         </li>
         <li>
           <Strong>Feedback</Strong> — the message you send us and, if you&apos;re signed in, your name and email.

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { hubApi } from '@/lib/hub/server'
+import { refreshListings } from '@/lib/listings'
 
 type P = { params: { slug: string } }
 
@@ -19,6 +20,7 @@ export async function POST(req: Request, { params }: P) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   const url = db.storage.from('the8adventurers').getPublicUrl(path).data.publicUrl
   await db.from('campaigns').update({ cover_url: url }).eq('id', hub.campaign.id)
+  refreshListings()
   return NextResponse.json({ url })
 }
 
@@ -26,5 +28,6 @@ export async function DELETE(_req: Request, { params }: P) {
   const hub = await hubApi(params.slug, { gm: true })
   if (hub instanceof NextResponse) return hub
   await createServerSupabase().from('campaigns').update({ cover_url: null }).eq('id', hub.campaign.id)
+  refreshListings()
   return NextResponse.json({ ok: true })
 }

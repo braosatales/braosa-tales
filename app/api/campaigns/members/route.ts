@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import { isCampaignGM } from '@/lib/campaigns'
+import { refreshListings } from '@/lib/listings'
+import { onSeatsMaybeOpened } from '@/lib/seats'
 import { createServerSupabase } from '@/lib/supabase-server'
 
 const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)
@@ -34,7 +36,10 @@ export async function POST(req: Request) {
     const { error } = await db
       .from('campaign_members')
       .upsert({ campaign_id: campaignId, user_id: userId, role: 'player' }, { onConflict: 'campaign_id,user_id', ignoreDuplicates: true })
-    if (!error) return NextResponse.json({ status: 'added' })
+    if (!error) {
+      refreshListings()
+      return NextResponse.json({ status: 'added' })
+    }
     // Old account that hasn't signed in since the move to the new login: fall back to an invite.
   }
 
@@ -42,6 +47,7 @@ export async function POST(req: Request) {
     .from('campaign_invites')
     .upsert({ campaign_id: campaignId, email }, { onConflict: 'campaign_id,email', ignoreDuplicates: true })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  refreshListings()
   return NextResponse.json({ status: 'invited' })
 }
 
@@ -63,5 +69,6 @@ export async function DELETE(req: Request) {
     await db.from('the8_players').update({ user_id: null }).eq('campaign_id', campaignId).eq('user_id', userId)
     await db.from('campaign_pins').delete().eq('campaign_id', campaignId).eq('user_id', userId)
   }
+  await onSeatsMaybeOpened(campaignId)
   return NextResponse.json({ ok: true })
 }

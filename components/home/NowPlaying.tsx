@@ -1,22 +1,26 @@
 import CampaignCard from '@/components/sessions/CampaignCard'
-import { CAMPAIGNS, GM } from '@/lib/sessions'
+import CampaignCarousel from '@/components/sessions/CampaignCarousel'
+import { GM } from '@/lib/sessions'
+import { getListings, seatState } from '@/lib/listings'
 
-export default function NowPlaying() {
+const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight']
+
+export default async function NowPlaying() {
+  const listings = await getListings()
+  const running = listings.filter((l) => seatState(l) !== 'finished').length
   return (
     <section id="campaigns" className="scroll-mt-16 bg-umber">
       <div className="mx-auto max-w-[1180px] px-6 py-20 md:px-10 md:py-28">
         <div className="max-w-2xl">
           <h2 className="font-cinzel text-[2.1rem] font-bold leading-tight text-vellum md:text-[2.6rem]">Now playing</h2>
           <p className="mt-4 text-[1.1rem] leading-relaxed text-prose">
-            Two campaigns, each built to run from first level to the end. Pick the story that pulls you in,
-            book a seat on StartPlaying, and you’re in.
+            {running === 1 ? 'One campaign' : `${WORDS[running] ?? running} campaigns`}, each built to run from first level to the end. Pick the
+            story that pulls you in, book a seat on StartPlaying, and you’re in.
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-2">
-          {CAMPAIGNS.map((c) => (
-            <CampaignCard key={c.slug} c={c} />
-          ))}
+        <div className="mt-12">
+          <CampaignCarousel label="Campaigns" items={listings.map((c) => ({ key: c.slug, node: <CampaignCard c={c} /> }))} />
         </div>
 
         <dl className="mt-16 grid gap-10 border-t border-umber-line pt-10 text-[0.98rem] md:grid-cols-3">

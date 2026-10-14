@@ -8,6 +8,8 @@ import { createServerSupabase } from '@/lib/supabase-server'
 import CharacterCard from '@/components/hub/CharacterCard'
 import { HubSectionTitle, EmptyNote } from '@/components/hub/Section'
 import PinToggle from '@/components/hub/PinToggle'
+import SafetyNoteForm from '@/components/hub/SafetyNoteForm'
+import { RATINGS } from '@/lib/listing-shared'
 import type { Quest } from '@/lib/hub/types'
 
 export const metadata = { title: 'Overview' }
@@ -65,6 +67,9 @@ export default async function CampaignOverview({ params }: { params: { slug: str
   const recap = recaps?.[0]
   const nameOf = (uid: string | null) => (uid ? members.find((m) => m.user_id === uid)?.name ?? null : null)
   const hasMine = party.some((p) => p.user_id === hub.user.id)
+  const safety = hub.campaign.safety
+  const rating = RATINGS.find((r) => r.value === safety.rating)?.label
+  const hasSafety = !!(rating || safety.tools?.length || safety.content?.length || safety.lines?.length || safety.veils?.length || safety.notes)
 
   return (
     <>
@@ -206,6 +211,72 @@ export default async function CampaignOverview({ params }: { params: { slug: str
           )}
         </section>
       </div>
+
+      {/* Table safety */}
+      <section aria-labelledby="safety-h">
+        <HubSectionTitle action={hub.gm ? { href: `${base}/manage#safety`, label: 'Edit in Manage' } : undefined}>
+          <span id="safety-h">Table safety</span>
+        </HubSectionTitle>
+        <div className="mt-5 grid gap-8 lg:grid-cols-[1.35fr_1fr] lg:gap-12">
+          <div className="min-w-0 space-y-5">
+            {!hasSafety ? (
+              <EmptyNote>{hub.gm ? 'Set the rating, safety tools, lines and veils in Manage.' : 'Your game master hasn’t written this up yet. You can still send a line or veil privately.'}</EmptyNote>
+            ) : (
+              <dl className="grid gap-5 sm:grid-cols-2">
+                {rating && (
+                  <div>
+                    <dt className="text-[0.85rem] text-mist">Rating</dt>
+                    <dd className="text-vellum">{rating}</dd>
+                  </div>
+                )}
+                {(safety.tools?.length ?? 0) > 0 && (
+                  <div>
+                    <dt className="text-[0.85rem] text-mist">Safety tools</dt>
+                    <dd className="text-prose">{safety.tools!.join(', ')}</dd>
+                  </div>
+                )}
+                {(safety.content?.length ?? 0) > 0 && (
+                  <div className="sm:col-span-2">
+                    <dt className="text-[0.85rem] text-mist">May come up</dt>
+                    <dd className="text-prose">{safety.content!.join(', ')}</dd>
+                  </div>
+                )}
+                <div>
+                  <dt className="text-[0.85rem] text-mist">Lines (never in the game)</dt>
+                  <dd>
+                    {(safety.lines?.length ?? 0) > 0 ? (
+                      <ul className="mt-1 space-y-1 text-prose">{safety.lines!.map((l) => <li key={l}>{l}</li>)}</ul>
+                    ) : (
+                      <span className="text-mist">None yet</span>
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-[0.85rem] text-mist">Veils (off-screen only)</dt>
+                  <dd>
+                    {(safety.veils?.length ?? 0) > 0 ? (
+                      <ul className="mt-1 space-y-1 text-prose">{safety.veils!.map((l) => <li key={l}>{l}</li>)}</ul>
+                    ) : (
+                      <span className="text-mist">None yet</span>
+                    )}
+                  </dd>
+                </div>
+                {safety.notes && (
+                  <div className="sm:col-span-2">
+                    <dt className="text-[0.85rem] text-mist">Also</dt>
+                    <dd className="whitespace-pre-line text-prose">{safety.notes}</dd>
+                  </div>
+                )}
+              </dl>
+            )}
+          </div>
+          {!hub.gm && (
+            <div className="min-w-0">
+              <SafetyNoteForm />
+            </div>
+          )}
+        </div>
+      </section>
     </div>
     </>
   )

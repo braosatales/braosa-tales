@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import { isAdmin } from '@/lib/admin'
 import { uniqueSlug } from '@/lib/campaigns'
+import { refreshListings } from '@/lib/listings'
 import { createServerSupabase } from '@/lib/supabase-server'
 
 const clean = (v: unknown, max: number) => (typeof v === 'string' ? v.trim().slice(0, max) || null : null)
@@ -41,5 +42,6 @@ export async function POST(req: Request) {
     await db.from('campaigns').delete().eq('id', campaign.id)
     return NextResponse.json({ error: memberErr.message }, { status: 500 })
   }
+  refreshListings()
   return NextResponse.json({ slug: campaign.slug })
 }
