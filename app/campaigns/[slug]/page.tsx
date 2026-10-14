@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getHub, getHubMembers } from '@/lib/hub/server'
-import { getParty } from '@/lib/hub/party'
+import { getParty, hasStale } from '@/lib/hub/party'
+import PartySync from '@/components/hub/PartySync'
 import { QUEST_SELECT } from '@/lib/hub/quests'
 import { createServerSupabase } from '@/lib/supabase-server'
 import CharacterCard from '@/components/hub/CharacterCard'
@@ -68,6 +69,7 @@ export default async function CampaignOverview({ params }: { params: { slug: str
   return (
     <>
     <h1 className="sr-only">{hub.campaign.title}: overview</h1>
+    {hasStale(party) && <PartySync />}
     <div className="space-y-16">
       {hub.campaign.description && (
         <p className="max-w-[44em] whitespace-pre-line text-[1.08rem] leading-relaxed text-prose">{hub.campaign.description}</p>

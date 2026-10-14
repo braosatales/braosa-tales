@@ -1,7 +1,7 @@
 import { cache } from 'react'
 import { NextResponse } from 'next/server'
 import type { User } from '@supabase/supabase-js'
-import { getAuthUser, displayName } from '@/lib/auth'
+import { getAuthUser } from '@/lib/auth'
 import { createServerSupabase } from '@/lib/supabase-server'
 import type { Campaign, CampaignRole } from '@/lib/campaigns'
 
@@ -54,18 +54,11 @@ export const getHubMembers = cache(async (campaignId: string): Promise<HubMember
   if (!ids.length) return []
   const { data: users } = await db.from('users').select('id, email, full_name, avatar_url').in('id', ids)
   const byId = new Map((users ?? []).map((u) => [u.id, u]))
-  // Prefer the name people chose in Settings (auth metadata) over the provider's.
-  const authNames = new Map<string, string>()
-  await Promise.all(
-    ids.map(async (id) => {
-      const { data } = await db.auth.admin.getUserById(id)
-      if (data?.user) authNames.set(id, displayName(data.user))
-    })
-  )
+  // users.full_name holds the name people set in Settings (kept in sync by /api/account/profile).
   return (rows ?? []).map((r) => ({
     user_id: r.user_id,
     role: r.role as CampaignRole,
-    name: authNames.get(r.user_id) || byId.get(r.user_id)?.full_name || null,
+    name: byId.get(r.user_id)?.full_name || null,
     email: byId.get(r.user_id)?.email ?? null,
     avatar: byId.get(r.user_id)?.avatar_url ?? null,
   }))

@@ -8,6 +8,7 @@
 
 html { scroll-behavior: smooth; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes navprogress { from { width: 0; } to { width: 90%; } }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }

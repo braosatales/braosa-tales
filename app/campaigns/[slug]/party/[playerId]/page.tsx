@@ -2,7 +2,8 @@ import { notFound } from 'next/navigation'
 import { getHub, getHubMembers } from '@/lib/hub/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { getVisiblePlayerFields } from '@/lib/hub/getVisiblePlayerFields'
-import { syncStale } from '@/lib/hub/ddb'
+import { hasStale } from '@/lib/hub/party'
+import PartySync from '@/components/hub/PartySync'
 import CharacterSheet from '@/components/hub/CharacterSheet'
 import type { Player } from '@/lib/hub/types'
 
@@ -17,10 +18,8 @@ export default async function CharacterPage({ params }: { params: { slug: string
   const hub = await getHub(params.slug)
   if (!hub) notFound()
   const db = createServerSupabase()
-  const load = () => db.from('the8_players').select('*').eq('id', params.playerId).eq('campaign_id', hub.campaign.id).maybeSingle()
-  let { data: player } = await load()
+  const { data: player } = await db.from('the8_players').select('*').eq('id', params.playerId).eq('campaign_id', hub.campaign.id).maybeSingle()
   if (!player) notFound()
-  if (await syncStale([player as Player])) ({ data: player } = await load())
   const p = player as Player
 
   const [{ data: secrecy }, members] = await Promise.all([
@@ -32,5 +31,10 @@ export default async function CharacterPage({ params }: { params: { slug: string
   const full = canEdit ? (hub.gm ? p : { ...p, secret_notes: null }) : undefined
   const playedBy = p.user_id ? members.find((m) => m.user_id === p.user_id)?.name ?? null : null
 
-  return <CharacterSheet p={visible} full={full} secrecy={hub.gm ? secrecy ?? [] : []} playedBy={playedBy} />
+  return (
+    <>
+      {hasStale([p]) && <PartySync />}
+      <CharacterSheet p={visible} full={full} secrecy={hub.gm ? secrecy ?? [] : []} playedBy={playedBy} />
+    </>
+  )
 }

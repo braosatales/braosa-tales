@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import AuthProvider from '@/components/auth/AuthProvider'
+import NavigationProgress from '@/components/NavigationProgress'
+import { Suspense } from 'react'
 import { cookies } from 'next/headers'
 import { getAuthUser, displayName, avatarUrl } from '@/lib/auth'
 import { TEXT_SIZE_COOKIE, isTextSize } from '@/lib/prefs'
@@ -76,6 +78,9 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${cinzel.variable} ${alegreya.variable}`} data-text-size={isTextSize(textSize) ? textSize : 'md'}>
       <body>
+        <Suspense fallback={null}>
+          <NavigationProgress />
+        </Suspense>
         <AuthProvider initialUser={initialUser}>{children}</AuthProvider>
       </body>
     </html>

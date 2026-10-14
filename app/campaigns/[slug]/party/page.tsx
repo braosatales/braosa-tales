@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getHub, getHubMembers } from '@/lib/hub/server'
-import { getParty } from '@/lib/hub/party'
+import { getParty, hasStale } from '@/lib/hub/party'
+import PartySync from '@/components/hub/PartySync'
 import CharacterCard from '@/components/hub/CharacterCard'
 import { HubSectionTitle, EmptyNote } from '@/components/hub/Section'
 
@@ -18,6 +19,7 @@ export default async function PartyPage({ params }: { params: { slug: string } }
 
   return (
     <div>
+      {hasStale(party) && <PartySync />}
       <HubSectionTitle
         as="h1"
         action={(hub.gm || !hasMine) && <Link href={`${base}/party/new`} className="btn-primary">{hub.gm ? 'Add a character' : 'Add your character'}</Link>}
