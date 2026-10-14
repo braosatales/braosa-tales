@@ -11,7 +11,8 @@ export default async function SignetPage() {
   const user = await getAuthUser()
   if (!user) redirect('/sign-in?next=/atelier/signet')
   return (
-    <div style={{minHeight:"100vh", background:"#12100D", paddingTop:"72px"}}>
+    // Mobile: content starts below the nav. Desktop: the settings sidebar runs full height and the nav floats beside it.
+    <div className="pt-[72px] md:pt-0" style={{minHeight:"100vh", background:"#12100D"}}>
       <TheSignet />
     </div>
   )

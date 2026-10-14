@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import AuthProvider from '@/components/auth/AuthProvider'
-import { getAuthUser, displayName } from '@/lib/auth'
+import { cookies } from 'next/headers'
+import { getAuthUser, displayName, avatarUrl } from '@/lib/auth'
+import { TEXT_SIZE_COOKIE, isTextSize } from '@/lib/prefs'
 import './globals.css'
 
 // Self-hosted (no Google Fonts request at build or runtime).
@@ -67,11 +69,12 @@ export default async function RootLayout({
 }) {
   const user = await getAuthUser()
   const initialUser = user
-    ? { id: user.id, email: user.email ?? null, name: displayName(user) || null }
+    ? { id: user.id, email: user.email ?? null, name: displayName(user) || null, avatar: avatarUrl(user) }
     : null
+  const textSize = cookies().get(TEXT_SIZE_COOKIE)?.value
 
   return (
-    <html lang="en" className={`${cinzel.variable} ${alegreya.variable}`}>
+    <html lang="en" className={`${cinzel.variable} ${alegreya.variable}`} data-text-size={isTextSize(textSize) ? textSize : 'md'}>
       <body>
         <AuthProvider initialUser={initialUser}>{children}</AuthProvider>
       </body>

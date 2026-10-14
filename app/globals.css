@@ -14,6 +14,9 @@ html { scroll-behavior: smooth; }
 
 @layer base {
   html { font-size: 20px; }
+  html[data-text-size="sm"] { font-size: 18px; }
+  html[data-text-size="lg"] { font-size: 22px; }
+  html[data-text-size="xl"] { font-size: 24px; }
   body {
     background-color: #0A0712;
     color: #F0E4C4;

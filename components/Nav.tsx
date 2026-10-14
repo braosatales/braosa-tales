@@ -44,10 +44,12 @@ export default function Nav({ userProfile }: NavProps = {}) {
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`)
   const solid = scrolled || menuOpen
+  // The Signet has a full-height settings column on the left; the nav floats beside it.
+  const besideSidebar = pathname.startsWith('/atelier/signet')
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ${besideSidebar ? 'md:left-[380px]' : ''} ${
         solid ? 'border-b border-plum-line/70 bg-night/85 backdrop-blur-md' : 'border-b border-transparent bg-transparent'
       }`}
     >

@@ -28,6 +28,12 @@ const IconStar = () => (
     <path d="m12 3.2 2.6 5.5 6 .8-4.4 4.1 1.1 5.9L12 16.6l-5.3 2.9 1.1-5.9L3.4 9.5l6-.8Z" />
   </svg>
 )
+const IconCog = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
+  </svg>
+)
 const IconDoor = () => (
   <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M14 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4" />
@@ -81,10 +87,22 @@ export default function UserMenuContent({
 
   return (
     <div className="py-2">
-      {/* Who */}
-      <div className="px-4 pb-3 pt-2">
-        {name && <p className="truncate font-cinzel text-[1rem] font-bold text-vellum">{name}</p>}
-        {email && <p className="truncate text-[0.88rem] text-mist">{email}</p>}
+      {/* Who + settings */}
+      <div className="flex items-start gap-2 pb-3 pl-4 pr-2 pt-2">
+        <div className="min-w-0 flex-1">
+          {name && <p className="truncate font-cinzel text-[1rem] font-bold text-vellum">{name}</p>}
+          {email && <p className="truncate text-[0.88rem] text-mist">{email}</p>}
+        </div>
+        <Link
+          href="/settings"
+          role="menuitem"
+          onClick={onNavigate}
+          aria-label="Account settings"
+          title="Account settings"
+          className="rounded-lg p-2 text-mist transition-colors hover:bg-night/70 hover:text-leaf-soft"
+        >
+          <IconCog />
+        </Link>
       </div>
 
       <Link href="/dashboard" role="menuitem" onClick={onNavigate} className={`${rowCls} text-vellum`}>

@@ -14,7 +14,7 @@ export default function PrivacyPage() {
     <LegalPage
       eyebrow="Legal"
       title="Privacy Policy"
-      updated="13 October 2026"
+      updated="14 October 2026"
       intro="What we collect, why, who helps us run the service, and the rights you have over your data."
     >
       <H2>Who we are</H2>
@@ -27,8 +27,9 @@ export default function PrivacyPage() {
       <H2>What we collect</H2>
       <UL>
         <li>
-          <Strong>Account data</Strong> — your email address, the name you give us and your password (stored only as a
-          secure hash by our authentication provider). If you sign in with Google, we receive your name and email
+          <Strong>Account data</Strong> — your email address, the name you give us, an optional profile picture you
+          upload, your display preferences (such as text size) and your password (stored only as a secure hash by our
+          authentication provider). If you sign in with Google, we receive your name and email
           address from Google. We don&apos;t receive your Google password or access anything else in your Google account.
         </li>
         <li>
@@ -89,7 +90,9 @@ export default function PrivacyPage() {
         </li>
         <li>
           <Strong>How we store it:</Strong> your name and email are stored in our authentication provider and database
-          (Supabase), encrypted in transit and protected by access controls. We don&apos;t keep your profile picture.
+          (Supabase), encrypted in transit and protected by access controls. Google&apos;s profile picture link is kept by the
+          authentication provider as part of your sign-in record, but we never display or use it: the only picture on
+          your account is one you upload yourself in Settings.
         </li>
         <li>
           <Strong>How we share it:</Strong> we do not sell, rent or share Google user data with third parties, do not use it
@@ -134,7 +137,7 @@ export default function PrivacyPage() {
 
       <H2>How long we keep it</H2>
       <UL>
-        <li>Account and tool data: while your account is open. To close your account, email us — we delete your data within 30 days.</li>
+        <li>Account and tool data: while your account is open. You can delete your account yourself in Account settings, which removes it straight away; or email us and we’ll do it within 30 days.</li>
         <li>Payment records: as long as Portuguese tax and accounting law requires.</li>
         <li>Newsletter and waitlist: until you unsubscribe or ask us to remove you.</li>
         <li>Server logs: for a short period, for security purposes.</li>

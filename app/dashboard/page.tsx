@@ -7,7 +7,7 @@ import { SectionTitle } from '@/components/PageHero'
 import CampaignTile from '@/components/dashboard/CampaignTile'
 import AtelierPanel from '@/components/dashboard/AtelierPanel'
 import GMPanel from '@/components/dashboard/GMPanel'
-import { getAuthUser, getUserProfile, displayName } from '@/lib/auth'
+import { getAuthUser, getUserProfile, displayName, avatarUrl } from '@/lib/auth'
 import { claimInvites, getMyCampaigns, getCampaignsForGM } from '@/lib/campaigns'
 import { isAdmin } from '@/lib/the8adventurers/isAdmin'
 import { createServerSupabase } from '@/lib/supabase-server'
@@ -38,6 +38,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
   const presets = ((presetsRes.data ?? []) as Preset[]).sort((a, b) => Number(!!b.favourite) - Number(!!a.favourite))
   const pins = (pinsRes.data ?? []).map((p) => p.tool_slug as string)
   const firstName = displayName(user).split(' ')[0]
+  const avatar = avatarUrl(user)
   const joined = searchParams.joined ? campaigns.find((c) => c.slug === searchParams.joined) : null
   const credits = profile ? (profile.credits ?? 0) + (profile.daily_credits ?? 0) : null
 
@@ -47,9 +48,24 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
 
       {/* Welcome */}
       <section className="mx-auto max-w-[1180px] px-6 pb-12 pt-32 md:px-10 md:pt-36">
-        <h1 className="font-cinzel text-[2.4rem] font-bold leading-tight text-vellum md:text-[3rem]">
-          {firstName ? `Welcome back, ${firstName}.` : 'Welcome back.'}
-        </h1>
+        <div className="flex flex-wrap items-center justify-between gap-6">
+          <div className="flex items-center gap-5">
+            {avatar && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={avatar} alt="" className="h-16 w-16 rounded-full border border-leaf/50 object-cover md:h-20 md:w-20" />
+            )}
+            <h1 className="font-cinzel text-[2.4rem] font-bold leading-tight text-vellum md:text-[3rem]">
+              {firstName ? `Welcome back, ${firstName}.` : 'Welcome back.'}
+            </h1>
+          </div>
+          <Link href="/settings" className="btn-ghost gap-2 px-5 py-2">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" strokeLinecap="round" />
+            </svg>
+            Account settings
+          </Link>
+        </div>
         <p className="mt-3 text-mist">
           {profile?.tier && <span className="capitalize text-vellum">{profile.tier} plan</span>}
           {credits !== null && <> with {credits.toLocaleString()} credits to spend.</>}{' '}

@@ -2195,9 +2195,10 @@ export default function TheSignet() {
     <div style={{...GS,color:C.t2}}>
       <div style={{position:"fixed",inset:0,pointerEvents:"none",zIndex:-1,backgroundImage:`radial-gradient(ellipse at 10% 50%,rgba(107,28,168,0.07) 0%,transparent 55%),radial-gradient(ellipse at 90% 20%,rgba(107,28,168,0.04) 0%,transparent 50%)`}}/>
       {!mobile&&(
-        <div style={{display:"flex",minHeight:"calc(100vh - 61px)"}}>
-          <div style={{width:380,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"28px 24px",overflowY:"auto"}}><Controls/></div>
-          <div style={{flex:1,padding:"36px 40px",overflowY:"auto"}}><TabbedPanel/></div>
+        <div style={{display:"flex",minHeight:"100vh"}}>
+          {/* Full-height settings column: starts at the very top; the site nav floats to its right */}
+          <div style={{width:380,flexShrink:0,background:C.bg2,borderRight:`1px solid ${C.border}`,padding:"28px 24px",overflowY:"auto",position:"sticky",top:0,height:"100vh",alignSelf:"flex-start"}}><Controls/></div>
+          <div style={{flex:1,minWidth:0,padding:"100px 40px 36px"}}><TabbedPanel/></div>
         </div>
       )}
       {mobile && (

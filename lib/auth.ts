@@ -26,7 +26,14 @@ export async function getUserProfile(userId: string) {
   return data
 }
 
+/** Name to show. `display_name` is what the user set in Settings (providers like Google rewrite full_name on each sign-in). */
 export function displayName(user: User): string {
   const meta = user.user_metadata ?? {}
-  return (meta.full_name || meta.name || '').toString().trim()
+  return (meta.display_name || meta.full_name || meta.name || '').toString().trim()
+}
+
+/** Profile picture the user uploaded in Settings. We deliberately ignore Google's picture. */
+export function avatarUrl(user: User): string | null {
+  const v = user.user_metadata?.bt_avatar
+  return typeof v === 'string' && v ? v : null
 }

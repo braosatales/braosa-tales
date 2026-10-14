@@ -37,9 +37,14 @@ export default function AccountMenu({ onNavigate }: { onNavigate?: () => void })
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label="Account menu"
-        className="w-8 h-8 rounded-full border border-leaf/60 bg-plum text-leaf-soft font-cinzel text-xs flex items-center justify-center hover:border-leaf-soft transition-colors"
+        className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border border-leaf/60 bg-plum font-cinzel text-xs text-leaf-soft transition-colors hover:border-leaf-soft"
       >
-        {initial}
+        {user.avatar ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={user.avatar} alt="" className="h-full w-full object-cover" />
+        ) : (
+          initial
+        )}
       </button>
 
       {open && (
