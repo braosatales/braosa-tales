@@ -47,8 +47,10 @@ export default function PrivacyPage() {
           <Strong>Feedback</Strong> — the message you send us and, if you&apos;re signed in, your name and email.
         </li>
         <li>
-          <Strong>Campaign hub</Strong> — for invited players of our live campaigns: character details, campaign notes and
-          other content you or the game master add.
+          <Strong>Campaign sites</Strong> — for players of our campaigns: character details, your private journal, the lore
+          and quests you pin, and other content you or the game master add. If you link a D&amp;D Beyond character, we read
+          its public character sheet from D&amp;D Beyond (name, species, class, level, hit points, ability scores and
+          portrait) about every 30 minutes while the campaign site is in use, and keep a copy on the character.
         </li>
         <li>
           <Strong>Technical data</Strong> — basic logs (such as IP address, browser type and timestamps) kept by our hosting

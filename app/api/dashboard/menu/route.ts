@@ -19,7 +19,7 @@ export async function GET() {
     {
       campaigns: campaigns
         .filter((c) => c.status === 'active')
-        .map((c) => ({ slug: c.slug, title: c.title, role: c.role, href: c.hub_path, cover: c.cover_url })),
+        .map((c) => ({ slug: c.slug, title: c.title, role: c.role, href: `/campaigns/${c.slug}`, cover: c.cover_url })),
       favourites: (pins ?? []).map((p) => p.tool_slug as string),
     },
     { headers: { 'Cache-Control': 'no-store' } }

@@ -9,7 +9,7 @@ import AtelierPanel from '@/components/dashboard/AtelierPanel'
 import GMPanel from '@/components/dashboard/GMPanel'
 import { getAuthUser, getUserProfile, displayName, avatarUrl } from '@/lib/auth'
 import { claimInvites, getMyCampaigns, getCampaignsForGM } from '@/lib/campaigns'
-import { isAdmin } from '@/lib/the8adventurers/isAdmin'
+import { isAdmin } from '@/lib/admin'
 import { createServerSupabase } from '@/lib/supabase-server'
 
 export const metadata: Metadata = { title: 'Your dashboard', robots: { index: false } }
@@ -31,7 +31,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
     db.from('saved_names').select('id, name, pronunciation, language, meaning').eq('user_id', user.id).order('saved_at', { ascending: false }).limit(6),
     db.from('presets').select('id, name, favourite').eq('user_id', user.id).order('created_at', { ascending: false }),
     db.from('user_pinned_tools').select('tool_slug').eq('user_id', user.id),
-    admin ? getCampaignsForGM() : Promise.resolve([]),
+    getCampaignsForGM(user.id),
   ])
 
   const saved = (savedRes.data ?? []) as SavedName[]
@@ -174,14 +174,14 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
       </section>
 
       {/* GM tools */}
-      {admin && gmCampaigns.length > 0 && (
+      {(admin || gmCampaigns.length > 0) && (
         <section className="mx-auto max-w-[1180px] px-6 py-16 md:px-10 md:py-20">
           <SectionTitle>Game master</SectionTitle>
           <p className="mt-2 max-w-measure text-mist">
-            Add players by email or share a campaign’s invite link. Only you can see this section.
+            The campaigns you run. Each one’s Manage tab has its details, links, players and invite link.
           </p>
           <div className="mt-8">
-            <GMPanel campaigns={gmCampaigns} />
+            <GMPanel campaigns={gmCampaigns} canCreate={admin} />
           </div>
         </section>
       )}

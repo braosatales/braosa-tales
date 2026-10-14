@@ -25,19 +25,16 @@ export default function CampaignTile({ c }: { c: MyCampaign }) {
         </p>
         <h3 className="mt-1 font-cinzel text-[1.3rem] font-bold leading-tight text-vellum">{c.title}</h3>
         {c.tagline && <p className="mt-1 text-[0.95rem] text-mist">{c.tagline}</p>}
-        <p className={`mt-auto pt-5 text-[0.92rem] ${c.hub_path ? 'text-leaf-soft group-hover:text-vellum' : 'text-mist/80'}`}>
-          {c.hub_path ? 'Enter the campaign site' : 'Campaign site opening soon'}
+        <p className="mt-auto pt-5 text-[0.92rem] text-leaf-soft group-hover:text-vellum">
+          {c.status === 'finished' ? 'Revisit the campaign site' : 'Enter the campaign site'}
         </p>
       </div>
     </>
   )
 
-  const cls = 'group flex w-full flex-col overflow-hidden rounded-2xl border border-umber-line bg-umber-deep/80'
-  return c.hub_path ? (
-    <Link href={c.hub_path} className={`${cls} transition-colors hover:border-leaf/50`}>
+  return (
+    <Link href={`/campaigns/${c.slug}`} className="group flex w-full flex-col overflow-hidden rounded-2xl border border-umber-line bg-umber-deep/80 transition-colors hover:border-leaf/50">
       {body}
     </Link>
-  ) : (
-    <article className={cls}>{body}</article>
   )
 }

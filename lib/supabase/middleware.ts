@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 // Pages that require a signed-in user. API routes guard themselves (401).
-const PROTECTED_PAGE_PREFIXES = ['/atelier/signet', '/the8adventurers', '/dashboard', '/settings']
+const PROTECTED_PAGE_PREFIXES = ['/atelier/signet', '/dashboard', '/settings']
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request })

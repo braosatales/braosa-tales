@@ -1,5 +1,5 @@
 -- ============================================================================
--- Braosa Tales — account settings: avatar, preferences, character identity
+-- Braosa Tales — account settings: avatar and preferences
 -- Run ONCE in the Supabase SQL editor, BEFORE deploying the settings code.
 -- Requires dashboard_campaigns.sql to have run first. Safe to re-run.
 -- ============================================================================
@@ -9,10 +9,6 @@ begin;
 -- Profile picture + display preferences on the user's row
 alter table public.users add column if not exists avatar_url  text;
 alter table public.users add column if not exists preferences jsonb not null default '{}'::jsonb;
-
--- Per-campaign character identity (used by the campaign sites, coming next)
-alter table public.campaign_members add column if not exists character_name       text;
-alter table public.campaign_members add column if not exists character_avatar_url text;
 
 -- Public bucket for profile and character pictures.
 -- Uploads go through the website's server (service role), so no write policies are needed.
