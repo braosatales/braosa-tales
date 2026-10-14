@@ -87,11 +87,11 @@ export default async function DashboardPage({ searchParams }: { searchParams: { 
       </section>
 
       {/* Atelier */}
-      <section className="bg-plum">
+      <section id="atelier" className="scroll-mt-16 bg-plum">
         <div className="mx-auto grid max-w-[1180px] gap-14 px-6 py-16 md:px-10 md:py-20 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
           <div>
             <SectionTitle>Your Atelier</SectionTitle>
-            <p className="mt-2 text-mist">Open tools are always here. Star any other tool to pin it.</p>
+            <p className="mt-2 text-mist">Star the apps you use most. Your favourites also appear in the account menu, top right.</p>
             <div className="mt-8">
               <AtelierPanel initialPins={pins} />
             </div>

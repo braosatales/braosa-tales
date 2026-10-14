@@ -3,8 +3,9 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from './AuthProvider'
+import UserMenuContent from './UserMenuContent'
 
-// Account avatar (initial letter) + dropdown with sign-out.
+// Account avatar (initial letter) + dropdown: dashboard, active campaigns, favourite apps, sign out.
 export default function AccountMenu({ onNavigate }: { onNavigate?: () => void }) {
   const { user, signOut } = useAuth()
   const [open, setOpen] = useState(false)
@@ -44,36 +45,16 @@ export default function AccountMenu({ onNavigate }: { onNavigate?: () => void })
       {open && (
         <div
           role="menu"
-          className="absolute right-0 mt-2 w-60 rounded-xl border border-plum-line bg-plum shadow-xl z-50 py-2"
+          aria-label="Account"
+          className="absolute right-0 z-50 mt-3 w-[19rem] max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-plum-line bg-plum shadow-[0_24px_60px_-12px_rgba(0,0,0,0.7)]"
         >
-          <div className="px-4 py-2 border-b border-plum-line">
-            {user.name && <p className="font-cinzel text-sm font-bold text-vellum truncate">{user.name}</p>}
-            {user.email && <p className="text-sm text-mist truncate">{user.email}</p>}
-          </div>
-          <Link
-            href="/dashboard"
-            role="menuitem"
-            onClick={() => { setOpen(false); onNavigate?.() }}
-            className="block px-4 py-2 text-[0.95rem] text-prose hover:text-vellum hover:bg-night/60"
-          >
-            Your dashboard
-          </Link>
-          <Link
-            href="/atelier/signet"
-            role="menuitem"
-            onClick={() => { setOpen(false); onNavigate?.() }}
-            className="block px-4 py-2 text-[0.95rem] text-prose hover:text-vellum hover:bg-night/60"
-          >
-            The Signet
-          </Link>
-          <button
-            type="button"
-            role="menuitem"
-            onClick={() => { setOpen(false); onNavigate?.(); signOut() }}
-            className="w-full text-left px-4 py-2 text-[0.95rem] text-prose hover:text-leaf-soft hover:bg-night/60"
-          >
-            Sign out
-          </button>
+          <UserMenuContent
+            name={user.name}
+            email={user.email}
+            open={open}
+            onNavigate={() => { setOpen(false); onNavigate?.() }}
+            onSignOut={() => { setOpen(false); onNavigate?.(); signOut() }}
+          />
         </div>
       )}
     </div>

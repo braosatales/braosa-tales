@@ -39,7 +39,7 @@ function ToolTile({ t, pinned, onToggle }: { t: AtelierTool; pinned: boolean; on
       ) : (
         <div className="flex min-w-0 flex-1 items-center gap-3">{inner}</div>
       )}
-      <StarButton on={pinned} onClick={onToggle} label={pinned ? `Unpin ${t.name}` : `Pin ${t.name}`} />
+      <StarButton on={pinned} onClick={onToggle} label={pinned ? `Remove ${t.name} from favourites` : `Add ${t.name} to favourites`} />
     </li>
   )
 }
@@ -62,11 +62,11 @@ export default function AtelierPanel({ initialPins }: { initialPins: string[] })
     })
     if (!res.ok) {
       setPins(new Set(pins)) // undo
-      setError('That pin didn’t save. Try again.')
+      setError('That didn’t save. Try again.')
     }
   }
 
-  // Live tools always show; pinned ones join them.
+  // Open tools always show here (star them to add them to the account menu); starred coming-soon tools join them.
   const shown = TOOLS.filter((t) => isLive(t) || pins.has(t.slug))
 
   return (
@@ -84,7 +84,7 @@ export default function AtelierPanel({ initialPins }: { initialPins: string[] })
         aria-expanded={editing}
         className="mt-5 text-[0.95rem] text-leaf-soft underline decoration-leaf/40 underline-offset-[0.3em] hover:text-vellum"
       >
-        {editing ? 'Done' : 'Pin more tools'}
+        {editing ? 'Done' : 'Add more favourites'}
       </button>
 
       {editing && (
@@ -93,7 +93,7 @@ export default function AtelierPanel({ initialPins }: { initialPins: string[] })
             <li key={t.slug} className="flex items-center gap-3 border-b border-plum-line py-2.5">
               <Image src={`/icons/atelier/48/${t.icon}`} width={28} height={28} alt="" unoptimized className="opacity-70" />
               <span className="flex-1 text-[0.95rem] text-prose">{t.name}</span>
-              <StarButton on={pins.has(t.slug)} onClick={() => toggle(t.slug)} label={pins.has(t.slug) ? `Unpin ${t.name}` : `Pin ${t.name}`} />
+              <StarButton on={pins.has(t.slug)} onClick={() => toggle(t.slug)} label={pins.has(t.slug) ? `Remove ${t.name} from favourites` : `Add ${t.name} to favourites`} />
             </li>
           ))}
         </ul>

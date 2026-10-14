@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState, Suspense } from 'react'
 import { useAuth } from '@/components/auth/AuthProvider'
 import AccountMenu from '@/components/auth/AccountMenu'
+import UserMenuContent from '@/components/auth/UserMenuContent'
 import CreditsBadge from '@/app/atelier/signet/CreditsBadge'
 
 const links = [
@@ -29,7 +30,7 @@ interface NavProps {
 export default function Nav({ userProfile }: NavProps = {}) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { isSignedIn, signOut } = useAuth()
+  const { isSignedIn, signOut, user } = useAuth()
   const pathname = usePathname()
 
   useEffect(() => {
@@ -84,9 +85,6 @@ export default function Nav({ userProfile }: NavProps = {}) {
             </>
           ) : (
             <>
-              <Link href="/dashboard" className={`text-[0.95rem] transition-colors hover:text-vellum ${isActive('/dashboard') ? 'text-leaf-soft' : 'text-prose/80'}`}>
-                Dashboard
-              </Link>
               <Suspense fallback={null}>
                 <CreditsBadge initialProfile={userProfile ?? null} />
               </Suspense>
@@ -146,25 +144,21 @@ export default function Nav({ userProfile }: NavProps = {}) {
               </>
             ) : (
               <>
-                <div className="flex justify-center py-2">
+                <div className="flex justify-center pb-2">
                   <CreditsBadge />
                 </div>
-                <Link href="/dashboard" className="btn-gold" onClick={() => setMenuOpen(false)}>
-                  Your dashboard
-                </Link>
-                <Link href="/atelier/signet" className="btn-ghost" onClick={() => setMenuOpen(false)}>
-                  The Signet
-                </Link>
-                <button
-                  type="button"
-                  className="py-2 text-prose/80"
-                  onClick={() => {
-                    setMenuOpen(false)
-                    signOut()
-                  }}
-                >
-                  Sign out
-                </button>
+                <div className="-mx-4 rounded-2xl border border-plum-line bg-plum">
+                  <UserMenuContent
+                    name={user?.name ?? null}
+                    email={user?.email ?? null}
+                    open={menuOpen}
+                    onNavigate={() => setMenuOpen(false)}
+                    onSignOut={() => {
+                      setMenuOpen(false)
+                      signOut()
+                    }}
+                  />
+                </div>
               </>
             )}
           </div>
