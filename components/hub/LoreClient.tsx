@@ -2,10 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import type { LoreEntry, LoreCategory, LinkedLoreEntry } from '@/lib/hub/types'
+import type { LoreEntry, LoreCategory } from '@/lib/hub/types'
 import Toggle from '@/components/hub/Toggle'
 import SecretBadge from '@/components/hub/SecretBadge'
-import MentionTextarea from '@/components/hub/MentionTextarea'
+import BlockEditor, { type EditBlock, toEditBlocks, toBlockPayload } from '@/components/hub/BlockEditor'
+import { IconEye } from '@/components/hub/RevealIcons'
+import { stripMentions } from '@/lib/hub/mentions'
 import ViewToggle, { type ViewMode } from '@/components/hub/ViewToggle'
 import CardMenu from '@/components/hub/CardMenu'
 import ArticleModal, { type ArticleModalData } from '@/components/hub/ArticleModal'
@@ -18,60 +20,69 @@ type Props = {
   isAdmin: boolean
 }
 
+type LinkSel = { id: string; is_revealed: boolean }
+
 type FormState = {
   title: string
-  description: string
+  blocks: EditBlock[]
   portrait_url: string
   is_secret: boolean
   gm_notes: string
   preferred_habitat: string
-  faction_ids: string[]
-  location_ids: string[]
+  faction_links: LinkSel[]
+  location_links: LinkSel[]
 }
 
 function emptyForm(): FormState {
   return {
-    title: '', description: '', portrait_url: '', is_secret: true, gm_notes: '',
-    preferred_habitat: '', faction_ids: [], location_ids: [],
+    title: '', blocks: [{ key: 'new-first', body: '', is_revealed: false }], portrait_url: '', is_secret: true, gm_notes: '',
+    preferred_habitat: '', faction_links: [], location_links: [],
   }
 }
 
 function entryToForm(e: LoreEntry): FormState {
+  const blocks = toEditBlocks(e.blocks)
   return {
     title: e.title,
-    description: e.description ?? '',
+    blocks: blocks.length ? blocks : [{ key: 'new-first', body: '', is_revealed: false }],
     portrait_url: e.portrait_url ?? '',
     is_secret: e.is_secret,
     gm_notes: e.gm_notes ?? '',
     preferred_habitat: e.preferred_habitat ?? '',
-    faction_ids: (e.linked_factions ?? []).map((f) => f.id),
-    location_ids: (e.linked_locations ?? []).map((l) => l.id),
+    faction_links: (e.linked_factions ?? []).map((f) => ({ id: f.id, is_revealed: !!f.is_revealed })),
+    location_links: (e.linked_locations ?? []).map((l) => ({ id: l.id, is_revealed: !!l.is_revealed })),
   }
 }
+
+/** Card preview: the first block the viewer can see, without mention markup. */
+const preview = (e: LoreEntry) => (e.blocks?.[0]?.body ? stripMentions(e.blocks[0].body) : null)
 
 function getStoredView(): ViewMode {
   if (typeof window === 'undefined') return 'grid'
   return (localStorage.getItem('the8_view_lore') as ViewMode) ?? 'grid'
 }
 
-// Multi-select field for factions or locations
+// Multi-select field for factions or locations. Each chosen link has its own reveal switch.
 function MultiSelectField({
   label,
   all,
-  selectedIds,
-  onAdd,
-  onRemove,
+  selected: chosen,
+  onChange,
   inputCls,
 }: {
   label: string
   all: LoreEntry[]
-  selectedIds: string[]
-  onAdd: (id: string) => void
-  onRemove: (id: string) => void
+  selected: LinkSel[]
+  onChange: (links: LinkSel[]) => void
   inputCls: string
 }) {
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const selectedIds = chosen.map((c) => c.id)
+  const revealed = (id: string) => chosen.find((c) => c.id === id)?.is_revealed ?? false
+  const onAdd = (id: string) => onChange([...chosen, { id, is_revealed: false }])
+  const onRemove = (id: string) => onChange(chosen.filter((c) => c.id !== id))
+  const onToggle = (id: string) => onChange(chosen.map((c) => (c.id === id ? { ...c, is_revealed: !c.is_revealed } : c)))
 
   const selected = all.filter((e) => selectedIds.includes(e.id))
   const filtered = query
@@ -86,8 +97,17 @@ function MultiSelectField({
           {selected.map((e) => (
             <span
               key={e.id}
-              className="inline-flex items-center gap-1 font-fell text-xs text-amethyst bg-amethyst-deep/20 border border-amethyst-deep/30 px-2 py-0.5 rounded-lg"
+              className={`inline-flex items-center gap-1 font-fell text-xs px-2 py-0.5 rounded-lg ${revealed(e.id) ? 'text-amethyst bg-amethyst-deep/20 border border-amethyst-deep/30' : 'text-mist border border-dashed border-plum-line'}`}
             >
+              <button
+                type="button"
+                onClick={() => onToggle(e.id)}
+                className="mr-0.5 opacity-80 hover:opacity-100"
+                aria-pressed={revealed(e.id)}
+                title={revealed(e.id) ? 'Players can see this link. Click to hide it.' : 'Hidden from players. Click to reveal.'}
+              >
+                <IconEye off={!revealed(e.id)} size={11} />
+              </button>
               {e.title}
               <button
                 type="button"
@@ -144,24 +164,23 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
   const [availableFactions, setAvailableFactions] = useState<LoreEntry[]>([])
   const [availableLocations, setAvailableLocations] = useState<LoreEntry[]>([])
 
-  const isFriendsOrFoes = category === 'friends' || category === 'foes'
   const isMonsters = category === 'monsters'
 
   useEffect(() => {
     setView(getStoredView())
   }, [])
 
+  // Any entry can belong to factions and sit in locations (a shop in a town, a town in a region).
   useEffect(() => {
-    if (isFriendsOrFoes) {
-      Promise.all([
-        fetch(`${api}/lore?category=factions`).then((r) => r.json()),
-        fetch(`${api}/lore?category=locations`).then((r) => r.json()),
-      ]).then(([facs, locs]) => {
-        setAvailableFactions(Array.isArray(facs) ? facs : [])
-        setAvailableLocations(Array.isArray(locs) ? locs : [])
-      })
-    }
-  }, [isFriendsOrFoes])
+    if (!isAdmin) return
+    Promise.all([
+      fetch(`${api}/lore?category=factions`).then((r) => r.json()),
+      fetch(`${api}/lore?category=locations`).then((r) => r.json()),
+    ]).then(([facs, locs]) => {
+      setAvailableFactions(Array.isArray(facs) ? facs : [])
+      setAvailableLocations(Array.isArray(locs) ? locs : [])
+    })
+  }, [api, isAdmin])
 
   function handleViewChange(v: ViewMode) {
     setView(v)
@@ -204,18 +223,16 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
     const payload: Record<string, unknown> = {
       category,
       title: form.title.trim(),
-      description: form.description.trim() || null,
+      blocks: toBlockPayload(form.blocks),
       portrait_url: form.portrait_url.trim() || null,
       is_secret: form.is_secret,
       gm_notes: form.gm_notes.trim() || null,
+      faction_links: form.faction_links,
+      location_links: form.location_links,
     }
 
     if (isMonsters) {
       payload.preferred_habitat = form.preferred_habitat.trim() || null
-    }
-    if (isFriendsOrFoes) {
-      payload.faction_ids = form.faction_ids
-      payload.location_ids = form.location_ids
     }
 
     const res = editing
@@ -234,18 +251,8 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
     setSaving(false)
     if (!res.ok) { setErr(json.error ?? 'Error saving'); return }
 
-    // Rebuild linked arrays locally for immediate UI update
-    const updatedEntry: LoreEntry = {
-      ...json,
-      ...(isFriendsOrFoes ? {
-        linked_factions: availableFactions
-          .filter((f) => form.faction_ids.includes(f.id))
-          .map((f): LinkedLoreEntry => ({ id: f.id, title: f.title, category: f.category })),
-        linked_locations: availableLocations
-          .filter((l) => form.location_ids.includes(l.id))
-          .map((l): LinkedLoreEntry => ({ id: l.id, title: l.title, category: l.category })),
-      } : {}),
-    }
+    // The API returns the entry exactly as the GM sees it: blocks, links and all.
+    const updatedEntry: LoreEntry = json
 
     if (editing) {
       setEntries((prev) => prev.map((e) => e.id === json.id ? updatedEntry : e))
@@ -316,9 +323,9 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
                 {entry.title}
               </h3>
               {isAdmin && entry.is_secret && <div className="mb-1"><SecretBadge /></div>}
-              {entry.description && (
+              {preview(entry) && (
                 <p className="font-fell text-mist text-sm leading-relaxed line-clamp-2">
-                  {entry.description}
+                  {preview(entry)}
                 </p>
               )}
             </div>
@@ -392,16 +399,22 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
                 />
               </div>
 
-              <div>
-                <label className="section-label block mb-1">Description</label>
-                <MentionTextarea
-                  value={form.description}
-                  onChange={(v) => setForm((f) => ({ ...f, description: v }))}
-                  rows={6}
-                  placeholder="Lore description… type @ to link articles"
-                  className={`${inputCls} resize-y`}
+              <div className="flex items-center gap-3">
+                <Toggle
+                  checked={!form.is_secret}
+                  onChange={(v) => setForm((f) => ({ ...f, is_secret: !v }))}
                 />
+                <span className="font-fell text-sm text-mist">
+                  {form.is_secret ? 'Entry hidden: players don’t know it exists yet' : 'Entry visible: players see the title and any revealed blocks'}
+                </span>
               </div>
+
+              <BlockEditor
+                value={form.blocks}
+                onChange={(blocks) => setForm((f) => ({ ...f, blocks }))}
+                inputCls={inputCls}
+                entryVisible={!form.is_secret}
+              />
 
               <div>
                 <label className="section-label block mb-1">Portrait URL</label>
@@ -428,36 +441,23 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
                 </div>
               )}
 
-              {/* Factions + Locations — friends/foes only */}
-              {isFriendsOrFoes && (
-                <>
-                  <MultiSelectField
-                    label="Factions"
-                    all={availableFactions}
-                    selectedIds={form.faction_ids}
-                    onAdd={(id) => setForm((f) => ({ ...f, faction_ids: [...f.faction_ids, id] }))}
-                    onRemove={(id) => setForm((f) => ({ ...f, faction_ids: f.faction_ids.filter((x) => x !== id) }))}
-                    inputCls={inputCls}
-                  />
-                  <MultiSelectField
-                    label="Locations"
-                    all={availableLocations}
-                    selectedIds={form.location_ids}
-                    onAdd={(id) => setForm((f) => ({ ...f, location_ids: [...f.location_ids, id] }))}
-                    onRemove={(id) => setForm((f) => ({ ...f, location_ids: f.location_ids.filter((x) => x !== id) }))}
-                    inputCls={inputCls}
-                  />
-                </>
-              )}
-
-              <div className="flex items-center gap-3">
-                <Toggle
-                  checked={form.is_secret}
-                  onChange={(v) => setForm((f) => ({ ...f, is_secret: v }))}
+              {/* Factions + Locations: any entry can have them; each link is revealed separately */}
+              <div className="space-y-3">
+                <p className="text-[0.8rem] text-mist">Links start hidden. Click the eye on a link to let players see it.</p>
+                <MultiSelectField
+                  label="Factions"
+                  all={availableFactions.filter((x) => x.id !== editing?.id)}
+                  selected={form.faction_links}
+                  onChange={(faction_links) => setForm((f) => ({ ...f, faction_links }))}
+                  inputCls={inputCls}
                 />
-                <span className="font-fell text-sm text-mist">
-                  {form.is_secret ? 'GM Only (hidden from players)' : 'Visible to all players'}
-                </span>
+                <MultiSelectField
+                  label="Locations"
+                  all={availableLocations.filter((x) => x.id !== editing?.id)}
+                  selected={form.location_links}
+                  onChange={(location_links) => setForm((f) => ({ ...f, location_links }))}
+                  inputCls={inputCls}
+                />
               </div>
 
               <div>
@@ -497,6 +497,7 @@ export default function LoreClient({ initialEntries, category, label, isAdmin }:
           article={viewingArticle}
           isAdmin={isAdmin}
           onClose={() => setViewingArticle(null)}
+          onLoreChange={(changed) => setEntries((prev) => prev.map((e) => (e.id === changed.id ? changed : e)))}
           onEdit={isAdmin && viewingEntry ? () => {
             const freshEntry = entries.find((e) => e.id === viewingEntry.id) ?? viewingEntry
             setViewingArticle(null)

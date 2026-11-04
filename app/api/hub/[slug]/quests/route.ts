@@ -2,16 +2,17 @@ import { NextResponse } from 'next/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { hubApi, idsInCampaign, ownsRow } from '@/lib/hub/server'
 import { QUEST_SELECT } from '@/lib/hub/quests'
+import { hydrateQuests, syncBlocks } from '@/lib/hub/reveal'
 
 type P = { params: { slug: string } }
 
 export async function GET(_req: Request, { params }: P) {
   const hub = await hubApi(params.slug)
   if (hub instanceof NextResponse) return hub
-  const { data, error } = await createServerSupabase().from('the8_quests').select(QUEST_SELECT).eq('campaign_id', hub.campaign.id).order('title')
+  const db = createServerSupabase()
+  const { data, error } = await db.from('the8_quests').select(QUEST_SELECT).eq('campaign_id', hub.campaign.id).order('title')
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  if (!hub.gm) return NextResponse.json((data ?? []).filter((q) => !q.is_secret).map(({ gm_notes: _, ...row }) => row))
-  return NextResponse.json(data)
+  return NextResponse.json(await hydrateQuests(db, data ?? [], hub.gm))
 }
 
 export async function POST(req: Request, { params }: P) {
@@ -27,7 +28,6 @@ export async function POST(req: Request, { params }: P) {
     .insert({
       campaign_id: cid,
       title: b.title,
-      description: b.description || null,
       portrait_url: b.portrait_url || null,
       status: b.status ?? 'available',
       is_secret: b.is_secret ?? true,
@@ -54,6 +54,8 @@ export async function POST(req: Request, { params }: P) {
     if (expRows.length) await db.from('the8_quest_exp').insert(expRows)
   }
 
+  await syncBlocks(db, cid, { quest_id: quest.id }, b.blocks)
   const { data: full } = await db.from('the8_quests').select(QUEST_SELECT).eq('id', quest.id).single()
-  return NextResponse.json(full)
+  const [hydrated] = await hydrateQuests(db, full ? [full] : [], true)
+  return NextResponse.json(hydrated)
 }

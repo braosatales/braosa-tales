@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { GameMap, MapPin, LoreEntry } from '@/lib/hub/types'
+import RevealBlocks from '@/components/hub/RevealBlocks'
 import RichCard from '@/components/hub/RichCard'
 import { useHub } from '@/components/hub/HubContext'
 
@@ -49,7 +50,7 @@ function PinMarker({
 }
 
 function PinModal({ pin, onClose }: { pin: MapPin; onClose: () => void }) {
-  const { base } = useHub()
+  const { base, gm } = useHub()
   const entry = pin.the8_lore_entries
   if (!entry) return null
   return (
@@ -58,7 +59,8 @@ function PinModal({ pin, onClose }: { pin: MapPin; onClose: () => void }) {
       onClick={onClose}
     >
       <div className="max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-        <RichCard base={base} portrait_url={entry.portrait_url} title={entry.title} description={entry.description}>
+        <RichCard base={base} portrait_url={entry.portrait_url} title={entry.title}>
+          <RevealBlocks blocks={entry.blocks ?? []} isAdmin={gm} />
           <button
             onClick={onClose}
             className="mt-4 btn-outline w-full"

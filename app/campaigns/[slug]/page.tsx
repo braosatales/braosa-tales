@@ -22,6 +22,47 @@ function excerpt(text: string | null, max = 520) {
   return plain.length > max ? `${plain.slice(0, plain.lastIndexOf(' ', max))}…` : plain
 }
 
+type Learned = { key: string; title: string; sub: string; href: string; text: string; fresh: boolean }
+
+/** What the party learned most recently: the latest revealed blocks, one line per entry or quest, as players see it. */
+async function recentlyLearned(db: ReturnType<typeof createServerSupabase>, cid: string, base: string): Promise<Learned[]> {
+  const { data: blocks } = await db
+    .from('the8_reveal_blocks')
+    .select('lore_entry_id, quest_id, body, revealed_at')
+    .eq('campaign_id', cid)
+    .eq('is_revealed', true)
+    .order('revealed_at', { ascending: false })
+    .limit(40)
+  if (!blocks?.length) return []
+  const loreIds = Array.from(new Set(blocks.map((b) => b.lore_entry_id).filter(Boolean))) as string[]
+  const questIds = Array.from(new Set(blocks.map((b) => b.quest_id).filter(Boolean))) as string[]
+  const [{ data: lore }, { data: qs }] = await Promise.all([
+    loreIds.length ? db.from('the8_lore_entries').select('id, title, category, is_secret').eq('campaign_id', cid).in('id', loreIds) : Promise.resolve({ data: [] as { id: string; title: string; category: string; is_secret: boolean }[] }),
+    questIds.length ? db.from('the8_quests').select('id, title, is_secret').eq('campaign_id', cid).in('id', questIds) : Promise.resolve({ data: [] as { id: string; title: string; is_secret: boolean }[] }),
+  ])
+  const loreById = new Map((lore ?? []).map((e) => [e.id, e]))
+  const questById = new Map((qs ?? []).map((q) => [q.id, q]))
+  const seen = new Set<string>()
+  const out: Learned[] = []
+  for (const b of blocks) {
+    const id = (b.lore_entry_id ?? b.quest_id) as string
+    if (seen.has(id)) continue
+    const fresh = !!b.revealed_at && Date.now() - new Date(b.revealed_at).getTime() < 7 * 24 * 60 * 60 * 1000
+    if (b.lore_entry_id) {
+      const e = loreById.get(b.lore_entry_id)
+      if (!e || e.is_secret) continue
+      out.push({ key: id, title: e.title, sub: LORE_LABEL[e.category] ?? 'Lore', href: `${base}/lore/entry/${id}`, text: excerpt(b.body, 160), fresh })
+    } else {
+      const q = questById.get(b.quest_id as string)
+      if (!q || q.is_secret) continue
+      out.push({ key: id, title: q.title, sub: 'Quest', href: `${base}/quests?open=${id}`, text: excerpt(b.body, 160), fresh })
+    }
+    seen.add(id)
+    if (out.length >= 6) break
+  }
+  return out
+}
+
 function longDate(d: string | null) {
   if (!d) return null
   return new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -64,6 +105,7 @@ export default async function CampaignOverview({ params }: { params: { slug: str
     .filter((x): x is PinnedItem => !!x)
 
   const quests = ((questRows ?? []) as Quest[]).filter((q) => hub.gm || !q.is_secret)
+  const learned = await recentlyLearned(db, cid, base)
   const recap = recaps?.[0]
   const nameOf = (uid: string | null) => (uid ? members.find((m) => m.user_id === uid)?.name ?? null : null)
   const hasMine = party.some((p) => p.user_id === hub.user.id)
@@ -149,6 +191,30 @@ export default async function CampaignOverview({ params }: { params: { slug: str
           </div>
         </section>
       </div>
+
+      {/* Recently learned: so nobody has to take notes */}
+      {learned.length > 0 && (
+        <section aria-labelledby="learned-h">
+          <HubSectionTitle action={{ href: `${base}/lore`, label: 'All lore' }}>
+            <span id="learned-h">Recently learned</span>
+          </HubSectionTitle>
+          {hub.gm && <p className="mt-2 text-[0.85rem] text-mist">What players see here: the latest things you revealed.</p>}
+          <ul className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {learned.map((l) => (
+              <li key={l.key} className="min-w-0">
+                <Link href={l.href} className="group block h-full rounded-2xl border border-plum-line bg-plum p-5 transition-colors hover:border-leaf/50">
+                  <span className="flex items-center gap-2 text-[0.78rem] text-ember">
+                    {l.sub}
+                    {l.fresh && <span className="rounded border border-leaf/40 bg-leaf/10 px-1 text-[0.68rem] font-semibold uppercase tracking-wide text-leaf-soft">New</span>}
+                  </span>
+                  <span className="mt-0.5 block truncate font-cinzel text-[1.05rem] font-bold text-vellum group-hover:text-leaf-soft">{l.title}</span>
+                  <span className="mt-2 line-clamp-3 block text-[0.92rem] leading-relaxed text-prose/90">{l.text}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* Quests + pinned */}
       <div className="grid gap-10 lg:grid-cols-2 lg:gap-12">

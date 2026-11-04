@@ -5,6 +5,7 @@ import { getParty } from '@/lib/hub/party'
 import { QUEST_SELECT } from '@/lib/hub/quests'
 import type { Player, Quest } from '@/lib/hub/types'
 import QuestsClient from '@/components/hub/QuestsClient'
+import { hydrateQuests } from '@/lib/hub/reveal'
 
 export const metadata = { title: 'Quests' }
 
@@ -19,7 +20,7 @@ export default async function QuestsPage({ params, searchParams }: { params: { s
     db.from('the8_achievements').select('*').eq('campaign_id', cid).order('title'),
   ])
   const strip = <T extends { gm_notes?: unknown }>({ gm_notes: _, ...row }: T) => row
-  const quests = (hub.gm ? questRows ?? [] : (questRows ?? []).filter((q) => !q.is_secret).map(strip)) as Quest[]
+  const quests: Quest[] = await hydrateQuests(db, questRows ?? [], hub.gm)
   const achievements = hub.gm ? achRows ?? [] : (achRows ?? []).filter((a) => !a.is_secret).map(strip)
   return <QuestsClient initialQuests={quests} players={party as Player[]} achievements={achievements} isAdmin={hub.gm} initialOpenId={searchParams.open} />
 }

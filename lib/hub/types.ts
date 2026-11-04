@@ -4,17 +4,30 @@ export type LinkedLoreEntry = {
   id: string
   title: string
   category: LoreCategory
+  /** GM only: is this link shown to players? */
+  is_revealed?: boolean
+  /** GM only: is the linked entry itself hidden? (Then players can't see the link either.) */
+  target_secret?: boolean
+}
+
+/** One revealable piece of a lore entry or quest. Players only ever receive revealed blocks. */
+export type RevealBlock = {
+  id: string
+  body: string
+  is_revealed: boolean
+  revealed_at: string | null
+  sort_order: number
 }
 
 export type LoreEntry = {
   id: string
   category: LoreCategory
   title: string
-  description: string | null
   portrait_url: string | null
   is_secret: boolean
   gm_notes?: string | null
   preferred_habitat?: string | null
+  blocks?: RevealBlock[]
   linked_factions?: LinkedLoreEntry[]
   linked_locations?: LinkedLoreEntry[]
   created_at: string
@@ -38,7 +51,7 @@ export type QuestExpRef = { player_id: string; exp_amount: number }
 export type Quest = {
   id: string
   title: string
-  description: string | null
+  blocks?: RevealBlock[]
   portrait_url: string | null
   status: QuestStatus
   is_secret: boolean

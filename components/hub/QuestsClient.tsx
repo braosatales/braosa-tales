@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import type { Quest, QuestItem, QuestStatus, Player, Achievement } from '@/lib/hub/types'
 import Toggle from '@/components/hub/Toggle'
 import SecretBadge from '@/components/hub/SecretBadge'
-import MentionTextarea from '@/components/hub/MentionTextarea'
+import BlockEditor, { type EditBlock, toEditBlocks, toBlockPayload } from '@/components/hub/BlockEditor'
+import { stripMentions } from '@/lib/hub/mentions'
 import ViewToggle, { type ViewMode } from '@/components/hub/ViewToggle'
 import CardMenu from '@/components/hub/CardMenu'
 import ArticleModal, { type ArticleModalData } from '@/components/hub/ArticleModal'
@@ -45,7 +46,7 @@ const CURRENCY_LABELS = [
 
 type QuestFormState = {
   title: string
-  description: string
+  blocks: EditBlock[]
   portrait_url: string
   status: QuestStatus
   is_secret: boolean
@@ -65,7 +66,7 @@ type QuestFormState = {
 
 function emptyForm(): QuestFormState {
   return {
-    title: '', description: '', portrait_url: '',
+    title: '', blocks: [{ key: 'new-first', body: '', is_revealed: false }], portrait_url: '',
     status: 'available', is_secret: true, sort_order: 0,
     reward_platinum: 0, reward_gold: 0, reward_electrum: 0, reward_silver: 0, reward_copper: 0,
     reward_achievement_id: '', reward_items: '', reward_other: '', gm_notes: '',
@@ -75,7 +76,9 @@ function emptyForm(): QuestFormState {
 
 function questToForm(q: Quest): QuestFormState {
   return {
-    title: q.title, description: q.description ?? '', portrait_url: q.portrait_url ?? '',
+    title: q.title,
+    blocks: q.blocks?.length ? toEditBlocks(q.blocks) : [{ key: 'new-first', body: '', is_revealed: false }],
+    portrait_url: q.portrait_url ?? '',
     status: q.status, is_secret: q.is_secret, sort_order: q.sort_order,
     reward_platinum: q.reward_platinum ?? 0, reward_gold: q.reward_gold ?? 0,
     reward_electrum: q.reward_electrum ?? 0, reward_silver: q.reward_silver ?? 0,
@@ -435,7 +438,7 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
 
     const payload = {
       title: form.title.trim(),
-      description: form.description.trim() || null,
+      blocks: toBlockPayload(form.blocks),
       portrait_url: form.portrait_url.trim() || null,
       status: form.status,
       is_secret: form.is_secret,
@@ -665,9 +668,9 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
                     ))}
                   </div>
                 )}
-                {q.description && (
+                {q.blocks?.[0]?.body && (
                   <p className="font-fell text-mist text-sm leading-relaxed line-clamp-2 mt-auto pt-1">
-                    {q.description}
+                    {stripMentions(q.blocks[0].body)}
                   </p>
                 )}
               </div>
@@ -784,16 +787,12 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
                 <input type="text" value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} className={inputCls} />
               </div>
 
-              <div>
-                <label className="section-label block mb-1">Description</label>
-                <MentionTextarea
-                  value={form.description}
-                  onChange={(v) => setForm((f) => ({ ...f, description: v }))}
-                  rows={4}
-                  placeholder="Quest description… type @ to link articles"
-                  className={`${inputCls} resize-y`}
-                />
-              </div>
+              <BlockEditor
+                value={form.blocks}
+                onChange={(blocks) => setForm((f) => ({ ...f, blocks }))}
+                inputCls={inputCls}
+                entryVisible={!form.is_secret}
+              />
 
               <div>
                 <label className="section-label block mb-1">Portrait URL</label>
@@ -919,6 +918,7 @@ export default function QuestsClient({ initialQuests, players, achievements, isA
           article={viewingArticle}
           isAdmin={isAdmin}
           onClose={() => { setViewingArticle(null); setViewingQuest(null) }}
+          onQuestChange={(changed) => setQuests((prev) => prev.map((q) => (q.id === changed.id ? { ...q, blocks: changed.blocks } : q)))}
           onEdit={isAdmin && viewingQuest ? () => {
             const freshQuest = quests.find((q) => q.id === viewingQuest.id) ?? viewingQuest
             setViewingArticle(null)

@@ -2,20 +2,18 @@ import { NextResponse } from 'next/server'
 import { createServerSupabase } from '@/lib/supabase-server'
 import { hubApi, idsInCampaign, ownsRow } from '@/lib/hub/server'
 import { QUEST_SELECT, QUEST_FIELDS, pick } from '@/lib/hub/quests'
+import { hydrateQuests, syncBlocks } from '@/lib/hub/reveal'
 
 type P = { params: { slug: string; id: string } }
 
 export async function GET(_req: Request, { params }: P) {
   const hub = await hubApi(params.slug)
   if (hub instanceof NextResponse) return hub
-  const { data, error } = await createServerSupabase().from('the8_quests').select(QUEST_SELECT).eq('id', params.id).eq('campaign_id', hub.campaign.id).single()
-  if (error || !data) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  if (!hub.gm) {
-    if (data.is_secret) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-    const { gm_notes: _, ...safe } = data
-    return NextResponse.json(safe)
-  }
-  return NextResponse.json(data)
+  const db = createServerSupabase()
+  const { data, error } = await db.from('the8_quests').select(QUEST_SELECT).eq('id', params.id).eq('campaign_id', hub.campaign.id).single()
+  if (error || !data || (!hub.gm && data.is_secret)) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  const [quest] = await hydrateQuests(db, [data], hub.gm)
+  return NextResponse.json(quest)
 }
 
 export async function PUT(req: Request, { params }: P) {
@@ -44,8 +42,10 @@ export async function PUT(req: Request, { params }: P) {
     if (rows.length) await db.from('the8_quest_exp').insert(rows)
   }
 
+  await syncBlocks(db, cid, { quest_id: params.id }, body.blocks)
   const { data: full } = await db.from('the8_quests').select(QUEST_SELECT).eq('id', params.id).single()
-  return NextResponse.json(full)
+  const [hydrated] = await hydrateQuests(db, full ? [full] : [], true)
+  return NextResponse.json(hydrated)
 }
 
 export async function DELETE(_req: Request, { params }: P) {

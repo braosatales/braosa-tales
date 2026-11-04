@@ -1,39 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
 import type { LoreEntry, Quest, Achievement, Player, QuestItem, QuestStatus } from '@/lib/hub/types'
 import type { VisiblePlayerData } from '@/lib/hub/getVisiblePlayerFields'
 import SecretBadge from './SecretBadge'
 import PinToggle from './PinToggle'
 import { useHub } from '@/components/hub/HubContext'
-
-function renderMentions(text: string, base: string): React.ReactNode[] {
-  const MENTION_RE = /@\[([^\]]+)\]\(([a-f0-9-]+)\)/g
-  const parts: React.ReactNode[] = []
-  let lastIndex = 0
-  let match: RegExpExecArray | null
-  while ((match = MENTION_RE.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      parts.push(<React.Fragment key={`t-${lastIndex}`}>{text.slice(lastIndex, match.index)}</React.Fragment>)
-    }
-    const [, title, id] = match
-    parts.push(
-      <Link
-        key={`l-${id}-${match.index}`}
-        href={`${base}/lore/entry/${id}`}
-        className="text-leaf-soft underline decoration-leaf/50 hover:text-leaf transition-colors"
-      >
-        {title}
-      </Link>
-    )
-    lastIndex = match.index + match[0].length
-  }
-  if (lastIndex < text.length) {
-    parts.push(<React.Fragment key="t-end">{text.slice(lastIndex)}</React.Fragment>)
-  }
-  return parts
-}
+import { renderMentions } from '@/lib/hub/mentions'
+import RevealBlocks from './RevealBlocks'
+import LinkChips from './LinkChips'
 
 function HpBar({ current, max }: { current: number; max: number }) {
   const pct = max > 0 ? Math.min(100, Math.max(0, (current / max) * 100)) : 0
@@ -100,14 +75,13 @@ function LoreView({
   data,
   isAdmin,
   onNavigate,
+  onChange,
 }: {
   data: LoreEntry
   isAdmin: boolean
   onNavigate?: (id: string) => void
+  onChange?: (entry: LoreEntry) => void
 }) {
-  const { base } = useHub()
-  const showFactions = (data.category === 'friends' || data.category === 'foes') && (data.linked_factions ?? []).length > 0
-  const showLocations = (data.category === 'friends' || data.category === 'foes') && (data.linked_locations ?? []).length > 0
   const showHabitat = data.category === 'monsters' && data.preferred_habitat
 
   return (
@@ -119,46 +93,35 @@ function LoreView({
         {isAdmin && data.is_secret && <SecretBadge />}
       </div>
       <h2 className="font-cinzel text-vellum font-bold text-xl mb-3">{data.title}</h2>
-      {data.description && (
-        <div className="font-fell text-prose text-sm leading-relaxed whitespace-pre-wrap mb-3">
-          {renderMentions(data.description, base)}
-        </div>
-      )}
+      <RevealBlocks
+        key={`b-${data.id}`}
+        blocks={data.blocks ?? []}
+        isAdmin={isAdmin}
+        onChange={(blocks) => onChange?.({ ...data, blocks })}
+      />
       {showHabitat && (
         <div className="font-fell text-sm text-mist mb-2">
           Preferred Habitat: <span className="text-prose">{data.preferred_habitat}</span>
         </div>
       )}
-      {showFactions && (
-        <div className="flex flex-wrap items-center gap-1.5 mb-2">
-          <span className="font-fell text-xs text-mist">Faction:</span>
-          {(data.linked_factions ?? []).map((f) => (
-            <button
-              key={f.id}
-              onClick={onNavigate ? () => onNavigate(f.id) : undefined}
-              disabled={!onNavigate}
-              className={`font-fell text-xs text-amethyst bg-amethyst-deep/20 border border-amethyst-deep/30 px-2 py-0.5 rounded-lg transition-colors ${onNavigate ? 'hover:bg-amethyst-deep/30 cursor-pointer' : 'cursor-default'}`}
-            >
-              {f.title}
-            </button>
-          ))}
-        </div>
-      )}
-      {showLocations && (
-        <div className="flex flex-wrap items-center gap-1.5 mb-2">
-          <span className="font-fell text-xs text-mist">Location:</span>
-          {(data.linked_locations ?? []).map((l) => (
-            <button
-              key={l.id}
-              onClick={onNavigate ? () => onNavigate(l.id) : undefined}
-              disabled={!onNavigate}
-              className={`font-fell text-xs text-leaf-soft bg-leaf/10 border border-leaf/30 px-2 py-0.5 rounded-lg transition-colors ${onNavigate ? 'hover:bg-leaf/20 cursor-pointer' : 'cursor-default'}`}
-            >
-              {l.title}
-            </button>
-          ))}
-        </div>
-      )}
+      <LinkChips
+        key={`f-${data.id}`}
+        entryId={data.id}
+        kind="faction"
+        links={data.linked_factions ?? []}
+        isAdmin={isAdmin}
+        onNavigate={onNavigate}
+        onChange={(linked_factions) => onChange?.({ ...data, linked_factions })}
+      />
+      <LinkChips
+        key={`l-${data.id}`}
+        entryId={data.id}
+        kind="location"
+        links={data.linked_locations ?? []}
+        isAdmin={isAdmin}
+        onNavigate={onNavigate}
+        onChange={(linked_locations) => onChange?.({ ...data, linked_locations })}
+      />
       {isAdmin && <GmNotes notes={data.gm_notes} />}
     </>
   )
@@ -171,12 +134,14 @@ function QuestView({
   players,
   achievements,
   onItemToggle,
+  onChange,
 }: {
   data: Quest
   isAdmin: boolean
   players: Player[]
   achievements: Achievement[]
   onItemToggle?: (questId: string, item: QuestItem) => void
+  onChange?: (quest: Quest) => void
 }) {
   const { api, base } = useHub()
   const [items, setItems] = useState<QuestItem[]>(
@@ -233,11 +198,7 @@ function QuestView({
         </div>
       )}
 
-      {data.description && (
-        <div className="font-fell text-prose text-sm leading-relaxed whitespace-pre-wrap mb-3">
-          {renderMentions(data.description, base)}
-        </div>
-      )}
+      <RevealBlocks key={`q-${data.id}`} blocks={data.blocks ?? []} isAdmin={isAdmin} onChange={(blocks) => onChange?.({ ...data, blocks })} />
 
       {items.length > 0 && (
         <div className="space-y-2 mb-3">
@@ -487,9 +448,12 @@ type Props = {
   onEdit?: () => void
   onToggleSecret?: () => void
   onDelete?: () => void
+  /** Called when the GM reveals or hides a block or link from inside the modal. */
+  onLoreChange?: (entry: LoreEntry) => void
+  onQuestChange?: (quest: Quest) => void
 }
 
-export default function ArticleModal({ article, isAdmin, onClose, onEdit, onToggleSecret, onDelete }: Props) {
+export default function ArticleModal({ article, isAdmin, onClose, onEdit, onToggleSecret, onDelete, onLoreChange, onQuestChange }: Props) {
   const { api } = useHub()
   const [current, setCurrent] = useState<ArticleModalData>(article)
   const [previous, setPrevious] = useState<ArticleModalData | null>(null)
@@ -640,6 +604,10 @@ export default function ArticleModal({ article, isAdmin, onClose, onEdit, onTogg
               data={current.data}
               isAdmin={isAdmin}
               onNavigate={isAtRoot ? navigateToEntry : undefined}
+              onChange={(entry) => {
+                setCurrent((prev) => (prev.type === 'lore' ? { ...prev, data: entry } : prev))
+                onLoreChange?.(entry)
+              }}
             />
           )}
           {!navigating && current.type === 'quest' && (
@@ -649,6 +617,10 @@ export default function ArticleModal({ article, isAdmin, onClose, onEdit, onTogg
               players={current.players}
               achievements={current.achievements}
               onItemToggle={current.onItemToggle}
+              onChange={(quest) => {
+                setCurrent((prev) => (prev.type === 'quest' ? { ...prev, data: quest } : prev))
+                onQuestChange?.(quest)
+              }}
             />
           )}
           {!navigating && current.type === 'achievement' && (
