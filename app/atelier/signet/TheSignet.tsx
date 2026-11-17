@@ -1364,10 +1364,37 @@ export default function TheSignet() {
   }
 
   const TabbedPanel = () => {
+    // All history names (DB + this session's batches not yet in the DB).
+    // Built once here so the tab badge counts the same names the History tab lists.
+    const dbNames = dbHistory.flatMap(entry =>
+      (entry.results || []).map(r => ({
+        ...r,
+        batchTarget: entry.target,
+        batchTs: new Date(entry.generated_at).getTime(),
+        _context: {
+          target: entry.target,
+          languages: entry.languages || [],
+          vibe: entry.vibe,
+          style: entry.style,
+          themes: entry.themes,
+          concept: entry.concept || undefined,
+        }
+      }))
+    )
+    const sessionNames = history.flatMap(batch =>
+      batch.results.map(r => ({
+        ...r,
+        batchTarget: batch.target,
+        batchTs: batch.ts,
+      }))
+    )
+    const dbNameSet = new Set(dbNames.map(n => n.name))
+    const allHistoryNames = [...sessionNames.filter(n => !dbNameSet.has(n.name)), ...dbNames]
+
     const tabs: {id:"results"|"saved"|"history"; label:string; count?:number}[] = [
       { id:"results",  label:"Results",  count: results.length > 0 ? results.length : undefined },
       { id:"saved",    label:"Saved",    count: saved.length > 0 ? saved.length : undefined },
-      { id:"history",  label:"History",  count: history.length > 0 ? history.length : undefined },
+      { id:"history",  label:"History",  count: allHistoryNames.length > 0 ? allHistoryNames.length : undefined },
     ]
     const historyLocked = false
 
@@ -1396,7 +1423,7 @@ export default function TheSignet() {
             >
               {t.label}
               {t.count !== undefined && (
-                <span style={{background:activeTab===t.id?C.goldDim:C.t4,border:`1px solid ${activeTab===t.id?C.goldB:"rgba(237,224,200,0.1)"}`,borderRadius:9,padding:"1px 6px",fontSize:11,color:activeTab===t.id?C.gold:C.t3}}>
+                <span style={{background:activeTab===t.id?C.goldDim:C.t4,border:`1px solid ${activeTab===t.id?C.goldB:"rgba(237,224,200,0.1)"}`,borderRadius:9,padding:"1px 6px",fontSize:11,color:activeTab===t.id?C.gold:C.t3,fontVariantNumeric:"tabular-nums",whiteSpace:"nowrap"}}>
                   {t.count}
                 </span>
               )}
@@ -1568,33 +1595,7 @@ export default function TheSignet() {
                 </div>
               </div>
             ) : (() => {
-              const dbNames = dbHistory.flatMap(entry =>
-                (entry.results || []).map(r => ({
-                  ...r,
-                  batchTarget: entry.target,
-                  batchTs: new Date(entry.generated_at).getTime(),
-                  _context: {
-                    target: entry.target,
-                    languages: entry.languages || [],
-                    vibe: entry.vibe,
-                    style: entry.style,
-                    themes: entry.themes,
-                    concept: entry.concept || undefined,
-                  }
-                }))
-              )
-
-              const sessionNames = history.flatMap(batch =>
-                batch.results.map(r => ({
-                  ...r,
-                  batchTarget: batch.target,
-                  batchTs: batch.ts,
-                }))
-              )
-
-              const dbNameSet = new Set(dbNames.map(n => n.name))
-              const sessionOnly = sessionNames.filter(n => !dbNameSet.has(n.name))
-              const allNames = [...sessionOnly, ...dbNames]
+              const allNames = allHistoryNames
 
               if (allNames.length === 0) return (
                 <div style={{textAlign:"center",padding:"60px 24px",color:"rgba(200,185,154,0.15)",fontSize:16,...GS,fontStyle:"italic",border:"1px dashed rgba(237,224,200,0.06)",borderRadius:12}}>
