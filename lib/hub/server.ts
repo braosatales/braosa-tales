@@ -22,6 +22,9 @@ export type HubCampaign = Campaign & {
   seats_total: number | null
   sessions_played: number | null
   safety: Safety
+  discord_channel_id: string | null
+  discord_language: 'en' | 'pt'
+  discord_templates: { confirm_3d?: string; final_24h?: string }
 }
 export type HubMember = { user_id: string; role: CampaignRole; name: string | null; email: string | null; avatar: string | null }
 
@@ -54,6 +57,8 @@ export const getHub = cache(async (slug: string): Promise<Hub | null> => {
       links: Array.isArray(campaign.links) ? campaign.links : [],
       acts: Array.isArray(campaign.acts) ? campaign.acts : [],
       safety: campaign.safety && typeof campaign.safety === 'object' ? campaign.safety : {},
+      discord_templates: campaign.discord_templates && typeof campaign.discord_templates === 'object' ? campaign.discord_templates : {},
+      discord_language: campaign.discord_language === 'pt' ? 'pt' : 'en',
       price: campaign.price == null ? null : Number(campaign.price),
       listed: !!campaign.listed,
       currency: campaign.currency ?? 'USD',

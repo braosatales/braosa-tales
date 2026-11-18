@@ -86,6 +86,20 @@ export async function PATCH(req: Request, { params }: P) {
   if ('seats_total' in b) update.seats_total = intOrNull(b.seats_total, 1, 12)
   if ('sessions_played' in b) update.sessions_played = intOrNull(b.sessions_played, 0, 9999)
   if ('safety' in b) update.safety = cleanSafety(b.safety)
+  // Vôr (Discord)
+  if ('discord_channel_id' in b) {
+    const ch = clean(b.discord_channel_id, 25)
+    if (ch && !/^\d{5,25}$/.test(ch)) return NextResponse.json({ error: 'The Discord channel id is a long number (right-click the channel → Copy Channel ID).' }, { status: 400 })
+    update.discord_channel_id = ch
+  }
+  if ('discord_language' in b && ['en', 'pt'].includes(b.discord_language)) update.discord_language = b.discord_language
+  if ('discord_templates' in b) {
+    const t = (b.discord_templates && typeof b.discord_templates === 'object' ? b.discord_templates : {}) as Record<string, unknown>
+    update.discord_templates = {
+      ...(clean(t.confirm_3d, 1500) ? { confirm_3d: clean(t.confirm_3d, 1500) } : {}),
+      ...(clean(t.final_24h, 1500) ? { final_24h: clean(t.final_24h, 1500) } : {}),
+    }
+  }
 
   const { data, error } = await createServerSupabase().from('campaigns').update(update).eq('id', hub.campaign.id).select().single()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
