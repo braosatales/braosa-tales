@@ -18,7 +18,7 @@ export async function PATCH(req: Request, { params }: P) {
     update.session_number = n
   }
   if ('title' in b) update.title = typeof b.title === 'string' ? b.title.trim().slice(0, 120) || null : null
-  if ('recap_draft' in b) update.recap_draft = typeof b.recap_draft === 'string' ? b.recap_draft.trim().slice(0, 20000) || null : null
+  if ('recap_draft' in b) update.recap_draft = typeof b.recap_draft === 'string' ? b.recap_draft.trim().slice(0, 200000) || null : null
   if ('analysed' in b) update.analysed_at = b.analysed ? new Date().toISOString() : null
   if (!Object.keys(update).length) return NextResponse.json({ error: 'Nothing to change.' }, { status: 400 })
   update.updated_at = new Date().toISOString()
