@@ -9,7 +9,8 @@ import { parseIcal, type IcalEvent } from '@/lib/ical'
  *
  * Rules:
  *  - an event is matched to a campaign by the campaign's startplaying_listing id anywhere in the event
- *  - new event → new session (or adopts a manual session of that campaign starting within 2h)
+ *  - new event → new session (or adopts a manual session of that campaign starting within 2h);
+ *    events processed oldest first; events that ended over HISTORY_DAYS ago aren't imported
  *  - moved event → session moves (only while it hasn't started)
  *  - event marked CANCELLED, or gone from the feed while still in the future → session cancelled
  *  - session over and not cancelled → played
@@ -34,6 +35,8 @@ export type SyncChange =
 export type SyncResult = { ok: true; events: number; matched: number; changes: SyncChange[]; dry: boolean } | { ok: false; error: string }
 
 const ADOPT_WINDOW_MS = 2 * 3600 * 1000
+/** Past events that ended longer ago than this aren't imported (recent ones are, for recaps). */
+const HISTORY_DAYS = 14
 
 export async function fetchStartPlayingEvents(): Promise<IcalEvent[]> {
   const url = process.env.STARTPLAYING_ICAL_URL
@@ -78,7 +81,11 @@ export async function syncStartPlaying({ dry = false, events }: { dry?: boolean;
   }
   const errors: string[] = []
 
-  for (const ev of feed) {
+  // Oldest first, so new sessions are numbered in date order.
+  const ordered = [...feed].sort((a, b) => a.start.getTime() - b.start.getTime())
+  const historyFrom = now - HISTORY_DAYS * 86400000
+
+  for (const ev of ordered) {
     const campaign = campaigns.find((c) => ev.text.includes(c.startplaying_listing))
     if (!campaign) continue
     matched++
@@ -104,8 +111,12 @@ export async function syncStartPlaying({ dry = false, events }: { dry?: boolean;
 
     if (!s) {
       if (cancelled) continue
-      // Next number after the last session of this campaign that wasn't cancelled; João can correct it in Clot.
-      const prev = sessions.filter((x) => x.campaign_id === campaign.id && x.status !== 'cancelled' && x.starts_at < startsAt && x.session_number != null)
+      // Old history isn't worth importing: its posts can't go out any more.
+      if (ev.end.getTime() < historyFrom) continue
+      // Next number after the last earlier session of this campaign that wasn't cancelled; João can correct it in Clot.
+      const prev = sessions.filter(
+        (x) => x.campaign_id === campaign.id && x.status !== 'cancelled' && new Date(x.starts_at).getTime() < ev.start.getTime() && x.session_number != null
+      )
       const number = prev.length ? Math.max(...prev.map((x) => x.session_number!)) + 1 : null
       const row = {
         campaign_id: campaign.id,
