@@ -32,6 +32,13 @@ Shared rules (deploy pipeline, secrets, SQL in code blocks, asking before a push
 - Dashboard: `campaigns`, `campaign_members`, `campaign_invites`, `user_pinned_tools`; saved names + Signet presets (`?preset=`, `?tab=saved`). GM section (admin only): add a player by email (pending invite if no account) and `/join/<code>` links.
 - Campaign SQL and module builders live in `supabase/` (`campaign_engine.sql`, `the8adventurers*.sql`, Eve of Giants, Wings over Phandalin, `supabase/modules/src/*.py`).
 
+## Vôr (Discord bot) and Tables
+
+- Vôr only posts. `lib/discord.ts` (sender, never pings, DMs), `lib/discord-queue.ts` (what's due; 3-day/24h fall back to the fixed text, after-session only once approved), `lib/vor-notices.ts` (DMs João, `DISCORD_OWNER_ID`, about drafts waiting, deadlines, failures).
+- StartPlaying is the master for session dates: `lib/startplaying-sync.ts` reads the GM iCal feed (`STARTPLAYING_ICAL_URL`, Vercel only, private) and matches events by `campaigns.startplaying_listing`. Parser: `lib/ical.ts` (`node --test lib/ical.test.ts`).
+- `/api/cron/discord` (Supabase pg_cron every 15 min): sync, send, notices. `/api/vor/*` is for Clot's bridge only (`VOR_API_SECRET`). João approves posts in Clot (`~/HQ/code/hq-phone`), not in Manage.
+- SQL: `supabase/discord_reminders.sql`, then `supabase/vor_tables.sql`, then `supabase/discord_cron.sql` last.
+
 ## Next up
 
 1. Turn The 8 Adventurers hub into a generic multi-campaign site (Eve of Giants, Wings over Phandalin).

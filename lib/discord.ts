@@ -22,6 +22,26 @@ export function renderTemplate(tpl: string, v: { campaign: string; session: numb
     .trim()
 }
 
+/** Open (or reuse) Vôr's DM channel with one user. Discord returns the same channel each time. */
+export async function openDmChannel(userId: string): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  const token = process.env.DISCORD_BOT_TOKEN
+  if (!token) return { ok: false, error: 'DISCORD_BOT_TOKEN is not set.' }
+  if (!/^\d{5,25}$/.test(userId)) return { ok: false, error: 'Invalid user id.' }
+  try {
+    const res = await fetch('https://discord.com/api/v10/users/@me/channels', {
+      method: 'POST',
+      headers: { Authorization: `Bot ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ recipient_id: userId }),
+      signal: AbortSignal.timeout(10000),
+    })
+    const j = await res.json().catch(() => ({}))
+    if (!res.ok) return { ok: false, error: `Discord ${res.status}: ${j.message ?? 'error'}` }
+    return { ok: true, id: String(j.id) }
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Network error' }
+  }
+}
+
 /** Post a message. Mentions are switched off, so a draft can never ping @everyone by accident. */
 export async function postToDiscord(channelId: string, content: string): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
   const token = process.env.DISCORD_BOT_TOKEN
