@@ -9,7 +9,7 @@ import { parseIcal, type IcalEvent } from '@/lib/ical'
  *
  * Rules:
  *  - an event is matched to a campaign by the campaign's startplaying_listing id anywhere in the event
- *  - new event → new session (or adopts a manual session of that campaign starting within 2h);
+ *  - new event → new session (or adopts a manual session of that campaign within 2h or on the same Lisbon day);
  *    events processed oldest first; events that ended over HISTORY_DAYS ago aren't imported
  *  - moved event → session moves (only while it hasn't started)
  *  - event marked CANCELLED, or gone from the feed while still in the future → session cancelled
@@ -35,6 +35,8 @@ export type SyncChange =
 export type SyncResult = { ok: true; events: number; matched: number; changes: SyncChange[]; dry: boolean } | { ok: false; error: string }
 
 const ADOPT_WINDOW_MS = 2 * 3600 * 1000
+/** A hand-made session on the same Lisbon day as an event is the same session, whatever time it was typed in with. */
+const lisbonDay = (iso: string) => new Date(iso).toLocaleDateString('en-CA', { timeZone: 'Europe/Lisbon' })
 /** Past events that ended longer ago than this aren't imported (recent ones are, for recaps). */
 const HISTORY_DAYS = 14
 
@@ -98,7 +100,10 @@ export async function syncStartPlaying({ dry = false, events }: { dry?: boolean;
     if (!s && !cancelled) {
       // A session João added by hand in Manage before the sync existed.
       s = sessions.find(
-        (x) => x.campaign_id === campaign.id && !x.startplaying_uid && Math.abs(new Date(x.starts_at).getTime() - ev.start.getTime()) <= ADOPT_WINDOW_MS
+        (x) =>
+          x.campaign_id === campaign.id &&
+          !x.startplaying_uid &&
+          (Math.abs(new Date(x.starts_at).getTime() - ev.start.getTime()) <= ADOPT_WINDOW_MS || lisbonDay(x.starts_at) === lisbonDay(startsAt))
       )
       if (s) {
         const sid = s.id
