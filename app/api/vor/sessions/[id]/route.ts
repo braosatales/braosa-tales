@@ -20,11 +20,26 @@ export async function PATCH(req: Request, { params }: P) {
   if ('title' in b) update.title = typeof b.title === 'string' ? b.title.trim().slice(0, 120) || null : null
   if ('recap_draft' in b) update.recap_draft = typeof b.recap_draft === 'string' ? b.recap_draft.trim().slice(0, 200000) || null : null
   if ('analysed' in b) update.analysed_at = b.analysed ? new Date().toISOString() : null
+  // The bridge's analysis sends the recap with analysed: true. That's Claude's version, kept apart from João's edits.
+  if (b.analysed && 'recap_draft' in update) update.ai_recap = update.recap_draft
   if (!Object.keys(update).length) return NextResponse.json({ error: 'Nothing to change.' }, { status: 400 })
   update.updated_at = new Date().toISOString()
 
-  const { data, error } = await createServerSupabase().from('campaign_sessions').update(update).eq('id', params.id).select().maybeSingle()
+  const db = createServerSupabase()
+  const { data, error } = await db.from('campaign_sessions').update(update).eq('id', params.id).select().maybeSingle()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   if (!data) return NextResponse.json({ error: 'No such session.' }, { status: 404 })
+
+  // João corrected Claude's recap: remember before → after (one row per session, kept up to date).
+  if (!b.analysed && 'recap_draft' in update && data.ai_recap && data.recap_draft && data.recap_draft.trim() !== data.ai_recap.trim()) {
+    try {
+      const row = { campaign_id: data.campaign_id, session_id: data.id, kind: 'recap', before: data.ai_recap, after: data.recap_draft, updated_at: new Date().toISOString() }
+      const { data: had } = await db.from('vor_feedback').select('id').eq('session_id', data.id).eq('kind', 'recap').maybeSingle()
+      if (had) await db.from('vor_feedback').update(row).eq('id', had.id)
+      else await db.from('vor_feedback').insert(row)
+    } catch (e) {
+      console.error('vor feedback not recorded', e)
+    }
+  }
   return NextResponse.json(data)
 }

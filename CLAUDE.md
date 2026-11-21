@@ -37,7 +37,8 @@ Shared rules (deploy pipeline, secrets, SQL in code blocks, asking before a push
 - Vôr only posts. `lib/discord.ts` (sender, never pings, DMs), `lib/discord-queue.ts` (what's due; 3-day/24h fall back to the fixed text, after-session only once approved), `lib/vor-notices.ts` (DMs João, `DISCORD_OWNER_ID`, about drafts waiting, deadlines, failures).
 - StartPlaying is the master for session dates: `lib/startplaying-sync.ts` reads the GM iCal feed (`STARTPLAYING_ICAL_URL`, Vercel only, private) and matches events by `campaigns.startplaying_listing`. Parser: `lib/ical.ts` (`node --test lib/ical.test.ts`).
 - `/api/cron/discord` (Supabase pg_cron every 15 min): sync, send, notices. `/api/vor/*` is for Clot's bridge only (`VOR_API_SECRET`). João approves posts in Clot (`~/HQ/code/hq-phone`). Manage keeps only the Discord settings (channel, language, fixed texts); its Sessions section and the `/api/hub/[slug]/sessions|discord` routes were removed on 2026-11-21.
-- SQL: `supabase/discord_reminders.sql`, then `supabase/vor_tables.sql`, then `supabase/discord_cron.sql` last.
+- Learning: `discord_messages.ai_draft` / `campaign_sessions.ai_recap` keep Claude's version; João's edits and notes go to `vor_feedback` (`/api/vor/feedback` serves them to the bridge).
+- SQL: `supabase/discord_reminders.sql`, then `supabase/vor_tables.sql`, then `supabase/discord_cron.sql`, then `supabase/vor_feedback.sql`.
 
 ## Next up
 

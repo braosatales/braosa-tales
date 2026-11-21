@@ -27,7 +27,11 @@ export async function PATCH(req: Request, { params }: P) {
   if (!ACTIONS.includes(action)) return NextResponse.json({ error: 'Unknown action.' }, { status: 400 })
 
   const db = createServerSupabase()
-  const { data: cur, error: ge } = await db.from('discord_messages').select('id, status, draft_content, expires_at').eq('id', params.id).maybeSingle()
+  const { data: cur, error: ge } = await db
+    .from('discord_messages')
+    .select('id, status, kind, campaign_id, session_id, draft_content, ai_draft, expires_at')
+    .eq('id', params.id)
+    .maybeSingle()
   if (ge) return NextResponse.json({ error: ge.message }, { status: 500 })
   if (!cur) return NextResponse.json({ error: 'No such post.' }, { status: 404 })
 
@@ -55,7 +59,8 @@ export async function PATCH(req: Request, { params }: P) {
   switch (action) {
     case 'draft':
       if (!('content' in b)) return NextResponse.json({ error: 'A draft needs content.' }, { status: 400 })
-      Object.assign(update, toDraft, { change_request: null, drafted_at: now, notified_at: null })
+      // Claude's own version is kept apart, so João's edits can be compared with it later.
+      Object.assign(update, toDraft, { change_request: null, drafted_at: now, notified_at: null, ai_draft: text })
       break
     case 'edit':
       Object.assign(update, toDraft)
@@ -84,5 +89,32 @@ export async function PATCH(req: Request, { params }: P) {
   const { data, error } = await db.from('discord_messages').update(update).eq('id', params.id).eq('status', cur.status).select().maybeSingle()
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   if (!data) return NextResponse.json({ error: 'It changed meanwhile (maybe it just went out). Refresh.' }, { status: 409 })
+  await recordFeedback(db, cur, action, text, b.note)
   return NextResponse.json(data)
+}
+
+/**
+ * What Vôr learns from: João's edits to Claude's text (before → after, one row per post, kept up to date)
+ * and each "what should change" note. Never blocks the action itself.
+ */
+async function recordFeedback(
+  db: ReturnType<typeof createServerSupabase>,
+  cur: { id: string; kind: string; campaign_id: string; session_id: string | null; draft_content: string | null; ai_draft: string | null },
+  action: Action,
+  text: string | null,
+  note: unknown
+) {
+  const base = { campaign_id: cur.campaign_id, session_id: cur.session_id, message_id: cur.id, kind: cur.kind }
+  try {
+    if (action === 'request_changes' && typeof note === 'string' && note.trim()) {
+      await db.from('vor_feedback').insert({ ...base, before: cur.draft_content, note: note.trim().slice(0, 2000) })
+    } else if ((action === 'edit' || action === 'approve') && cur.ai_draft && text && text.trim() !== cur.ai_draft.trim()) {
+      const row = { ...base, before: cur.ai_draft, after: text, updated_at: new Date().toISOString() }
+      const { data: had } = await db.from('vor_feedback').select('id').eq('message_id', cur.id).is('note', null).maybeSingle()
+      if (had) await db.from('vor_feedback').update(row).eq('id', had.id)
+      else await db.from('vor_feedback').insert(row)
+    }
+  } catch (e) {
+    console.error('vor feedback not recorded', e)
+  }
 }
