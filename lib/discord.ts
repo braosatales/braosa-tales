@@ -70,3 +70,51 @@ export async function postToDiscord(channelId: string, content: string): Promise
     return { ok: false, error: e instanceof Error ? e.message : 'Network error' }
   }
 }
+
+/**
+ * Post one image with a short text line (the digest card). Same guards as postToDiscord:
+ * mentions off, one retry on a rate limit. `bytes` is the PNG.
+ */
+export async function postImageToDiscord(
+  channelId: string,
+  content: string,
+  image: { filename: string; bytes: ArrayBuffer; alt?: string }
+): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
+  const token = process.env.DISCORD_BOT_TOKEN
+  if (!token) return { ok: false, error: 'DISCORD_BOT_TOKEN is not set.' }
+  if (!/^\d{5,25}$/.test(channelId)) return { ok: false, error: 'Invalid channel id.' }
+  if (!/^[\w.-]{1,60}$/.test(image.filename)) return { ok: false, error: 'Invalid file name.' }
+  if (content.length > 2000) return { ok: false, error: 'The message must be at most 2000 characters.' }
+  if (image.bytes.byteLength === 0 || image.bytes.byteLength > 8 * 1024 * 1024) return { ok: false, error: 'The image must be 1 byte to 8 MB.' }
+  try {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const form = new FormData() // rebuilt per attempt: a body can't be re-sent
+      form.append(
+        'payload_json',
+        JSON.stringify({
+          content,
+          allowed_mentions: { parse: [] },
+          attachments: [{ id: 0, filename: image.filename, description: image.alt?.slice(0, 1000) }],
+        })
+      )
+      form.append('files[0]', new Blob([image.bytes], { type: 'image/png' }), image.filename)
+      const res = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages`, {
+        method: 'POST',
+        headers: { Authorization: `Bot ${token}` }, // fetch sets the multipart boundary itself
+        body: form,
+        signal: AbortSignal.timeout(15000),
+      })
+      if (res.status === 429 && attempt === 0) {
+        const j = await res.json().catch(() => ({}))
+        await new Promise((r) => setTimeout(r, Math.min(5000, Math.ceil((Number(j.retry_after) || 1) * 1000))))
+        continue
+      }
+      const j = await res.json().catch(() => ({}))
+      if (!res.ok) return { ok: false, error: `Discord ${res.status}: ${j.message ?? 'error'}` }
+      return { ok: true, id: String(j.id) }
+    }
+    return { ok: false, error: 'Discord rate limit.' }
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : 'Network error' }
+  }
+}
