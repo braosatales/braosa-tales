@@ -5,6 +5,11 @@ export function createServerSupabase() {
   return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false } }
+    {
+      auth: { persistSession: false, autoRefreshToken: false },
+      // Next 14 caches fetch() by default, and supabase-js reads through fetch: without this, server
+      // code (Vôr's cron, /api/vor/*) kept seeing an old copy of the database.
+      global: { fetch: (input, init) => fetch(input, { ...init, cache: 'no-store' }) },
+    }
   )
 }
